@@ -3,7 +3,6 @@
 import { useState } from "react";
 import {
   Avatar,
-  Badge,
   Button,
   Textarea,
   Checkbox,

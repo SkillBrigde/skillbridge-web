@@ -29,11 +29,12 @@ export function SearchBar({
 }: SearchBarProps) {
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [internalValue, setInternalValue] = React.useState(value);
+  const [prevValue, setPrevValue] = React.useState(value);
 
-  // Sync with external value
-  React.useEffect(() => {
+  if (value !== prevValue) {
+    setPrevValue(value);
     setInternalValue(value);
-  }, [value]);
+  }
 
   // Ctrl+K shortcut
   React.useEffect(() => {

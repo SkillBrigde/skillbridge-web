@@ -2,9 +2,7 @@ import Link from "next/link";
 import {
   Avatar,
   Badge,
-  Button,
   Card,
-  CardContent,
 } from "@/components/ui";
 import { StarRating } from "@/components/ui/star-rating";
 import { EscrowShield } from "@/components/ui/escrow-shield";

@@ -1,9 +1,7 @@
 import {
   Avatar,
-  Badge,
   Button,
   Card,
-  Tabs,
 } from "@/components/ui";
 import { NoticeBanner } from "@/components/ui/notice-banner";
 import {

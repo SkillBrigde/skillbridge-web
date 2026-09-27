@@ -10,7 +10,6 @@ import {
 } from "@/components/ui";
 import { SlotPicker, type SlotOption } from "@/components/ui/slot-picker";
 import { NoticeBanner } from "@/components/ui/notice-banner";
-import { Chip } from "@/components/ui/chip";
 import { Calendar, ShieldCheck } from "lucide-react";
 
 /* ------------------------------------------------------------------ */

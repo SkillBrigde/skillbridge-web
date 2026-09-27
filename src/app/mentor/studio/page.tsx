@@ -5,7 +5,6 @@ import {
   Badge,
   Button,
   Input,
-  Checkbox,
 } from "@/components/ui";
 import { Select } from "@/components/ui/select";
 import { Package, Plus, X, Sparkles } from "lucide-react";

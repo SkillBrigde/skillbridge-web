@@ -2,10 +2,8 @@
 
 import { useState } from "react";
 import {
-  Avatar,
   Badge,
   Button,
-  Card,
   Modal,
   Input,
 } from "@/components/ui";

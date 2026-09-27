@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Badge, Button, Card } from "@/components/ui";
+import { Badge, Button } from "@/components/ui";
 import { Clock, RefreshCw } from "lucide-react";
 
 /* ------------------------------------------------------------------ */

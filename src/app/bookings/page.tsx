@@ -3,8 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import {
-  Avatar,
-  Badge,
   Button,
   Tabs,
 } from "@/components/ui";

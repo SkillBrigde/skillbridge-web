@@ -6,13 +6,11 @@ import {
   Button,
   Card,
 } from "@/components/ui";
-import { CountdownTimer } from "@/components/ui/countdown-timer";
 import { Timeline } from "@/components/ui/timeline";
 import {
   Scale,
   ShieldCheck,
   Clock,
-  User,
   Server,
 } from "lucide-react";
 

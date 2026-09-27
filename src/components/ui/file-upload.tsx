@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { cn } from "@/lib/utils";
-import { Upload, X, FileText, Image } from "lucide-react";
+import { Upload, X, FileText, Image as LucideImage } from "lucide-react";
 
 export interface FileUploadProps {
   /** Label text */
@@ -73,7 +73,7 @@ export function FileUpload({
   };
 
   const getFileIcon = (file: File) => {
-    if (file.type.startsWith("image/")) return <Image className="h-4 w-4" />;
+    if (file.type.startsWith("image/")) return <LucideImage className="h-4 w-4" />;
     return <FileText className="h-4 w-4" />;
   };
 

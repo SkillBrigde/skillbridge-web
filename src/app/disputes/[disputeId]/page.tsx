@@ -10,7 +10,6 @@ import {
 } from "@/components/ui";
 import { RadioGroup } from "@/components/ui/radio-group";
 import { FileUpload } from "@/components/ui/file-upload";
-import { NoticeBanner } from "@/components/ui/notice-banner";
 import { Scale, Clock } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
