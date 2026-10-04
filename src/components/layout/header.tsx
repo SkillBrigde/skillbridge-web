@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Logo } from "./logo";
 import { Search, ShieldCheck, User } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const NAV_ITEMS = [
   { href: "/mentors", label: "Khám Phá Mentors" },
@@ -60,12 +61,12 @@ export function Header() {
           })}
         </nav>
 
-        {/* Right: Escrow Wallet Badge + Avatar */}
-        <div className="flex items-center gap-3">
+        {/* Right: Escrow Wallet Badge + Auth + Avatar */}
+        <div className="flex items-center gap-2 sm:gap-3">
           {/* Escrow Shield Badge */}
           <Link
             href="/wallet"
-            className="flex items-center gap-2 rounded-xl bg-[#03BD84]/10 border border-[#27C98F]/30 px-3 py-1.5 transition-colors hover:bg-[#03BD84]/15"
+            className="hidden sm:flex items-center gap-2 rounded-xl bg-[#03BD84]/10 border border-[#27C98F]/30 px-3 py-1.5 transition-colors hover:bg-[#03BD84]/15"
           >
             <ShieldCheck className="h-4 w-4 text-[#27C98F]" />
             <div className="flex flex-col items-start leading-none">
@@ -78,11 +79,25 @@ export function Header() {
             </div>
           </Link>
 
+          {/* Auth Buttons */}
+          <Link
+            href="/login"
+            className="text-xs font-medium text-[#9BA1B0] hover:text-[#F0F2F5] transition-colors px-2 py-1.5"
+          >
+            Đăng Nhập
+          </Link>
+
+          <Link href="/register">
+            <Button variant="primary" size="sm" className="h-8 text-xs font-medium px-3.5">
+              Đăng Ký
+            </Button>
+          </Link>
+
           {/* User Profile Avatar */}
           <Link
             href="/mentor/studio"
-            className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1F2022] border border-white/[0.12] text-[#9BA1B0] hover:border-[#5E6AD2] hover:text-[#F0F2F5] transition-all"
-            title="Tài khoản"
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1F2022] border border-white/[0.12] text-[#9BA1B0] hover:border-[#5E6AD2] hover:text-[#F0F2F5] transition-all ml-1"
+            title="Tài khoản / Studio"
           >
             <User className="h-4 w-4" />
           </Link>
