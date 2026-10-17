@@ -108,3 +108,5 @@ export function ServiceTierCard({
     </div>
   );
 }
+
+export const BookingServiceTierCard = ServiceTierCard;

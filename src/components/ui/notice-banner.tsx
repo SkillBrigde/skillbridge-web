@@ -4,11 +4,13 @@ import { AlertTriangle, Info, CheckCircle, AlertCircle } from "lucide-react";
 
 export interface NoticeBannerProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: "info" | "warning" | "success" | "error";
-  children: React.ReactNode;
+  message?: string;
+  children?: React.ReactNode;
 }
 
 export function NoticeBanner({
   variant = "info",
+  message,
   children,
   className,
   ...props
@@ -55,7 +57,9 @@ export function NoticeBanner({
       {...props}
     >
       {v.icon}
-      <div className={cn("text-xs leading-relaxed", v.text)}>{children}</div>
+      <div className={cn("text-xs leading-relaxed", v.text)}>
+        {children ?? message}
+      </div>
     </div>
   );
 }

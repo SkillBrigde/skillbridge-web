@@ -24,20 +24,7 @@ export interface DisputeEvidence {
   uploadedAt: string;
 }
 
-export interface DisputeRecord {
-  id: string;
-  disputeCode: string;
-  bookingId: string;
-  bookingCode: string;
-  menteeName: string;
-  mentorName: string;
-  reason: DisputeReason;
-  menteeStatement: string;
-  mentorStatement?: string;
-  evidences: DisputeEvidence[];
-  amountVnd: number;
-  status: DisputeStatus;
-  ruling?: DisputeRuling;
-  slaExpiresAtUtc: string;
-  createdAtUtc: string;
-}
+import type { DisputeRec } from "@/lib/domain";
+
+export type DisputeRecord = DisputeRec;
+

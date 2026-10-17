@@ -8,7 +8,9 @@ export type BookingStatus =
   | "confirmed"
   | "pending_review"
   | "completed"
-  | "disputed";
+  | "disputed"
+  | "pending_payment"
+  | "cancelled";
 
 export interface BookingCardProps {
   /** Booking code, e.g. "#SB-2026-98124" */
@@ -32,15 +34,7 @@ export interface BookingCardProps {
   className?: string;
 }
 
-const statusConfig: Record<
-  BookingStatus,
-  { label: string; variant: "escrow" | "pending" | "neutral" | "dispute" }
-> = {
-  confirmed: { label: "Đã xác nhận", variant: "escrow" },
-  pending_review: { label: "Chờ Nghiệm Thu Escrow", variant: "pending" },
-  completed: { label: "Đã Hoàn Tất", variant: "neutral" },
-  disputed: { label: "Đang Khiếu Nại", variant: "dispute" },
-};
+import { getBookingStatusInfo } from "@/lib/domain";
 
 export function BookingCard({
   bookingCode,
@@ -55,7 +49,7 @@ export function BookingCard({
   secondaryAction,
   className,
 }: BookingCardProps) {
-  const statusInfo = statusConfig[status];
+  const statusInfo = getBookingStatusInfo(status);
 
   return (
     <div
@@ -67,7 +61,10 @@ export function BookingCard({
           ? "border-[#F5A623]/25"
           : status === "disputed"
           ? "border-[#FF5C5C]/25"
+          : status === "pending_payment"
+          ? "border-[#5E6AD2]/25"
           : "border-white/[0.08]",
+        status === "cancelled" && "opacity-75",
         className
       )}
     >
@@ -138,3 +135,5 @@ export function BookingCard({
     </div>
   );
 }
+
+export const BookingSessionCard = BookingCard;

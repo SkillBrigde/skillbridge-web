@@ -1,6 +1,8 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
+import { Button } from "./button";
+
 export interface EmptyStateProps {
   /** Icon element */
   icon?: React.ReactNode;
@@ -9,7 +11,7 @@ export interface EmptyStateProps {
   /** Description text */
   description?: string;
   /** Optional CTA action */
-  action?: React.ReactNode;
+  action?: React.ReactNode | { label: string; onClick: () => void };
   className?: string;
 }
 
@@ -20,6 +22,20 @@ export function EmptyState({
   action,
   className,
 }: EmptyStateProps) {
+  const renderAction = () => {
+    if (!action) return null;
+    if (React.isValidElement(action)) return action;
+    if (typeof action === "object" && "label" in action && typeof (action as any).onClick === "function") {
+      const act = action as { label: string; onClick: () => void };
+      return (
+        <Button variant="primary" onClick={act.onClick}>
+          {act.label}
+        </Button>
+      );
+    }
+    return action as React.ReactNode;
+  };
+
   return (
     <div
       className={cn(
@@ -40,7 +56,7 @@ export function EmptyState({
           {description}
         </p>
       )}
-      {action && <div className="mt-5">{action}</div>}
+      {action && <div className="mt-5">{renderAction()}</div>}
     </div>
   );
 }
