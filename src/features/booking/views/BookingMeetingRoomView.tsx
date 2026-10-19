@@ -28,14 +28,13 @@ import {
   Send,
   Clock,
 } from "lucide-react";
-import { useAppState, useSession, actions, useNow } from "@/lib/store";
+import { useAppState, actions, useNow } from "@/lib/store";
 import { vnd, looksLikeContactLeak } from "@/lib/domain";
 
 export function BookingMeetingRoomView() {
   const params = useParams<{ bookingId: string }>();
   const router = useRouter();
   const state = useAppState();
-  const session = useSession();
   const now = useNow("second");
 
   const bookingId = params.bookingId;
@@ -55,17 +54,15 @@ export function BookingMeetingRoomView() {
   const [chatInput, setChatInput] = useState("");
   const [chatWarning, setChatWarning] = useState("");
   const [accepting, setAccepting] = useState(false);
-  const [scratchpad, setScratchpad] = useState(booking?.scratchpad || "");
+  const scratchpad = booking?.scratchpad || "";
+  const sessionBookingId = booking?.id;
 
   // Join session on mount
   useEffect(() => {
-    if (booking) {
-      actions.joinSession(booking.id, "mentee");
-      if (booking.scratchpad) {
-        setScratchpad(booking.scratchpad);
-      }
+    if (sessionBookingId) {
+      actions.joinSession(sessionBookingId, "mentee");
     }
-  }, [booking?.id]);
+  }, [sessionBookingId]);
 
   const messages = useMemo(
     () => state.messages.filter((m) => m.bookingId === bookingId),
@@ -107,7 +104,6 @@ export function BookingMeetingRoomView() {
   };
 
   const handleScratchpadChange = (val: string) => {
-    setScratchpad(val);
     actions.setScratchpad(booking.id, val);
   };
 
@@ -122,7 +118,7 @@ export function BookingMeetingRoomView() {
 
   // Elapsed seconds calculation
   const sessionElapsedSeconds = booking.startedAt
-    ? Math.max(0, Math.floor(((now || Date.now()) - booking.startedAt) / 1000))
+    ? Math.max(0, Math.floor((now - booking.startedAt) / 1000))
     : 1800;
 
   return (

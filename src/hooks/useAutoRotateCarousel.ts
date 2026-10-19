@@ -46,12 +46,10 @@ export function useAutoRotateCarousel({
 
   const maxIndex = Math.max(0, totalItems - itemsPerPage);
 
-  // Bounds check when itemsPerPage changes
-  useEffect(() => {
-    if (currentIndex > maxIndex) {
-      setCurrentIndex(maxIndex);
-    }
-  }, [maxIndex, currentIndex]);
+  // Clamp before rendering when the viewport or item count changes.
+  if (currentIndex > maxIndex) {
+    setCurrentIndex(maxIndex);
+  }
 
   const nextSlide = useCallback(() => {
     setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));

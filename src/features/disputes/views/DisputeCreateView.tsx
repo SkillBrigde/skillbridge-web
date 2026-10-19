@@ -13,7 +13,7 @@ import { Select } from "@/components/ui/select";
 import { RadioGroup } from "@/components/ui/radio-group";
 import { FileUpload } from "@/components/ui/file-upload";
 import { Scale, CheckCircle2 } from "lucide-react";
-import { useAppState, actions, REASON_MAP } from "@/lib/store";
+import { useAppState, actions } from "@/lib/store";
 import { vnd } from "@/lib/domain";
 
 const DISPUTE_REASONS = [

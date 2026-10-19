@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Badge,
   Button,
@@ -11,7 +11,7 @@ import { Select } from "@/components/ui/select";
 import { Package, Plus, X, Sparkles } from "lucide-react";
 import { RequireRole } from "@/components/auth/require-role";
 import { useSession, actions } from "@/lib/store";
-import { vnd } from "@/lib/domain";
+import { vnd, type MentorRec } from "@/lib/domain";
 import type { MentorServiceTier } from "@/types";
 
 const DURATION_OPTIONS = [
@@ -23,19 +23,15 @@ const DURATION_OPTIONS = [
 ];
 
 export function MentorStudioDashboardView() {
-  const session = useSession();
-  const mentor = session.mentor;
+  const { mentor } = useSession();
+  return <MentorStudioDashboardContent key={mentor?.id || "guest"} mentor={mentor} />;
+}
 
-  const [services, setServices] = useState<MentorServiceTier[]>([]);
+function MentorStudioDashboardContent({ mentor }: { mentor: MentorRec | null }) {
+  const [services, setServices] = useState<MentorServiceTier[]>(mentor?.services || []);
   const [saving, setSaving] = useState(false);
   const [successMsg, setSuccessMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
-
-  useEffect(() => {
-    if (mentor && mentor.services && mentor.services.length > 0) {
-      setServices(structuredClone(mentor.services));
-    }
-  }, [mentor]);
 
   const updateService = (index: number, updates: Partial<MentorServiceTier>) => {
     setServices((prev) =>

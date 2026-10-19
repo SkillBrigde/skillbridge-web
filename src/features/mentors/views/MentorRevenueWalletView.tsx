@@ -8,7 +8,6 @@ import {
   Input,
   NoticeBanner,
 } from "@/components/ui";
-import { StatCard } from "@/components/ui/stat-card";
 import { RevenueStats } from "@/features/wallet/RevenueStats";
 import {
   Table,
@@ -19,13 +18,9 @@ import {
   TableCell,
 } from "@/components/ui/data-table";
 import {
-  Wallet,
   ArrowUpRight,
-  ShieldCheck,
-  AlertTriangle,
   Banknote,
   CheckCircle2,
-  Clock,
 } from "lucide-react";
 import { RequireRole } from "@/components/auth/require-role";
 import { useAppState, useSession, actions, mentorEscrowSummary } from "@/lib/store";

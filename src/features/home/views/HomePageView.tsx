@@ -2,15 +2,11 @@ import Link from "next/link";
 import {
   ArrowRight,
   ShieldCheck,
-  Users,
-  Award,
   Scale,
   Sparkles,
   Lock,
   CheckCircle2,
   ChevronRight,
-  Zap,
-  Terminal,
 } from "lucide-react";
 import { Badge, Button, Card } from "@/components/ui";
 import { FeaturedMentorsCarousel } from "@/features/mentors/FeaturedMentorsCarousel";

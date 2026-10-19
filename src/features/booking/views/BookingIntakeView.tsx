@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import {
   Avatar,
@@ -44,12 +44,12 @@ export function BookingIntakeView() {
   const [expectation, setExpectation] = useState(
     booking?.intake?.expectation || "Nắm chắc cách giải bài toán System Design và tự tin pass vòng kỹ thuật"
   );
-  const [selectedSlot, setSelectedSlot] = useState(booking?.slotId || "");
+  const [selectedSlotId, setSelectedSlot] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
 
   const slotOptions: SlotOption[] = useMemo(() => {
     if (!booking) return [];
-    const list = mentorSlotsForPicker(state, booking.mentorId, booking.id, now || Date.now(), 12);
+    const list = mentorSlotsForPicker(state, booking.mentorId, booking.id, now, 12);
     return list.map(({ slot, available }) => ({
       id: slot.id,
       date: slotDateLabel(slot.startMs),
@@ -58,15 +58,7 @@ export function BookingIntakeView() {
     }));
   }, [state, booking, now]);
 
-  // Set default selected slot if none selected
-  useEffect(() => {
-    if (!selectedSlot && slotOptions.length > 0) {
-      const firstAvailable = slotOptions.find((s) => s.available);
-      if (firstAvailable) {
-        setSelectedSlot(firstAvailable.id);
-      }
-    }
-  }, [slotOptions, selectedSlot]);
+  const selectedSlot = selectedSlotId || booking?.slotId || slotOptions.find((s) => s.available)?.id || "";
 
   if (!booking || !mentor) {
     return (

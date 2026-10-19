@@ -1,25 +1,25 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, ChevronRight as ArrowRightIcon } from "lucide-react";
 import { MentorCard } from "@/components/mentor-card";
 import { Button } from "@/components/ui/button";
 import { useAutoRotateCarousel } from "@/hooks/useAutoRotateCarousel";
 import { ALL_FEATURED_MENTORS, FeaturedMentorItem } from "@/constants/featuredMentors";
+import { useHydrated } from "@/lib/store";
 
 export function FeaturedMentorsCarousel() {
-  const [mentors, setMentors] = useState<FeaturedMentorItem[]>(ALL_FEATURED_MENTORS);
-
-  // Fair rotation: Randomize on mount to give equal visibility
-  useEffect(() => {
+  const hydrated = useHydrated();
+  // Keep the first hydration render stable, then show the client's random order.
+  const [rotatedMentors] = useState<FeaturedMentorItem[]>(() => {
     const randomOffset = Math.floor(Math.random() * ALL_FEATURED_MENTORS.length);
-    const rotated = [
+    return [
       ...ALL_FEATURED_MENTORS.slice(randomOffset),
       ...ALL_FEATURED_MENTORS.slice(0, randomOffset),
     ];
-    setMentors(rotated);
-  }, []);
+  });
+  const mentors = hydrated ? rotatedMentors : ALL_FEATURED_MENTORS;
 
   const {
     currentIndex,

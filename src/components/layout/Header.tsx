@@ -22,12 +22,14 @@ export function Header() {
 
   const [searchVal, setSearchVal] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [menuPathname, setMenuPathname] = useState(pathname);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  // Close mobile drawer on route change or viewport resize back to desktop
-  useEffect(() => {
+  // Reset the drawer before rendering a new route.
+  if (menuPathname !== pathname) {
+    setMenuPathname(pathname);
     setMobileMenuOpen(false);
-  }, [pathname]);
+  }
 
   useEffect(() => {
     function handleResize() {

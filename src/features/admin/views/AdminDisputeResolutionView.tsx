@@ -38,7 +38,7 @@ export function AdminDisputeResolutionView() {
 
   const remainingSeconds = useMemo(() => {
     if (!dispute) return 0;
-    return Math.max(0, Math.floor((dispute.slaExpiresAt - (now || Date.now())) / 1000));
+    return Math.max(0, Math.floor((dispute.slaExpiresAt - now) / 1000));
   }, [dispute, now]);
 
   const handleRule = (ruling: DisputeRuling, label: string) => {
@@ -89,7 +89,7 @@ export function AdminDisputeResolutionView() {
     if (dispute.ruling) {
       ev.push({
         id: "3",
-        timestamp: slotDateLabel(dispute.resolvedAt || Date.now()),
+        timestamp: dispute.resolvedAt ? slotDateLabel(dispute.resolvedAt) : "Chưa có thời gian xử lý",
         actor: "Admin",
         title: `Admin thực thi phán quyết: ${dispute.ruling}`,
         description: dispute.rulingNote || "",

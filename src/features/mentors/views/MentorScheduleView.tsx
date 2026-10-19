@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -30,15 +30,19 @@ import {
   WEEKDAYS,
   type WeekdayId,
   type AvailabilityRules,
+  type MentorRec,
 } from "@/lib/domain";
 
 export function MentorScheduleView() {
+  const { mentor } = useSession();
+  return <MentorScheduleContent key={mentor?.id || "guest"} mentor={mentor} />;
+}
+
+function MentorScheduleContent({ mentor }: { mentor: MentorRec | null }) {
   const router = useRouter();
   const state = useAppState();
-  const session = useSession();
   const now = useNow("minute");
 
-  const mentor = session.mentor;
   const mentorId = mentor?.id || "mentor-an-nguyen";
 
   const [rules, setRules] = useState<AvailabilityRules>(
@@ -53,21 +57,10 @@ export function MentorScheduleView() {
     }
   );
 
-  const [duration, setDuration] = useState("60");
-  const [buffer, setBuffer] = useState("15");
-  const [leadTime, setLeadTime] = useState("24");
+  const [duration, setDuration] = useState(String(mentor?.defaults.durationMin ?? 60));
+  const [buffer, setBuffer] = useState(String(mentor?.defaults.bufferMin ?? 15));
+  const [leadTime, setLeadTime] = useState(String(mentor?.defaults.leadHours ?? 24));
   const [savedMsg, setSavedMsg] = useState("");
-
-  useEffect(() => {
-    if (mentor?.rules) {
-      setRules(structuredClone(mentor.rules));
-    }
-    if (mentor?.defaults) {
-      setDuration(String(mentor.defaults.durationMin));
-      setBuffer(String(mentor.defaults.bufferMin));
-      setLeadTime(String(mentor.defaults.leadHours));
-    }
-  }, [mentor]);
 
   const toggleDay = (dayId: WeekdayId) => {
     setRules((prev) => {
@@ -302,7 +295,7 @@ export function MentorScheduleView() {
                 const timeText = b.startMs && b.endMs
                   ? bookingTimeLabel(b.startMs, b.endMs)
                   : "Chưa xác định";
-                const countdown = b.startMs ? relativeFuture(b.startMs, now || Date.now()) : "";
+                const countdown = b.startMs ? relativeFuture(b.startMs, now) : "";
 
                 return (
                   <Card key={b.id} className="p-5">

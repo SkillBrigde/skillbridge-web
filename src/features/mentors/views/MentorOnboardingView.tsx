@@ -2,7 +2,6 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
   Button,
   Input,
@@ -32,7 +31,6 @@ const BANKS = [
 ];
 
 export function MentorOnboardingView() {
-  const router = useRouter();
   const state = useAppState();
   const session = useSession();
 

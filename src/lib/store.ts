@@ -26,7 +26,6 @@ import {
   fakeHash,
   fmtDuration,
   generateSlots,
-  isValidHttpUrl,
   isValidWindow,
   looksLikeContactLeak,
   normalizeName,

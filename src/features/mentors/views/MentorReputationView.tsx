@@ -11,7 +11,7 @@ import {
 } from "@/components/ui";
 import { StarRating } from "@/components/ui/star-rating";
 import { ProgressBar } from "@/components/ui/progress-bar";
-import { Star, MessageSquare, TrendingUp, CheckCircle2 } from "lucide-react";
+import { Star, MessageSquare, TrendingUp } from "lucide-react";
 import { RequireRole } from "@/components/auth/require-role";
 import { useAppState, useSession, actions } from "@/lib/store";
 import { slotDateLabel } from "@/lib/domain";

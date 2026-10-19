@@ -2,25 +2,16 @@
 
 import { useState, useMemo } from "react";
 import {
-  Badge,
   Button,
   Modal,
   Input,
   NoticeBanner,
 } from "@/components/ui";
 import { StatCard } from "@/components/ui/stat-card";
-import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableRow,
-  TableHead,
-  TableCell,
-} from "@/components/ui/data-table";
 import { RequireRole } from "@/components/auth/require-role";
 import { WalletTransactionTable } from "../components/WalletTransactionTable";
 import { useAppState, useSession, actions, menteeEscrowSummary } from "@/lib/store";
-import { vnd, slotDateLabel } from "@/lib/domain";
+import { vnd } from "@/lib/domain";
 import { Wallet, ArrowDownToLine, ArrowUpFromLine, ShieldCheck, Clock } from "lucide-react";
 
 export function WalletDashboardView() {

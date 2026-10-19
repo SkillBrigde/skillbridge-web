@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, Suspense, useEffect } from "react";
+import { useState, useMemo, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import {
@@ -25,17 +25,17 @@ function MentorDirectoryContent() {
   const now = useNow("minute");
 
   const [search, setSearch] = useState(initialQuery);
+  const [previousQuery, setPreviousQuery] = useState(initialQuery);
   const [activeCategory, setActiveCategory] = useState("Tất cả");
   const [verifiedOnly, setVerifiedOnly] = useState(false);
   const [priceFilter, setPriceFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Sync initial query if URL changes
-  useEffect(() => {
-    if (initialQuery) {
-      setSearch(initialQuery);
-    }
-  }, [initialQuery]);
+  if (previousQuery !== initialQuery) {
+    setPreviousQuery(initialQuery);
+    setSearch(initialQuery);
+    setCurrentPage(1);
+  }
 
   const allPublished = useMemo(() => publishedMentors(state), [state]);
 
@@ -145,7 +145,7 @@ function MentorDirectoryContent() {
       ) : (
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
           {pagedMentors.map((mentor) => {
-            const nextSlots = availableSlots(state, mentor.id, now || Date.now(), 1);
+            const nextSlots = availableSlots(state, mentor.id, now, 1);
             const nextSlot = nextSlots[0];
             const nextSlotText = nextSlot
               ? `${slotTimeLabel(nextSlot.startMs, nextSlot.endMs)} ${slotDateLabel(nextSlot.startMs)}`
