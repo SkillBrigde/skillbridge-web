@@ -161,6 +161,11 @@ export function AccountForm({ mode }: { mode: "login" | "register" }) {
                 {visible ? <EyeOff size={19} /> : <Eye size={19} />}
               </button>
             </span>
+            {registering && (
+              <small style={{ fontSize: "0.75rem", opacity: 0.7, marginTop: "4px", display: "block" }}>
+                Tối thiểu 8 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt (!?*@#$%^&+=._-)
+              </small>
+            )}
           </label>
           {error && (
             <p className="sb-form-error" role="alert">

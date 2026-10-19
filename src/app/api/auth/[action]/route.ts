@@ -114,10 +114,21 @@ export async function POST(request: Request, context: Context) {
         409: "Email này đã được đăng ký.",
         429: "Bạn đã thử quá nhiều lần. Vui lòng thử lại sau.",
       };
+      let errorMsg =
+        messages[status] || "Dịch vụ tài khoản tạm thời chưa sẵn sàng.";
+      if (status === 400 && problem?.errors && typeof problem.errors === "object") {
+        const errorList = Object.values(problem.errors).flat() as string[];
+        if (errorList.length > 0 && typeof errorList[0] === "string") {
+          errorMsg = errorList[0];
+        } else if (problem.detail) {
+          errorMsg = problem.detail;
+        }
+      } else if (status === 409 && problem?.detail) {
+        errorMsg = problem.detail;
+      }
       return json(
         {
-          error:
-            messages[status] || "Dịch vụ tài khoản tạm thời chưa sẵn sàng.",
+          error: errorMsg,
         },
         status >= 500 ? 503 : status,
       );
