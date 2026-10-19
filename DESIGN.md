@@ -17,6 +17,7 @@ Giao diện sáng, tối giản, mang cảm giác biên tập. Nền trắng ấ
 - Minh họa cây cầu là SVG trong repository. Không phụ thuộc ảnh ngoài hoặc hồ sơ người dùng giả.
 - Hover, chuyển mục tiêu, đường chuyển động và reveal nhẹ. Tôn trọng prefers-reduced-motion, nội dung vẫn có sẵn nếu tắt JavaScript.
 - Dải 3 câu nói tự đổi mỗi 5,5 giây, tiếp tục chạy khi rê chuột hoặc dùng bàn phím; chỉ giữ nút chọn câu, không có nút tạm dừng. Tắt tự chuyển khi người dùng yêu cầu giảm chuyển động.
+- Đăng ký có panel giới thiệu tím nhạt, hai thẻ chọn vai trò và form thông tin rõ ràng. Trên điện thoại, nội dung tập trung vào form một cột. Checklist mật khẩu phản hồi theo điều kiện của Identity, lỗi gắn với từng trường và hỗ trợ bàn phím.
 
 ## Tính trung thực của nội dung
 

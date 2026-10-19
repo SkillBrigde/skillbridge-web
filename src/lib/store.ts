@@ -1,9 +1,10 @@
 "use client";
 
 import { useMemo, useSyncExternalStore } from "react";
-import type { AppState, Role, User, MentorRec, Slot, Result } from "./domain";
+import type { AppState, Role, User, MentorRec, Slot } from "./domain";
 import type { SessionUser } from "./server/auth";
 import { unavailableAction } from "./feature-availability";
+import type { RegistrationErrors } from "./registration";
 
 const EMPTY_STATE: AppState = {
   v: 1,
@@ -175,12 +176,25 @@ export interface RegisterInput {
   email: string;
   password: string;
   role: "mentee" | "mentor";
+  phoneNumber?: string;
+  confirmPassword?: string;
 }
+
+type AuthResult =
+  | { ok: true; role: Role }
+  | { ok: false; error: string; fieldErrors?: RegistrationErrors };
 
 async function authenticate(
   action: "login" | "register",
-  input: { email: string; password: string; name?: string; role?: Role },
-): Promise<Result<{ role: Role }>> {
+  input: {
+    email: string;
+    password: string;
+    name?: string;
+    role?: Role;
+    phoneNumber?: string;
+    confirmPassword?: string;
+  },
+): Promise<AuthResult> {
   try {
     const response = await fetch("/api/auth/" + action, {
       method: "POST",
@@ -193,6 +207,7 @@ async function authenticate(
       return {
         ok: false,
         error: data.error || "Không thể thực hiện yêu cầu. Vui lòng thử lại.",
+        fieldErrors: data.fieldErrors,
       };
     applyUser(data.user);
     return { ok: true, role: data.user.role };

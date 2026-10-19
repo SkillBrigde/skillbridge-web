@@ -21,6 +21,10 @@ Mở http://localhost:3000 để xem homepage.
 - Phiên cũ trong localStorage của bản prototype được bỏ qua và xóa khi mở website. Không lưu mật khẩu hay trạng thái giao dịch trong trình duyệt.
 - Khi dịch vụ tài khoản chưa chạy, form hiển thị lỗi kết nối; không có đăng nhập dự phòng bằng tài khoản mẫu.
 
+Form đăng ký dùng hợp đồng `POST /api/v1/identity/auth/register`: `fullName` bắt buộc, tối đa 200 ký tự; `email` bắt buộc, tối đa 256 ký tự; `role` là `Mentee` hoặc `Mentor`; `phoneNumber` tùy chọn, tối đa 30 ký tự theo cột dữ liệu Identity. Mật khẩu cần ít nhất 8 ký tự, có chữ hoa ASCII, chữ thường ASCII, chữ số và một ký tự trong `!?*@#$%^&+=._-`. Form có trường xác nhận mật khẩu kiểm tra khớp trước khi gửi. Web giữ giới hạn request mật khẩu 256 ký tự. Quy tắc phía form và BFF dùng chung tại `src/lib/registration.ts`.
+
+Form hiển thị điều kiện mật khẩu khi nhập, trường xác nhận mật khẩu và lỗi theo từng trường. BFF chuyển tiếp số điện thoại, ánh xạ lỗi FluentValidation từ Identity và lỗi email trùng vào đúng input. Backend trả token ngay sau đăng ký thành công nên web tạo phiên đăng nhập ngay; không thêm bước OTP hoặc xác nhận email chưa được API yêu cầu.
+
 ## Phạm vi tính năng hiện tại
 
 Homepage, danh sách mentor với trạng thái trống, trang tài khoản và các trạng thái lỗi dùng giao diện sáng mới. Homepage có mục tiêu tương tác, liên kết khám phá lĩnh vực, FAQ và chuyển động hỗ trợ reduced motion.
