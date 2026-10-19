@@ -2,10 +2,6 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
-<<<<<<< HEAD
-import { useRouter } from "next/navigation";
-=======
->>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
 import {
   Button,
   Input,
@@ -35,13 +31,8 @@ const BANKS = [
 ];
 
 export function MentorOnboardingView() {
-<<<<<<< HEAD
-  const router = useRouter();
-=======
->>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
   const state = useAppState();
   const session = useSession();
-
   const userId = session.user?.id || "";
   const existingKyc = useMemo(
     () => state.kyc.find((k) => k.userId === userId),
@@ -60,8 +51,8 @@ export function MentorOnboardingView() {
   const currentStep = existingKyc?.status === "Approved"
     ? 4
     : existingKyc?.status === "Pending"
-    ? 4
-    : 2;
+      ? 4
+      : 2;
 
   const handleSubmit = () => {
     setErrorMsg("");

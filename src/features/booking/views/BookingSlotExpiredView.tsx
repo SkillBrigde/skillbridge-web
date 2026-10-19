@@ -25,11 +25,7 @@ function SlotExpiredContent() {
 
   const altSlots = useMemo(() => {
     if (!mentor) return [];
-<<<<<<< HEAD
-    return availableSlots(state, mentor.id, now || Date.now(), 4);
-=======
     return availableSlots(state, mentor.id, now, 4);
->>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
   }, [state, mentor, now]);
 
   const handleReLock = (slotId: string) => {
@@ -92,11 +88,10 @@ function SlotExpiredContent() {
                   key={slot.id}
                   type="button"
                   onClick={() => handleReLock(slot.id)}
-                  className={`w-full flex items-center justify-between rounded-xl border p-3 text-sm font-medium transition-all cursor-pointer ${
-                    idx === 0
-                      ? "bg-[#5E6AD2]/10 border-[#5E6AD2]/30 text-[#F0F2F5] hover:bg-[#5E6AD2]/20"
-                      : "bg-[#0D0E10] border-white/[0.08] text-[#9BA1B0] hover:border-white/[0.16] hover:text-[#F0F2F5]"
-                  }`}
+                  className={`w-full flex items-center justify-between rounded-xl border p-3 text-sm font-medium transition-all cursor-pointer ${idx === 0
+                    ? "bg-[#5E6AD2]/10 border-[#5E6AD2]/30 text-[#F0F2F5] hover:bg-[#5E6AD2]/20"
+                    : "bg-[#0D0E10] border-white/[0.08] text-[#9BA1B0] hover:border-white/[0.16] hover:text-[#F0F2F5]"
+                    }`}
                 >
                   <span className="font-mono text-xs">
                     {slotTimeLabel(slot.startMs, slot.endMs)} ({slotDateLabel(slot.startMs)})

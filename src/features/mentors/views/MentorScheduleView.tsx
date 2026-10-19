@@ -1,10 +1,8 @@
 "use client";
 
-<<<<<<< HEAD
-import { useState, useMemo, useEffect } from "react";
-=======
+
 import { useState, useMemo } from "react";
->>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
+
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -34,17 +32,7 @@ import {
   WEEKDAYS,
   type WeekdayId,
   type AvailabilityRules,
-<<<<<<< HEAD
-} from "@/lib/domain";
 
-export function MentorScheduleView() {
-  const router = useRouter();
-  const state = useAppState();
-  const session = useSession();
-  const now = useNow("minute");
-
-  const mentor = session.mentor;
-=======
   type MentorRec,
 } from "@/lib/domain";
 
@@ -58,7 +46,6 @@ function MentorScheduleContent({ mentor }: { mentor: MentorRec | null }) {
   const state = useAppState();
   const now = useNow("minute");
 
->>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
   const mentorId = mentor?.id || "mentor-an-nguyen";
 
   const [rules, setRules] = useState<AvailabilityRules>(
@@ -73,30 +60,12 @@ function MentorScheduleContent({ mentor }: { mentor: MentorRec | null }) {
     }
   );
 
-<<<<<<< HEAD
-  const [duration, setDuration] = useState("60");
-  const [buffer, setBuffer] = useState("15");
-  const [leadTime, setLeadTime] = useState("24");
-  const [savedMsg, setSavedMsg] = useState("");
 
-  useEffect(() => {
-    if (mentor?.rules) {
-      setRules(structuredClone(mentor.rules));
-    }
-    if (mentor?.defaults) {
-      setDuration(String(mentor.defaults.durationMin));
-      setBuffer(String(mentor.defaults.bufferMin));
-      setLeadTime(String(mentor.defaults.leadHours));
-    }
-  }, [mentor]);
-
-=======
   const [duration, setDuration] = useState(String(mentor?.defaults.durationMin ?? 60));
   const [buffer, setBuffer] = useState(String(mentor?.defaults.bufferMin ?? 15));
   const [leadTime, setLeadTime] = useState(String(mentor?.defaults.leadHours ?? 24));
   const [savedMsg, setSavedMsg] = useState("");
 
->>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
   const toggleDay = (dayId: WeekdayId) => {
     setRules((prev) => {
       const current = prev[dayId];
@@ -255,24 +224,21 @@ function MentorScheduleContent({ mentor }: { mentor: MentorRec | null }) {
               return (
                 <div
                   key={day.id}
-                  className={`flex items-center gap-4 rounded-xl border p-3.5 transition-colors ${
-                    isEnabled
-                      ? "bg-[#14171D] border-white/[0.08]"
-                      : "bg-[#0D0E10] border-white/[0.04] opacity-60"
-                  }`}
+                  className={`flex items-center gap-4 rounded-xl border p-3.5 transition-colors ${isEnabled
+                    ? "bg-[#14171D] border-white/[0.08]"
+                    : "bg-[#0D0E10] border-white/[0.04] opacity-60"
+                    }`}
                 >
                   {/* Toggle */}
                   <button
                     type="button"
                     onClick={() => toggleDay(day.id as WeekdayId)}
-                    className={`relative w-10 h-5 rounded-full transition-colors cursor-pointer flex-shrink-0 ${
-                      isEnabled ? "bg-[#27C98F]" : "bg-[#1F2022]"
-                    }`}
+                    className={`relative w-10 h-5 rounded-full transition-colors cursor-pointer flex-shrink-0 ${isEnabled ? "bg-[#27C98F]" : "bg-[#1F2022]"
+                      }`}
                   >
                     <div
-                      className={`absolute top-0.5 h-4 w-4 rounded-full bg-white transition-transform ${
-                        isEnabled ? "translate-x-5" : "translate-x-0.5"
-                      }`}
+                      className={`absolute top-0.5 h-4 w-4 rounded-full bg-white transition-transform ${isEnabled ? "translate-x-5" : "translate-x-0.5"
+                        }`}
                     />
                   </button>
 
@@ -330,11 +296,9 @@ function MentorScheduleContent({ mentor }: { mentor: MentorRec | null }) {
                 const timeText = b.startMs && b.endMs
                   ? bookingTimeLabel(b.startMs, b.endMs)
                   : "Chưa xác định";
-<<<<<<< HEAD
-                const countdown = b.startMs ? relativeFuture(b.startMs, now || Date.now()) : "";
-=======
+
+
                 const countdown = b.startMs ? relativeFuture(b.startMs, now) : "";
->>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
 
                 return (
                   <Card key={b.id} className="p-5">

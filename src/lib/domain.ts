@@ -18,11 +18,9 @@ export interface User {
   id: string;
   name: string;
   email: string;
-<<<<<<< HEAD
-  password: string;
-=======
+
   password?: string;
->>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
+
   roles: Role[];
   mentorId?: string;
   createdAt: number;

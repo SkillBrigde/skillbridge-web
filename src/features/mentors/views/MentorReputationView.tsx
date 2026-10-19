@@ -11,15 +11,10 @@ import {
 } from "@/components/ui";
 import { StarRating } from "@/components/ui/star-rating";
 import { ProgressBar } from "@/components/ui/progress-bar";
-<<<<<<< HEAD
-import { Star, MessageSquare, TrendingUp, CheckCircle2 } from "lucide-react";
-=======
 import { Star, MessageSquare, TrendingUp } from "lucide-react";
->>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
 import { RequireRole } from "@/components/auth/require-role";
 import { useAppState, useSession, actions } from "@/lib/store";
 import { slotDateLabel } from "@/lib/domain";
-
 export function MentorReputationView() {
   const state = useAppState();
   const session = useSession();

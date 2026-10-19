@@ -28,21 +28,13 @@ import {
   Send,
   Clock,
 } from "lucide-react";
-<<<<<<< HEAD
-import { useAppState, useSession, actions, useNow } from "@/lib/store";
-=======
 import { useAppState, actions, useNow } from "@/lib/store";
->>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
 import { vnd, looksLikeContactLeak } from "@/lib/domain";
 
 export function BookingMeetingRoomView() {
   const params = useParams<{ bookingId: string }>();
   const router = useRouter();
   const state = useAppState();
-<<<<<<< HEAD
-  const session = useSession();
-=======
->>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
   const now = useNow("second");
 
   const bookingId = params.bookingId;
@@ -62,19 +54,6 @@ export function BookingMeetingRoomView() {
   const [chatInput, setChatInput] = useState("");
   const [chatWarning, setChatWarning] = useState("");
   const [accepting, setAccepting] = useState(false);
-<<<<<<< HEAD
-  const [scratchpad, setScratchpad] = useState(booking?.scratchpad || "");
-
-  // Join session on mount
-  useEffect(() => {
-    if (booking) {
-      actions.joinSession(booking.id, "mentee");
-      if (booking.scratchpad) {
-        setScratchpad(booking.scratchpad);
-      }
-    }
-  }, [booking?.id]);
-=======
   const scratchpad = booking?.scratchpad || "";
   const sessionBookingId = booking?.id;
 
@@ -84,7 +63,6 @@ export function BookingMeetingRoomView() {
       actions.joinSession(sessionBookingId, "mentee");
     }
   }, [sessionBookingId]);
->>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
 
   const messages = useMemo(
     () => state.messages.filter((m) => m.bookingId === bookingId),
@@ -126,10 +104,6 @@ export function BookingMeetingRoomView() {
   };
 
   const handleScratchpadChange = (val: string) => {
-<<<<<<< HEAD
-    setScratchpad(val);
-=======
->>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
     actions.setScratchpad(booking.id, val);
   };
 
@@ -144,11 +118,7 @@ export function BookingMeetingRoomView() {
 
   // Elapsed seconds calculation
   const sessionElapsedSeconds = booking.startedAt
-<<<<<<< HEAD
-    ? Math.max(0, Math.floor(((now || Date.now()) - booking.startedAt) / 1000))
-=======
     ? Math.max(0, Math.floor((now - booking.startedAt) / 1000))
->>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
     : 1800;
 
   return (
@@ -220,21 +190,19 @@ export function BookingMeetingRoomView() {
           <div className="flex items-center justify-center gap-2 mt-4 py-2">
             <button
               onClick={() => setMicOn(!micOn)}
-              className={`flex h-10 w-10 items-center justify-center rounded-full transition-all cursor-pointer ${
-                micOn
-                  ? "bg-[#14171D] border border-white/[0.08] text-[#E3E2E5] hover:bg-[#1F2022]"
-                  : "bg-[#FF5C5C]/15 border border-[#FF5C5C]/30 text-[#FF5C5C]"
-              }`}
+              className={`flex h-10 w-10 items-center justify-center rounded-full transition-all cursor-pointer ${micOn
+                ? "bg-[#14171D] border border-white/[0.08] text-[#E3E2E5] hover:bg-[#1F2022]"
+                : "bg-[#FF5C5C]/15 border border-[#FF5C5C]/30 text-[#FF5C5C]"
+                }`}
             >
               {micOn ? <Mic className="h-4 w-4" /> : <MicOff className="h-4 w-4" />}
             </button>
             <button
               onClick={() => setCamOn(!camOn)}
-              className={`flex h-10 w-10 items-center justify-center rounded-full transition-all cursor-pointer ${
-                camOn
-                  ? "bg-[#14171D] border border-white/[0.08] text-[#E3E2E5] hover:bg-[#1F2022]"
-                  : "bg-[#FF5C5C]/15 border border-[#FF5C5C]/30 text-[#FF5C5C]"
-              }`}
+              className={`flex h-10 w-10 items-center justify-center rounded-full transition-all cursor-pointer ${camOn
+                ? "bg-[#14171D] border border-white/[0.08] text-[#E3E2E5] hover:bg-[#1F2022]"
+                : "bg-[#FF5C5C]/15 border border-[#FF5C5C]/30 text-[#FF5C5C]"
+                }`}
             >
               {camOn ? <Video className="h-4 w-4" /> : <VideoOff className="h-4 w-4" />}
             </button>
@@ -297,19 +265,17 @@ export function BookingMeetingRoomView() {
                     messages.map((m) => (
                       <div
                         key={m.id}
-                        className={`flex flex-col ${
-                          m.role === "mentee" ? "items-end" : "items-start"
-                        }`}
+                        className={`flex flex-col ${m.role === "mentee" ? "items-end" : "items-start"
+                          }`}
                       >
                         <span className="text-[10px] text-[#5D6474] mb-0.5">
                           {m.senderName} ({m.role})
                         </span>
                         <div
-                          className={`rounded-xl px-3 py-2 text-xs max-w-[85%] ${
-                            m.role === "mentee"
-                              ? "bg-[#5E6AD2] text-white"
-                              : "bg-[#14171D] border border-white/[0.08] text-[#E3E2E5]"
-                          }`}
+                          className={`rounded-xl px-3 py-2 text-xs max-w-[85%] ${m.role === "mentee"
+                            ? "bg-[#5E6AD2] text-white"
+                            : "bg-[#14171D] border border-white/[0.08] text-[#E3E2E5]"
+                            }`}
                         >
                           {m.text}
                         </div>

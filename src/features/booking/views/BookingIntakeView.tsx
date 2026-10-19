@@ -1,10 +1,6 @@
 "use client";
 
-<<<<<<< HEAD
-import { useState, useMemo, useEffect } from "react";
-=======
 import { useState, useMemo } from "react";
->>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
 import { useParams, useRouter } from "next/navigation";
 import {
   Avatar,
@@ -48,20 +44,12 @@ export function BookingIntakeView() {
   const [expectation, setExpectation] = useState(
     booking?.intake?.expectation || "Nắm chắc cách giải bài toán System Design và tự tin pass vòng kỹ thuật"
   );
-<<<<<<< HEAD
-  const [selectedSlot, setSelectedSlot] = useState(booking?.slotId || "");
-=======
   const [selectedSlotId, setSelectedSlot] = useState("");
->>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
   const [errorMsg, setErrorMsg] = useState("");
 
   const slotOptions: SlotOption[] = useMemo(() => {
     if (!booking) return [];
-<<<<<<< HEAD
-    const list = mentorSlotsForPicker(state, booking.mentorId, booking.id, now || Date.now(), 12);
-=======
     const list = mentorSlotsForPicker(state, booking.mentorId, booking.id, now, 12);
->>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
     return list.map(({ slot, available }) => ({
       id: slot.id,
       date: slotDateLabel(slot.startMs),
@@ -70,19 +58,7 @@ export function BookingIntakeView() {
     }));
   }, [state, booking, now]);
 
-<<<<<<< HEAD
-  // Set default selected slot if none selected
-  useEffect(() => {
-    if (!selectedSlot && slotOptions.length > 0) {
-      const firstAvailable = slotOptions.find((s) => s.available);
-      if (firstAvailable) {
-        setSelectedSlot(firstAvailable.id);
-      }
-    }
-  }, [slotOptions, selectedSlot]);
-=======
   const selectedSlot = selectedSlotId || booking?.slotId || slotOptions.find((s) => s.available)?.id || "";
->>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
 
   if (!booking || !mentor) {
     return (

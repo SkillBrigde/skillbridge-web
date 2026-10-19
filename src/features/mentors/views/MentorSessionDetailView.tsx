@@ -25,20 +25,15 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { RequireRole } from "@/components/auth/require-role";
-<<<<<<< HEAD
-import { useAppState, useSession, actions, useNow } from "@/lib/store";
-=======
+
 import { useAppState, actions, useNow } from "@/lib/store";
->>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
+
 
 export function MentorSessionDetailView() {
   const params = useParams<{ bookingId: string }>();
   const router = useRouter();
   const state = useAppState();
-<<<<<<< HEAD
-  const session = useSession();
-=======
->>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
+
   const now = useNow("second");
 
   const bookingId = params.bookingId;
@@ -59,14 +54,7 @@ export function MentorSessionDetailView() {
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [success, setSuccess] = useState(false);
-<<<<<<< HEAD
 
-  useEffect(() => {
-    if (booking) {
-      actions.joinSession(booking.id, "mentor");
-    }
-  }, [booking?.id]);
-=======
   const sessionBookingId = booking?.id;
 
   useEffect(() => {
@@ -74,7 +62,6 @@ export function MentorSessionDetailView() {
       actions.joinSession(sessionBookingId, "mentor");
     }
   }, [sessionBookingId]);
->>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
 
   if (!booking) {
     return (
@@ -125,11 +112,8 @@ export function MentorSessionDetailView() {
   };
 
   const elapsedSeconds = booking.startedAt
-<<<<<<< HEAD
-    ? Math.max(0, Math.floor(((now || Date.now()) - booking.startedAt) / 1000))
-=======
     ? Math.max(0, Math.floor((now - booking.startedAt) / 1000))
->>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
+
     : 3490;
 
   return (
@@ -193,21 +177,19 @@ export function MentorSessionDetailView() {
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 z-10">
             <button
               onClick={() => setMicOn(!micOn)}
-              className={`flex h-10 w-10 items-center justify-center rounded-full transition-all cursor-pointer ${
-                micOn
-                  ? "bg-[#14171D] border border-white/[0.08] text-[#E3E2E5] hover:bg-[#1F2022]"
-                  : "bg-[#FF5C5C]/15 border border-[#FF5C5C]/30 text-[#FF5C5C]"
-              }`}
+              className={`flex h-10 w-10 items-center justify-center rounded-full transition-all cursor-pointer ${micOn
+                ? "bg-[#14171D] border border-white/[0.08] text-[#E3E2E5] hover:bg-[#1F2022]"
+                : "bg-[#FF5C5C]/15 border border-[#FF5C5C]/30 text-[#FF5C5C]"
+                }`}
             >
               {micOn ? <Mic className="h-4 w-4" /> : <MicOff className="h-4 w-4" />}
             </button>
             <button
               onClick={() => setCamOn(!camOn)}
-              className={`flex h-10 w-10 items-center justify-center rounded-full transition-all cursor-pointer ${
-                camOn
-                  ? "bg-[#14171D] border border-white/[0.08] text-[#E3E2E5] hover:bg-[#1F2022]"
-                  : "bg-[#FF5C5C]/15 border border-[#FF5C5C]/30 text-[#FF5C5C]"
-              }`}
+              className={`flex h-10 w-10 items-center justify-center rounded-full transition-all cursor-pointer ${camOn
+                ? "bg-[#14171D] border border-white/[0.08] text-[#E3E2E5] hover:bg-[#1F2022]"
+                : "bg-[#FF5C5C]/15 border border-[#FF5C5C]/30 text-[#FF5C5C]"
+                }`}
             >
               {camOn ? <Video className="h-4 w-4" /> : <VideoOff className="h-4 w-4" />}
             </button>
@@ -237,9 +219,8 @@ export function MentorSessionDetailView() {
 
         {/* ── Bottom Submission Drawer ── */}
         <div
-          className={`border-t border-white/[0.08] bg-[#0D0E10] transition-all duration-300 overflow-y-auto ${
-            drawerOpen ? "max-h-[500px] py-6" : "max-h-0"
-          }`}
+          className={`border-t border-white/[0.08] bg-[#0D0E10] transition-all duration-300 overflow-y-auto ${drawerOpen ? "max-h-[500px] py-6" : "max-h-0"
+            }`}
         >
           <div className="mx-auto max-w-3xl px-6 space-y-5">
             <h3 className="text-base font-semibold text-[#F0F2F5] tracking-tight">

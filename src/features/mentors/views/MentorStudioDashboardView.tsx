@@ -1,10 +1,6 @@
 "use client";
 
-<<<<<<< HEAD
-import { useState, useEffect } from "react";
-=======
 import { useState } from "react";
->>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
 import {
   Badge,
   Button,
@@ -15,11 +11,7 @@ import { Select } from "@/components/ui/select";
 import { Package, Plus, X, Sparkles } from "lucide-react";
 import { RequireRole } from "@/components/auth/require-role";
 import { useSession, actions } from "@/lib/store";
-<<<<<<< HEAD
-import { vnd } from "@/lib/domain";
-=======
 import { vnd, type MentorRec } from "@/lib/domain";
->>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
 import type { MentorServiceTier } from "@/types";
 
 const DURATION_OPTIONS = [
@@ -31,32 +23,16 @@ const DURATION_OPTIONS = [
 ];
 
 export function MentorStudioDashboardView() {
-<<<<<<< HEAD
-  const session = useSession();
-  const mentor = session.mentor;
-
-  const [services, setServices] = useState<MentorServiceTier[]>([]);
-=======
   const { mentor } = useSession();
   return <MentorStudioDashboardContent key={mentor?.id || "guest"} mentor={mentor} />;
 }
 
 function MentorStudioDashboardContent({ mentor }: { mentor: MentorRec | null }) {
   const [services, setServices] = useState<MentorServiceTier[]>(mentor?.services || []);
->>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
   const [saving, setSaving] = useState(false);
   const [successMsg, setSuccessMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
 
-<<<<<<< HEAD
-  useEffect(() => {
-    if (mentor && mentor.services && mentor.services.length > 0) {
-      setServices(structuredClone(mentor.services));
-    }
-  }, [mentor]);
-
-=======
->>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
   const updateService = (index: number, updates: Partial<MentorServiceTier>) => {
     setServices((prev) =>
       prev.map((s, i) => (i === index ? { ...s, ...updates } : s))
@@ -68,9 +44,9 @@ function MentorStudioDashboardContent({ mentor }: { mentor: MentorRec | null }) 
       prev.map((s, i) =>
         i === serviceIndex
           ? {
-              ...s,
-              deliverables: [...s.deliverables, "Bàn giao mới..."],
-            }
+            ...s,
+            deliverables: [...s.deliverables, "Bàn giao mới..."],
+          }
           : s
       )
     );
@@ -81,9 +57,9 @@ function MentorStudioDashboardContent({ mentor }: { mentor: MentorRec | null }) 
       prev.map((s, i) =>
         i === serviceIndex
           ? {
-              ...s,
-              deliverables: s.deliverables.map((d, di) => (di === delIndex ? text : d)),
-            }
+            ...s,
+            deliverables: s.deliverables.map((d, di) => (di === delIndex ? text : d)),
+          }
           : s
       )
     );
@@ -94,9 +70,9 @@ function MentorStudioDashboardContent({ mentor }: { mentor: MentorRec | null }) 
       prev.map((s, i) =>
         i === serviceIndex
           ? {
-              ...s,
-              deliverables: s.deliverables.filter((_, di) => di !== delIndex),
-            }
+            ...s,
+            deliverables: s.deliverables.filter((_, di) => di !== delIndex),
+          }
           : s
       )
     );
@@ -172,11 +148,10 @@ function MentorStudioDashboardContent({ mentor }: { mentor: MentorRec | null }) 
           {services.map((service, idx) => (
             <div
               key={service.id || idx}
-              className={`rounded-xl border p-5 flex flex-col justify-between ${
-                service.isFeatured
-                  ? "bg-[#14171D] border-[#5E6AD2]/40 ring-1 ring-[#5E6AD2]/20"
-                  : "bg-[#14171D] border-white/[0.08]"
-              }`}
+              className={`rounded-xl border p-5 flex flex-col justify-between ${service.isFeatured
+                ? "bg-[#14171D] border-[#5E6AD2]/40 ring-1 ring-[#5E6AD2]/20"
+                : "bg-[#14171D] border-white/[0.08]"
+                }`}
             >
               <div>
                 {/* Tier label */}
@@ -215,12 +190,12 @@ function MentorStudioDashboardContent({ mentor }: { mentor: MentorRec | null }) 
                       const mins = val.includes("30")
                         ? 30
                         : val.includes("45")
-                        ? 45
-                        : val.includes("60")
-                        ? 60
-                        : val.includes("90")
-                        ? 90
-                        : 240;
+                          ? 45
+                          : val.includes("60")
+                            ? 60
+                            : val.includes("90")
+                              ? 90
+                              : 240;
                       updateService(idx, {
                         durationLabel: val,
                         durationMinutes: mins,
