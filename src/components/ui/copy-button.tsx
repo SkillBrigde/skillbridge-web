@@ -5,17 +5,21 @@ import { Copy, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export interface CopyButtonProps {
-  value: string;
+  /** Text to copy to clipboard (alias for `text`) */
+  value?: string;
+  /** Text to copy to clipboard */
+  text?: string;
   label?: string;
   className?: string;
 }
 
-export function CopyButton({ value, label = "Sao chép", className }: CopyButtonProps) {
+export function CopyButton({ value, text, label = "Sao chép", className }: CopyButtonProps) {
+  const content = text ?? value ?? "";
   const [copied, setCopied] = React.useState(false);
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(value);
+      await navigator.clipboard.writeText(content);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {

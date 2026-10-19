@@ -8,6 +8,8 @@ export interface MentorServiceTier {
   deliverables: string[];
   isFeatured?: boolean;
   category: "QUICK_WIN" | "FEATURED" | "TRANSFORMATION";
+  /** Number of sessions in the package (defaults to 1). Escrow is released per session. */
+  totalSessions?: number;
 }
 
 export interface MentorProfile {

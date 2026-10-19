@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { ArrowLeft, Layers, Shield, Terminal } from "lucide-react";
+import { ArrowLeft, Layers, Terminal } from "lucide-react";
 import { Badge, Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui";
 
 interface RouteSkeletonProps {

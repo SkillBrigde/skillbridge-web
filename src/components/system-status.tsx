@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { httpAuthClient } from "@/lib/http-auth-client";
 
 type ApiState = "checking" | "online" | "offline";
 
@@ -14,7 +15,7 @@ export function SystemStatus() {
 
     async function checkApi() {
       try {
-        const response = await fetch(`${apiBaseUrl}/health/live`, {
+        const response = await httpAuthClient(`${apiBaseUrl}/health/live`, {
           cache: "no-store",
           signal: controller.signal,
         });

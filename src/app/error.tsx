@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { AlertTriangle, RefreshCw, ShieldCheck } from "lucide-react";
+import { RefreshCw, ShieldCheck } from "lucide-react";
 import { Badge, Button, Card } from "@/components/ui";
 
 export default function Error({
