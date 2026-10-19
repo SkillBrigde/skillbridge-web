@@ -7,6 +7,7 @@ FROM node:24-alpine AS build
 WORKDIR /app
 COPY --from=dependencies /app/node_modules ./node_modules
 COPY . .
+ENV STANDALONE=1
 RUN npm run build
 
 FROM node:24-alpine AS runtime

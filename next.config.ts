@@ -10,9 +10,17 @@ const securityHeaders = [
   },
 ];
 
-// Adapters produce platform-specific output; Docker uses standalone output.
+// Vercel and standard cloud environments bundle natively.
+// Only emit standalone output when explicitly targeted for container builds.
+const isVercel = Boolean(
+  process.env.VERCEL ||
+  process.env.VERCEL_ENV ||
+  process.env.NOW_BUILDER
+);
+
 const useStandaloneOutput =
-  process.env.VERCEL !== "1" && !process.env.NEXT_ADAPTER_PATH;
+  !isVercel &&
+  Boolean(process.env.STANDALONE === "1" || process.env.DOCKER_BUILD === "1");
 
 const nextConfig: NextConfig = {
   output: useStandaloneOutput ? "standalone" : undefined,
