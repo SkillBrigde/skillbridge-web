@@ -15,7 +15,6 @@ import { Star, MessageSquare, TrendingUp } from "lucide-react";
 import { RequireRole } from "@/components/auth/require-role";
 import { useAppState, useSession, actions } from "@/lib/store";
 import { slotDateLabel } from "@/lib/domain";
-
 export function MentorReputationView() {
   const state = useAppState();
   const session = useSession();

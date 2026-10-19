@@ -44,9 +44,9 @@ function MentorStudioDashboardContent({ mentor }: { mentor: MentorRec | null }) 
       prev.map((s, i) =>
         i === serviceIndex
           ? {
-              ...s,
-              deliverables: [...s.deliverables, "Bàn giao mới..."],
-            }
+            ...s,
+            deliverables: [...s.deliverables, "Bàn giao mới..."],
+          }
           : s
       )
     );
@@ -57,9 +57,9 @@ function MentorStudioDashboardContent({ mentor }: { mentor: MentorRec | null }) 
       prev.map((s, i) =>
         i === serviceIndex
           ? {
-              ...s,
-              deliverables: s.deliverables.map((d, di) => (di === delIndex ? text : d)),
-            }
+            ...s,
+            deliverables: s.deliverables.map((d, di) => (di === delIndex ? text : d)),
+          }
           : s
       )
     );
@@ -70,9 +70,9 @@ function MentorStudioDashboardContent({ mentor }: { mentor: MentorRec | null }) 
       prev.map((s, i) =>
         i === serviceIndex
           ? {
-              ...s,
-              deliverables: s.deliverables.filter((_, di) => di !== delIndex),
-            }
+            ...s,
+            deliverables: s.deliverables.filter((_, di) => di !== delIndex),
+          }
           : s
       )
     );
@@ -148,11 +148,10 @@ function MentorStudioDashboardContent({ mentor }: { mentor: MentorRec | null }) 
           {services.map((service, idx) => (
             <div
               key={service.id || idx}
-              className={`rounded-xl border p-5 flex flex-col justify-between ${
-                service.isFeatured
-                  ? "bg-[#14171D] border-[#5E6AD2]/40 ring-1 ring-[#5E6AD2]/20"
-                  : "bg-[#14171D] border-white/[0.08]"
-              }`}
+              className={`rounded-xl border p-5 flex flex-col justify-between ${service.isFeatured
+                ? "bg-[#14171D] border-[#5E6AD2]/40 ring-1 ring-[#5E6AD2]/20"
+                : "bg-[#14171D] border-white/[0.08]"
+                }`}
             >
               <div>
                 {/* Tier label */}
@@ -191,12 +190,12 @@ function MentorStudioDashboardContent({ mentor }: { mentor: MentorRec | null }) 
                       const mins = val.includes("30")
                         ? 30
                         : val.includes("45")
-                        ? 45
-                        : val.includes("60")
-                        ? 60
-                        : val.includes("90")
-                        ? 90
-                        : 240;
+                          ? 45
+                          : val.includes("60")
+                            ? 60
+                            : val.includes("90")
+                              ? 90
+                              : 240;
                       updateService(idx, {
                         durationLabel: val,
                         durationMinutes: mins,

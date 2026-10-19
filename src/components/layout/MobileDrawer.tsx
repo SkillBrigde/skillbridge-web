@@ -1,12 +1,15 @@
 "use client";
 
 import React, { useEffect } from "react";
+import React, { useEffect } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import { Search, ShieldCheck, X } from "lucide-react";
 import { Logo } from "./Logo";
 import { NavItem } from "@/constants/navigation";
 import { useHydrated } from "@/lib/store";
+import { useHydrated } from "@/lib/store";
+
 
 export interface MobileDrawerProps {
   isOpen: boolean;
@@ -33,6 +36,7 @@ export function MobileDrawer({
   badgeAmount,
   badgeHref,
 }: MobileDrawerProps) {
+  const mounted = useHydrated();
   const mounted = useHydrated();
 
   // Lock body scroll when mobile menu is open

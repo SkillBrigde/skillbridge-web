@@ -220,24 +220,21 @@ function MentorScheduleContent({ mentor }: { mentor: MentorRec | null }) {
               return (
                 <div
                   key={day.id}
-                  className={`flex items-center gap-4 rounded-xl border p-3.5 transition-colors ${
-                    isEnabled
-                      ? "bg-[#14171D] border-white/[0.08]"
-                      : "bg-[#0D0E10] border-white/[0.04] opacity-60"
-                  }`}
+                  className={`flex items-center gap-4 rounded-xl border p-3.5 transition-colors ${isEnabled
+                    ? "bg-[#14171D] border-white/[0.08]"
+                    : "bg-[#0D0E10] border-white/[0.04] opacity-60"
+                    }`}
                 >
                   {/* Toggle */}
                   <button
                     type="button"
                     onClick={() => toggleDay(day.id as WeekdayId)}
-                    className={`relative w-10 h-5 rounded-full transition-colors cursor-pointer flex-shrink-0 ${
-                      isEnabled ? "bg-[#27C98F]" : "bg-[#1F2022]"
-                    }`}
+                    className={`relative w-10 h-5 rounded-full transition-colors cursor-pointer flex-shrink-0 ${isEnabled ? "bg-[#27C98F]" : "bg-[#1F2022]"
+                      }`}
                   >
                     <div
-                      className={`absolute top-0.5 h-4 w-4 rounded-full bg-white transition-transform ${
-                        isEnabled ? "translate-x-5" : "translate-x-0.5"
-                      }`}
+                      className={`absolute top-0.5 h-4 w-4 rounded-full bg-white transition-transform ${isEnabled ? "translate-x-5" : "translate-x-0.5"
+                        }`}
                     />
                   </button>
 

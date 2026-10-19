@@ -154,13 +154,13 @@ export function MentorRevenueWalletView() {
                   const amountColor = isRelease
                     ? "text-[#27C98F]"
                     : isPayout
-                    ? "text-[#9BA1B0]"
-                    : "text-[#F5A623]";
+                      ? "text-[#9BA1B0]"
+                      : "text-[#F5A623]";
                   const statusVariant = isRelease
                     ? "escrow"
                     : isPayout
-                    ? "neutral"
-                    : "pending";
+                      ? "neutral"
+                      : "pending";
 
                   return (
                     <TableRow key={tx.id}>

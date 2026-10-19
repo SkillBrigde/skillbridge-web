@@ -88,11 +88,10 @@ function SlotExpiredContent() {
                   key={slot.id}
                   type="button"
                   onClick={() => handleReLock(slot.id)}
-                  className={`w-full flex items-center justify-between rounded-xl border p-3 text-sm font-medium transition-all cursor-pointer ${
-                    idx === 0
-                      ? "bg-[#5E6AD2]/10 border-[#5E6AD2]/30 text-[#F0F2F5] hover:bg-[#5E6AD2]/20"
-                      : "bg-[#0D0E10] border-white/[0.08] text-[#9BA1B0] hover:border-white/[0.16] hover:text-[#F0F2F5]"
-                  }`}
+                  className={`w-full flex items-center justify-between rounded-xl border p-3 text-sm font-medium transition-all cursor-pointer ${idx === 0
+                    ? "bg-[#5E6AD2]/10 border-[#5E6AD2]/30 text-[#F0F2F5] hover:bg-[#5E6AD2]/20"
+                    : "bg-[#0D0E10] border-white/[0.08] text-[#9BA1B0] hover:border-white/[0.16] hover:text-[#F0F2F5]"
+                    }`}
                 >
                   <span className="font-mono text-xs">
                     {slotTimeLabel(slot.startMs, slot.endMs)} ({slotDateLabel(slot.startMs)})

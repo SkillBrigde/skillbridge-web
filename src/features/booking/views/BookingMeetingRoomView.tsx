@@ -190,21 +190,19 @@ export function BookingMeetingRoomView() {
           <div className="flex items-center justify-center gap-2 mt-4 py-2">
             <button
               onClick={() => setMicOn(!micOn)}
-              className={`flex h-10 w-10 items-center justify-center rounded-full transition-all cursor-pointer ${
-                micOn
-                  ? "bg-[#14171D] border border-white/[0.08] text-[#E3E2E5] hover:bg-[#1F2022]"
-                  : "bg-[#FF5C5C]/15 border border-[#FF5C5C]/30 text-[#FF5C5C]"
-              }`}
+              className={`flex h-10 w-10 items-center justify-center rounded-full transition-all cursor-pointer ${micOn
+                ? "bg-[#14171D] border border-white/[0.08] text-[#E3E2E5] hover:bg-[#1F2022]"
+                : "bg-[#FF5C5C]/15 border border-[#FF5C5C]/30 text-[#FF5C5C]"
+                }`}
             >
               {micOn ? <Mic className="h-4 w-4" /> : <MicOff className="h-4 w-4" />}
             </button>
             <button
               onClick={() => setCamOn(!camOn)}
-              className={`flex h-10 w-10 items-center justify-center rounded-full transition-all cursor-pointer ${
-                camOn
-                  ? "bg-[#14171D] border border-white/[0.08] text-[#E3E2E5] hover:bg-[#1F2022]"
-                  : "bg-[#FF5C5C]/15 border border-[#FF5C5C]/30 text-[#FF5C5C]"
-              }`}
+              className={`flex h-10 w-10 items-center justify-center rounded-full transition-all cursor-pointer ${camOn
+                ? "bg-[#14171D] border border-white/[0.08] text-[#E3E2E5] hover:bg-[#1F2022]"
+                : "bg-[#FF5C5C]/15 border border-[#FF5C5C]/30 text-[#FF5C5C]"
+                }`}
             >
               {camOn ? <Video className="h-4 w-4" /> : <VideoOff className="h-4 w-4" />}
             </button>
@@ -267,19 +265,17 @@ export function BookingMeetingRoomView() {
                     messages.map((m) => (
                       <div
                         key={m.id}
-                        className={`flex flex-col ${
-                          m.role === "mentee" ? "items-end" : "items-start"
-                        }`}
+                        className={`flex flex-col ${m.role === "mentee" ? "items-end" : "items-start"
+                          }`}
                       >
                         <span className="text-[10px] text-[#5D6474] mb-0.5">
                           {m.senderName} ({m.role})
                         </span>
                         <div
-                          className={`rounded-xl px-3 py-2 text-xs max-w-[85%] ${
-                            m.role === "mentee"
-                              ? "bg-[#5E6AD2] text-white"
-                              : "bg-[#14171D] border border-white/[0.08] text-[#E3E2E5]"
-                          }`}
+                          className={`rounded-xl px-3 py-2 text-xs max-w-[85%] ${m.role === "mentee"
+                            ? "bg-[#5E6AD2] text-white"
+                            : "bg-[#14171D] border border-white/[0.08] text-[#E3E2E5]"
+                            }`}
                         >
                           {m.text}
                         </div>

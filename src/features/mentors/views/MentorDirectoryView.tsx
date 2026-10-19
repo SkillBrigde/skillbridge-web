@@ -76,47 +76,21 @@ function MentorDirectoryContent() {
   const pagedMentors = filtered.slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
 
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
-      {/* ── Hero Section ── */}
-      <section className="text-center max-w-3xl mx-auto mb-10">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#5E6AD2]/10 border border-[#5E6AD2]/25 text-[#7C87ED] text-xs font-medium mb-3">
-          <Sparkles className="h-3.5 w-3.5" />
-          <span>Bảo chứng 100% học phí qua Escrow Vault minh bạch</span>
-        </div>
-        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#F0F2F5] mb-3">
-          Kết nối 1-on-1 với Tech Lead &amp; Chuyên Gia Thực Chiến
-        </h1>
-        <p className="text-sm text-[#9BA1B0] mb-6 leading-relaxed max-w-xl mx-auto">
-          Đặt lịch mentoring trực tiếp với các chuyên gia hàng đầu. Cam kết hoàn
-          tiền 100% qua Smart Escrow nếu không hài lòng hoặc có vi phạm SLA.
-        </p>
-        <SearchBar
-          value={search}
-          onChange={(val) => {
-            setSearch(val);
-            setCurrentPage(1);
-          }}
-          placeholder="Tìm kiếm mentor, kỹ năng, công nghệ..."
-          suggestions={SKILL_SUGGESTIONS}
-          onSuggestionClick={(val) => {
-            setSearch(val);
-            setCurrentPage(1);
-          }}
-          className="max-w-2xl mx-auto"
-        />
-      </section>
-
-      {/* ── Filter Bar ── */}
-      <MentorFilter
-        activeCategory={activeCategory}
-        onCategoryChange={(cat) => {
-          setActiveCategory(cat);
-          setCurrentPage(1);
-        }}
-        priceFilter={priceFilter}
-        onPriceFilterChange={(price) => {
-          setPriceFilter(price);
-          setCurrentPage(1);
+    <div className="sb-directory sb-container">
+      <span className="sb-eyebrow">NHỮNG KẾT NỐI CÓ Ý NGHĨA</span>
+      <h1>
+        Đúng người.
+        <br />
+        <em>Đúng bước tiến.</em>
+      </h1>
+      <p>Khám phá góc nhìn mới cho điều bạn đang theo đuổi.</p>
+      <form
+        className="sb-directory-search"
+        key={query}
+        onSubmit={(event) => {
+          event.preventDefault();
+          const input = new FormData(event.currentTarget);
+          setQuery(String(input.get("query") || "").trim());
         }}
         verifiedOnly={verifiedOnly}
         onVerifiedOnlyChange={(val) => {
@@ -246,23 +220,47 @@ function MentorDirectoryContent() {
           totalPages={totalPages}
           onPageChange={setCurrentPage}
         />
-      )}
+        <button className="sb-button sb-button-small" type="submit">
+          Tìm mentor <ArrowUpRight size={17} />
+        </button>
+      </form>
+      <div className="sb-directory-filters">
+        <span>
+          <SlidersHorizontal size={16} /> Lĩnh vực
+        </span>
+        {topics.map((topic) => (
+          <button
+            type="button"
+            aria-pressed={topic === "Tất cả" ? !query : query === topic}
+            key={topic}
+            onClick={() => setQuery(topic === "Tất cả" ? "" : topic)}
+          >
+            {topic}
+          </button>
+        ))}
+      </div>
+      <section className="sb-directory-empty">
+        <span className="sb-state-icon">
+          <Compass size={32} />
+        </span>
+        <span className="sb-eyebrow">ĐANG CHUẨN BỊ NHỮNG KẾT NỐI ĐẦU TIÊN</span>
+        <h2>Một cuộc gặp đáng chờ đợi.</h2>
+        <p>
+          Danh sách mentor đang được hoàn thiện. Bạn có thể tạo tài khoản trước,
+          hoặc tham gia với vai trò mentor để chia sẻ kinh nghiệm của mình.
+        </p>
+        <Link className="sb-button" href="/register?role=mentor">
+          Tham gia làm mentor <ArrowUpRight size={18} />
+        </Link>
+      </section>
     </div>
   );
 }
-
 export function MentorDirectoryView() {
   return (
-    <Suspense
-      fallback={
-        <div className="mx-auto max-w-7xl px-4 py-20 text-center font-mono text-sm text-[#9BA1B0]">
-          Đang tải danh sách mentors...
-        </div>
-      }
-    >
-      <MentorDirectoryContent />
+    <Suspense fallback={<div className="sb-page-state">Đang tải…</div>}>
+      <Directory />
     </Suspense>
   );
 }
-
 export { MentorDirectoryView as default };
