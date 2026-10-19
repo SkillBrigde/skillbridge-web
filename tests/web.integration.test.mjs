@@ -14,6 +14,7 @@ test("production pages and server-owned authentication", async (t) => {
   let invalidAuthResponse = false;
   let identityInvalidCredentials = false;
   let lastRegistration;
+  let registrationProblem;
   let revoked = false;
   const user = {
     id: "test-user",
@@ -59,6 +60,12 @@ test("production pages and server-owned authentication", async (t) => {
       );
     } else if (request.url.endsWith("/auth/register")) {
       lastRegistration = input;
+      if (registrationProblem) {
+        response
+          .writeHead(registrationProblem.status)
+          .end(JSON.stringify(registrationProblem.body));
+        return;
+      }
       response.end(JSON.stringify(tokenResponse));
     } else if (request.url.endsWith("/users/me")) {
       if (request.headers.authorization !== "Bearer fixture-access") {
@@ -286,14 +293,150 @@ test("production pages and server-owned authentication", async (t) => {
     "register maps only supported roles to the existing API contract",
     async () => {
       const response = await post("register", {
-        name: user.fullName,
+        name: ` ${user.fullName} `,
         email: user.email,
-        password: "integration-password",
+        password: "Integration123!",
         role: "mentor",
+        phoneNumber: " +84 900 000 000 ",
       });
       assert.equal(response.status, 200);
       assert.equal(lastRegistration.role, "Mentor");
       assert.equal(lastRegistration.fullName, user.fullName);
+      assert.equal(lastRegistration.phoneNumber, "+84 900 000 000");
+      assert.equal(lastRegistration.password, "Integration123!");
+    },
+  );
+  await t.test(
+    "registration accepts backend field limits and an optional phone",
+    async () => {
+      const response = await post("register", {
+        name: "A".repeat(200),
+        email: "a".repeat(244) + "@sample.test",
+        password: "Integration123!",
+        role: "mentee",
+      });
+      assert.equal(response.status, 200);
+      assert.equal(lastRegistration.fullName.length, 200);
+      assert.equal(lastRegistration.email.length, 256);
+      assert.equal(lastRegistration.phoneNumber, undefined);
+      assert.equal(lastRegistration.role, "Mentee");
+    },
+  );
+  await t.test(
+    "registration enforces each backend password requirement before forwarding",
+    async () => {
+      const previous = lastRegistration;
+      for (const password of [
+        "Abc12!",
+        "lowercase1!",
+        "UPPERCASE1!",
+        "Password!!",
+        "Password12(",
+      ]) {
+        const response = await post("register", {
+          name: user.fullName,
+          email: user.email,
+          password,
+          role: "mentee",
+        });
+        assert.equal(response.status, 400, password);
+        assert.ok((await response.json()).fieldErrors.password);
+        assert.equal(response.headers.get("set-cookie"), null);
+        assert.equal(lastRegistration, previous);
+      }
+    },
+  );
+  await t.test(
+    "registration rejects mismatched confirmPassword when provided",
+    async () => {
+      const response = await post("register", {
+        name: user.fullName,
+        email: user.email,
+        password: "Integration123!",
+        confirmPassword: "DifferentPassword123!",
+        role: "mentee",
+      });
+      assert.equal(response.status, 400);
+      assert.equal(
+        (await response.json()).fieldErrors.confirmPassword,
+        "Mật khẩu xác nhận không khớp.",
+      );
+    },
+  );
+  await t.test(
+    "registration returns field errors for empty and oversized inputs",
+    async () => {
+      const empty = await post("register", {
+        name: " ",
+        email: "",
+        password: "",
+        role: "mentee",
+      });
+      assert.equal(empty.status, 400);
+      assert.deepEqual(Object.keys((await empty.json()).fieldErrors).sort(), [
+        "email",
+        "name",
+        "password",
+      ]);
+      const oversized = await post("register", {
+        name: "A".repeat(201),
+        email: "a".repeat(245) + "@sample.test",
+        phoneNumber: "1".repeat(31),
+        password: "Integration123!",
+        role: "mentee",
+      });
+      assert.equal(oversized.status, 400);
+      assert.deepEqual(
+        Object.keys((await oversized.json()).fieldErrors).sort(),
+        ["email", "name", "phoneNumber"],
+      );
+    },
+  );
+  await t.test(
+    "Identity validation and duplicate email errors target the right form fields",
+    async () => {
+      const input = {
+        name: user.fullName,
+        email: user.email,
+        password: "Integration123!",
+        role: "mentee",
+      };
+      try {
+        registrationProblem = {
+          status: 400,
+          body: {
+            title: "Validation.General",
+            errors: {
+              FullName: ["Tên chưa hợp lệ."],
+              Password: ["Mật khẩu chưa hợp lệ."],
+              PhoneNumber: ["Số điện thoại chưa hợp lệ."],
+            },
+          },
+        };
+        let response = await post("register", input);
+        assert.equal(response.status, 400);
+        assert.deepEqual((await response.json()).fieldErrors, {
+          name: "Tên chưa hợp lệ.",
+          password: "Mật khẩu chưa hợp lệ.",
+          phoneNumber: "Số điện thoại chưa hợp lệ.",
+        });
+        registrationProblem = {
+          status: 409,
+          body: {
+            title: "Identity.EmailAlreadyExists",
+            detail: "Email này đã được đăng ký trên hệ thống.",
+          },
+        };
+        response = await post("register", input);
+        assert.equal(response.status, 409);
+        assert.equal(
+          (await response.json()).fieldErrors.email,
+          registrationProblem.body.detail,
+        );
+        assert.equal(response.headers.get("set-cookie"), null);
+      } finally {
+        registrationProblem = undefined;
+      }
     },
   );
   await t.test(

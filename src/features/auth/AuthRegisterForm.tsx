@@ -1,4 +1,4 @@
-import { AccountForm } from "./components/AccountForm";
+import { RegisterForm } from "./components/RegisterForm";
 export function AuthRegisterForm() {
-  return <AccountForm mode="register" />;
+  return <RegisterForm />;
 }

@@ -5,6 +5,10 @@ import {
   saveSession,
   sessionTokens,
 } from "@/lib/server/auth";
+import {
+  validateRegistration,
+  type RegistrationErrors,
+} from "@/lib/registration";
 
 const json = (data: unknown, status = 200) =>
   Response.json(data, { status, headers: { "Cache-Control": "no-store" } });
@@ -65,8 +69,17 @@ export async function POST(request: Request, context: Context) {
     } catch {
       return json({ error: "Dữ liệu không hợp lệ." }, 400);
     }
+    if (!input || typeof input !== "object" || Array.isArray(input))
+      return json({ error: "Dữ liệu không hợp lệ." }, 400);
+    if (action === "register") {
+      const fieldErrors = validateRegistration(input);
+      if (Object.keys(fieldErrors).length)
+        return json(
+          { error: "Vui lòng kiểm tra lại thông tin đăng ký.", fieldErrors },
+          400,
+        );
+    }
     if (
-      !input ||
       typeof input.email !== "string" ||
       typeof input.password !== "string" ||
       !input.email.trim() ||
@@ -74,26 +87,17 @@ export async function POST(request: Request, context: Context) {
     ) {
       return json({ error: "Vui lòng nhập email và mật khẩu." }, 400);
     }
-    if (input.email.length > 254 || input.password.length > 256)
+    if (input.email.trim().length > 256 || input.password.length > 256)
       return json({ error: "Dữ liệu không hợp lệ." }, 400);
     const payload: Record<string, string> = {
       email: input.email.trim(),
       password: input.password,
     };
     if (action === "register") {
-      if (
-        typeof input.name !== "string" ||
-        input.name.trim().length < 2 ||
-        input.name.length > 160 ||
-        !["mentee", "mentor"].includes(input.role)
-      ) {
-        return json(
-          { error: "Vui lòng nhập họ tên và chọn loại tài khoản hợp lệ." },
-          400,
-        );
-      }
       payload.fullName = input.name.trim();
       payload.role = input.role === "mentor" ? "Mentor" : "Mentee";
+      if (typeof input.phoneNumber === "string" && input.phoneNumber.trim())
+        payload.phoneNumber = input.phoneNumber.trim();
     }
     const response = await backendFetch(`auth/${action}`, {
       method: "POST",
@@ -116,19 +120,47 @@ export async function POST(request: Request, context: Context) {
       };
       let errorMsg =
         messages[status] || "Dịch vụ tài khoản tạm thời chưa sẵn sàng.";
-      if (status === 400 && problem?.errors && typeof problem.errors === "object") {
-        const errorList = Object.values(problem.errors).flat() as string[];
+      const fieldErrors: RegistrationErrors = {};
+      if (
+        status === 400 &&
+        problem?.errors &&
+        typeof problem.errors === "object"
+      ) {
+        const fields = {
+          FullName: "name",
+          Email: "email",
+          Password: "password",
+          PhoneNumber: "phoneNumber",
+          Role: "role",
+        } as const;
+        for (const [key, value] of Object.entries(problem.errors)) {
+          if (!Object.hasOwn(fields, key)) continue;
+          const field = fields[key as keyof typeof fields];
+          if (field && Array.isArray(value)) {
+            const message = value.find(
+              (item): item is string => typeof item === "string",
+            );
+            if (message) fieldErrors[field] = message;
+          }
+        }
+        const errorList = Object.values(problem.errors)
+          .flat()
+          .filter((item): item is string => typeof item === "string");
         if (errorList.length > 0 && typeof errorList[0] === "string") {
           errorMsg = errorList[0];
-        } else if (problem.detail) {
+        } else if (typeof problem.detail === "string") {
           errorMsg = problem.detail;
         }
-      } else if (status === 409 && problem?.detail) {
+      } else if (status === 409 && typeof problem?.detail === "string") {
         errorMsg = problem.detail;
       }
+      if (action === "register" && status === 409) fieldErrors.email = errorMsg;
       return json(
         {
           error: errorMsg,
+          ...(action === "register" && Object.keys(fieldErrors).length
+            ? { fieldErrors }
+            : {}),
         },
         status >= 500 ? 503 : status,
       );
