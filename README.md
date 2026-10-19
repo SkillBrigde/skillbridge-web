@@ -4,7 +4,7 @@ Next.js 16, React 19, TypeScript và Tailwind CSS 4.
 
 ## Chạy trên máy
 
-Cần Node.js 24 trở lên. Sao chép cấu hình từ .env.example sang .env.local và đặt API_BASE_URL trỏ tới backend SkillBridge. Giá trị mặc định http://localhost:5000 khớp với profile chạy .NET trên máy. Nếu backend được triển khai ở cổng khác, ví dụ 8080 qua container, đặt lại API_BASE_URL tương ứng.
+Cần Node.js 24.x. Sao chép cấu hình từ .env.example sang .env.local và đặt API_BASE_URL trỏ tới backend SkillBridge. Giá trị mặc định http://localhost:5000 khớp với profile chạy .NET trên máy. Nếu backend được triển khai ở cổng khác, ví dụ 8080 qua container, đặt lại API_BASE_URL tương ứng.
 
 ```powershell
 npm ci
@@ -53,6 +53,8 @@ Integration test chạy bản production với backend fixture chỉ dùng trong
 Workflow `.github/workflows/ci.yml` chạy lint, type check, build và integration test cho pull request và push vào `main`. Job `deploy` chỉ chạy sau khi toàn bộ CI thành công trên sự kiện push vào `main`; pull request không được deploy production.
 
 CD checkout đúng commit đã kiểm thử, lấy cấu hình production từ Vercel, build bằng Vercel CLI cố định phiên bản `64.5.0`, rồi upload artifact bằng `vercel deploy --prebuilt --prod`. Các lần deploy được chạy lần lượt; commit đã cũ hơn đầu nhánh `main` sẽ được bỏ qua trước khi upload. URL được ghi trong trang tổng kết GitHub Actions và environment `production`.
+
+`next.config.ts` dùng output của nền tảng khi có `VERCEL=1` hoặc `NEXT_ADAPTER_PATH`; build local/Docker vẫn tạo `.next/standalone`. Cấu hình này tránh lỗi thiếu `next-server.js.nft.json` khi kết hợp deployment adapter với standalone trên Next.js 16.3.4. Node.js được cố định ở major `24.x` trong package và workflow.
 
 ### Cấu hình lần đầu
 

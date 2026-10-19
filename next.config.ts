@@ -10,8 +10,12 @@ const securityHeaders = [
   },
 ];
 
+// Adapters produce platform-specific output; Docker uses standalone output.
+const useStandaloneOutput =
+  process.env.VERCEL !== "1" && !process.env.NEXT_ADAPTER_PATH;
+
 const nextConfig: NextConfig = {
-  output: "standalone",
+  output: useStandaloneOutput ? "standalone" : undefined,
   poweredByHeader: false,
   reactStrictMode: true,
   devIndicators: false,
