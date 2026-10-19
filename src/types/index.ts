@@ -4,3 +4,7 @@ export * from "./payment";
 export * from "./wallet";
 export * from "./dispute";
 export * from "./review";
+export * from "./auth.types";
+export * from "./booking.types";
+export * from "./mentor.types";
+export * from "./wallet.types";

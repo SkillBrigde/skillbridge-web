@@ -1,27 +1,25 @@
+import type {
+  LedgerEntry,
+  LedgerType,
+  EscrowState,
+  GatewayKind,
+} from "@/lib/domain";
+
+export type {
+  LedgerEntry,
+  LedgerType,
+  EscrowState,
+  GatewayKind,
+  LedgerEntry as LedgerTransaction,
+  LedgerEntry as WalletTransactionRecord,
+  LedgerType as TransactionType,
+  EscrowState as EscrowVaultState,
+  GatewayKind as PaymentGatewayType,
+};
+
 export interface WalletBalance {
   availableBalanceVnd: number;
   escrowHoldingBalanceVnd: number;
   disputedBalanceVnd: number;
   totalSpentVnd?: number;
-}
-
-export type TransactionType =
-  | "Deposit"
-  | "EscrowHold"
-  | "EscrowRelease"
-  | "Payout"
-  | "Refund"
-  | "DisputeHold";
-
-export interface LedgerTransaction {
-  id: string;
-  txid: string;
-  type: TransactionType;
-  amountVnd: number;
-  balanceBeforeVnd: number;
-  balanceAfterVnd: number;
-  description: string;
-  status: "Completed" | "Pending" | "Disputed";
-  timestamp: string;
-  auditHash?: string;
 }

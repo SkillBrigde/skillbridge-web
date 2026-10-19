@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import { Header } from "@/components/layout/header";
-import { Footer } from "@/components/layout/footer";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
+import { StoreBootstrap } from "@/components/store-bootstrap";
 
 const inter = Inter({
   subsets: ["latin", "vietnamese"],
@@ -31,6 +32,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} min-h-screen bg-[#0B0C0E] text-[#E3E2E5] font-sans antialiased flex flex-col`}
       >
+        <StoreBootstrap />
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />

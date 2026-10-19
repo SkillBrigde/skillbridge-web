@@ -37,65 +37,75 @@ export function MentorCard({
   onViewProfile,
   className,
 }: MentorCardProps) {
+  const cleanSlot = availableSlot ? availableSlot.replace(/^trống\s+/i, "") : null;
+
   return (
     <div
       className={cn(
-        "rounded-xl bg-[#14171D] border border-white/[0.08] p-5 transition-all hover:bg-[#171A21] hover:border-white/[0.14] group",
+        "rounded-xl bg-[#14171D] border border-white/[0.08] p-5 transition-all hover:bg-[#171A21] hover:border-white/[0.14] group h-full flex flex-col justify-between",
         className
       )}
     >
-      {/* Header: Avatar + Name + Role */}
-      <div className="flex items-start gap-3.5 mb-3.5">
-        <Avatar src={avatarSrc} alt={name} size="lg" online={online} shape="rounded" />
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-1.5">
-            <h3 className="text-base font-semibold text-[#F0F2F5] truncate">
-              {name}
-            </h3>
-            {verified && (
-              <BadgeCheck className="h-4.5 w-4.5 text-[#5E6AD2] flex-shrink-0" />
-            )}
+      {/* Top Section: Avatar, Info, and Service Badges */}
+      <div className="flex-1">
+        {/* Header: Avatar + Name + Role */}
+        <div className="flex items-start gap-3.5 mb-3.5">
+          <Avatar src={avatarSrc} alt={name} size="lg" online={online} shape="rounded" />
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-1.5">
+              <h3 className="text-base font-semibold text-[#F0F2F5] truncate">
+                {name}
+              </h3>
+              {verified && (
+                <BadgeCheck className="h-4.5 w-4.5 text-[#5E6AD2] flex-shrink-0" />
+              )}
+            </div>
+            <p className="text-xs text-[#9BA1B0] mt-0.5">{role}</p>
+            <div className="flex items-center gap-1.5 mt-1.5">
+              <Star className="h-3.5 w-3.5 fill-[#F5A623] text-[#F5A623]" />
+              <span className="text-xs font-mono text-[#F0F2F5]">
+                {rating.toFixed(2)}
+              </span>
+              <span className="text-xs text-[#5D6474]">
+                ({reviewCount} reviews) • {sessionCount} Sessions
+              </span>
+            </div>
           </div>
-          <p className="text-xs text-[#9BA1B0] mt-0.5">{role}</p>
-          <div className="flex items-center gap-1.5 mt-1.5">
-            <Star className="h-3.5 w-3.5 fill-[#F5A623] text-[#F5A623]" />
-            <span className="text-xs font-mono text-[#F0F2F5]">
-              {rating.toFixed(2)}
-            </span>
-            <span className="text-xs text-[#5D6474]">
-              ({reviewCount} reviews) • {sessionCount} Sessions
-            </span>
-          </div>
+        </div>
+
+        {/* Service badges */}
+        <div className="flex flex-wrap gap-1.5 mb-3.5">
+          {services.map((service) => (
+            <Badge key={service.label} variant="neutral">
+              {service.label} ({service.price})
+            </Badge>
+          ))}
         </div>
       </div>
 
-      {/* Service badges */}
-      <div className="flex flex-wrap gap-1.5 mb-3.5">
-        {services.map((service) => (
-          <Badge key={service.label} variant="neutral">
-            {service.label} ({service.price})
-          </Badge>
-        ))}
+      {/* Bottom Section: Always Aligned Horizontally */}
+      <div className="mt-4 pt-1 flex flex-col justify-end">
+        {/* Available slot */}
+        {cleanSlot && (
+          <div className="mb-3.5">
+            <Badge variant="escrow" dot>
+              Trống {cleanSlot}
+            </Badge>
+          </div>
+        )}
+
+        {/* CTA */}
+        <Button
+          variant="primary"
+          size="sm"
+          className="w-full"
+          onClick={onViewProfile}
+        >
+          Xem Hồ Sơ & Đặt Lịch
+        </Button>
       </div>
-
-      {/* Available slot */}
-      {availableSlot && (
-        <div className="mb-3.5">
-          <Badge variant="escrow" dot>
-            Trống {availableSlot}
-          </Badge>
-        </div>
-      )}
-
-      {/* CTA */}
-      <Button
-        variant="primary"
-        size="sm"
-        className="w-full"
-        onClick={onViewProfile}
-      >
-        Xem Hồ Sơ & Đặt Lịch
-      </Button>
     </div>
   );
 }
+
+export const MentorProfileCard = MentorCard;
