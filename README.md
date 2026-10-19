@@ -47,3 +47,37 @@ npm run test:integration
 ```
 
 Integration test chạy bản production với backend fixture chỉ dùng trong kiểm thử: xác thực cookie, đăng ký, refresh, logout, lỗi dịch vụ và việc chặn các màn hình mô phỏng. Test tự tạo và dừng server riêng, không dùng tài khoản hay backend thật.
+
+## CI/CD với Vercel
+
+Workflow `.github/workflows/ci.yml` chạy lint, type check, build và integration test cho pull request và push vào `main`. Job `deploy` chỉ chạy sau khi toàn bộ CI thành công trên sự kiện push vào `main`; pull request không được deploy production.
+
+CD checkout đúng commit đã kiểm thử, lấy cấu hình production từ Vercel, build bằng Vercel CLI cố định phiên bản `64.5.0`, rồi upload artifact bằng `vercel deploy --prebuilt --prod`. Các lần deploy được chạy lần lượt; commit đã cũ hơn đầu nhánh `main` sẽ được bỏ qua trước khi upload. URL được ghi trong trang tổng kết GitHub Actions và environment `production`.
+
+### Cấu hình lần đầu
+
+1. Tạo hoặc import repository này vào Vercel, chọn framework Next.js, root directory là gốc repository và Node.js 24.x.
+2. Trong Vercel, thêm biến môi trường **Production** `API_BASE_URL` bằng URL HTTPS của backend đã deploy, ví dụ `https://api.example.com`. Chỉ dùng URL gốc, không thêm `/api/v1/identity`; không dùng `localhost:5000` trên production.
+3. Liên kết máy với đúng project để lấy `orgId` và `projectId`:
+
+   ```cmd
+   npx vercel@64.5.0 login
+   npx vercel@64.5.0 link
+   type .vercel\project.json
+   ```
+
+4. Trong repository GitHub, vào **Settings → Secrets and variables → Actions → New repository secret** và thêm:
+
+   | Secret              | Giá trị                                                          |
+   | ------------------- | ---------------------------------------------------------------- |
+   | `VERCEL_TOKEN`      | Access token tạo trong tài khoản Vercel, có quyền deploy project |
+   | `VERCEL_ORG_ID`     | `orgId` trong `.vercel/project.json`                             |
+   | `VERCEL_PROJECT_ID` | `projectId` trong `.vercel/project.json`                         |
+
+   Không commit token, file `.env` hay thư mục `.vercel`; `.gitignore` đã loại trừ các file local này. Job deploy dùng GitHub environment `production`, có thể dùng secret cùng tên ở environment này nếu đã cấu hình.
+
+5. Merge pull request vào `main`. Mở tab **Actions → Web CI** để xem job CI và **Deploy production to Vercel**. Nếu thiếu secret, job sẽ báo rõ tên cần bổ sung; sau khi cấu hình có thể chọn **Re-run failed jobs**.
+
+`vercel.json` tắt Git auto-deploy riêng cho `main`, để production chỉ cập nhật qua CD sau CI. Các nhánh khác vẫn có thể tạo Vercel Preview nếu Git integration đang bật. Khi đổi `API_BASE_URL` hoặc cấu hình production, cần chạy lại workflow hoặc tạo deployment mới để áp dụng.
+
+Tham khảo [Vercel với GitHub Actions](https://vercel.com/kb/guide/how-can-i-use-github-actions-with-vercel) và [cấu hình Git deployments](https://vercel.com/docs/project-configuration/git-configuration).
