@@ -195,7 +195,11 @@ export function BookingPageView() {
               const timeStr = b.startMs && b.endMs
                 ? bookingTimeLabel(b.startMs, b.endMs)
                 : "Chưa chọn khung giờ";
+<<<<<<< HEAD
               const countdown = b.startMs ? relativeFuture(b.startMs, now || Date.now()) : undefined;
+=======
+              const countdown = b.startMs ? relativeFuture(b.startMs, now) : undefined;
+>>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
               const review = state.reviews.find((r) => r.bookingId === b.id);
 
               return (
@@ -225,8 +229,13 @@ export function BookingPageView() {
           >
             {(() => {
               const quote = cancelQuote(
+<<<<<<< HEAD
                 cancelModalBooking.startMs || Date.now(),
                 now || Date.now()
+=======
+                cancelModalBooking.startMs || now,
+                now
+>>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
               );
               const refundVnd = Math.round((cancelModalBooking.priceVnd * quote.refundPercent) / 100);
               return (

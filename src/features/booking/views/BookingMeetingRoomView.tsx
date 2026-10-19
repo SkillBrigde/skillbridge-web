@@ -28,14 +28,21 @@ import {
   Send,
   Clock,
 } from "lucide-react";
+<<<<<<< HEAD
 import { useAppState, useSession, actions, useNow } from "@/lib/store";
+=======
+import { useAppState, actions, useNow } from "@/lib/store";
+>>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
 import { vnd, looksLikeContactLeak } from "@/lib/domain";
 
 export function BookingMeetingRoomView() {
   const params = useParams<{ bookingId: string }>();
   const router = useRouter();
   const state = useAppState();
+<<<<<<< HEAD
   const session = useSession();
+=======
+>>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
   const now = useNow("second");
 
   const bookingId = params.bookingId;
@@ -55,6 +62,7 @@ export function BookingMeetingRoomView() {
   const [chatInput, setChatInput] = useState("");
   const [chatWarning, setChatWarning] = useState("");
   const [accepting, setAccepting] = useState(false);
+<<<<<<< HEAD
   const [scratchpad, setScratchpad] = useState(booking?.scratchpad || "");
 
   // Join session on mount
@@ -66,6 +74,17 @@ export function BookingMeetingRoomView() {
       }
     }
   }, [booking?.id]);
+=======
+  const scratchpad = booking?.scratchpad || "";
+  const sessionBookingId = booking?.id;
+
+  // Join session on mount
+  useEffect(() => {
+    if (sessionBookingId) {
+      actions.joinSession(sessionBookingId, "mentee");
+    }
+  }, [sessionBookingId]);
+>>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
 
   const messages = useMemo(
     () => state.messages.filter((m) => m.bookingId === bookingId),
@@ -107,7 +126,10 @@ export function BookingMeetingRoomView() {
   };
 
   const handleScratchpadChange = (val: string) => {
+<<<<<<< HEAD
     setScratchpad(val);
+=======
+>>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
     actions.setScratchpad(booking.id, val);
   };
 
@@ -122,7 +144,11 @@ export function BookingMeetingRoomView() {
 
   // Elapsed seconds calculation
   const sessionElapsedSeconds = booking.startedAt
+<<<<<<< HEAD
     ? Math.max(0, Math.floor(((now || Date.now()) - booking.startedAt) / 1000))
+=======
+    ? Math.max(0, Math.floor((now - booking.startedAt) / 1000))
+>>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
     : 1800;
 
   return (

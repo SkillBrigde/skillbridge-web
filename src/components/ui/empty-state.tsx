@@ -25,11 +25,10 @@ export function EmptyState({
   const renderAction = () => {
     if (!action) return null;
     if (React.isValidElement(action)) return action;
-    if (typeof action === "object" && "label" in action && typeof (action as any).onClick === "function") {
-      const act = action as { label: string; onClick: () => void };
+    if (typeof action === "object" && "label" in action && "onClick" in action && typeof action.onClick === "function") {
       return (
-        <Button variant="primary" onClick={act.onClick}>
-          {act.label}
+        <Button variant="primary" onClick={action.onClick}>
+          {action.label}
         </Button>
       );
     }

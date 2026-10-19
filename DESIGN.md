@@ -1,36 +1,23 @@
-# SkillBridge Design System
+# SkillBridge design system
 
-## Tech Stack
+## Hướng thiết kế
 
-- Framework: Next.js 16 (App Router), React 19, TypeScript
-- Styling: Tailwind CSS v4, Vanilla CSS Design Tokens
-- Icons: Lucide React
+Giao diện sáng, tối giản, mang cảm giác biên tập. Nền trắng ấm, chữ tối và màu tím chàm giữ nhận diện SkillBridge. Nội dung tiếng Việt, ưu tiên mục tiêu và hành động rõ ràng.
 
-## Theme & Visual Style
+## Màu và chữ
 
-- Mode: Pure Dark Theme (color-scheme: dark)
-- Typography:
-  - Sans: Inter, -apple-system, sans-serif
-  - Mono / Code: JetBrains Mono, monospace
+- Canvas: #faf9f6; ink: #27252d; secondary text: #5e5866; primary: #6551a4; border: #e5e2de.
+- Inter cho nội dung và tiêu đề. Lora italic có subset tiếng Việt dùng để nhấn nhá tiêu đề, tránh dấu bị tách do font thay thế.
+- Thành phần dùng chung có tiền tố sb- và token --sb-* trong globals.css.
 
-## Color Tokens & Palette
+## Bố cục và chuyển động
 
-- Background / Canvas: `#0B0C0E`
-- Surface: `#121315`
-- Surface Container (Card): `#14171D` (Hover: `#171A21`)
-- Text Primary: `#F0F2F5`
-- Text Secondary: `#9BA1B0`
-- Text Tertiary: `#5D6474`
-- Borders: `rgba(255, 255, 255, 0.08)` (Subtle: `0.04`, Focus: `#5E6AD2`)
+- Nội dung tối đa 1320px. Chữ nội dung chính 14–16px, tiêu đề và thẻ lớn hơn với khoảng cách giữa các phần gọn hơn để trang đầy đặn, dễ đọc. Header cố định nhẹ, hero hai cột, lĩnh vực, quy trình, lời mời mentor, FAQ và CTA.
+- Màn hình nhỏ chuyển thành một cột; menu điện thoại có nhãn và trạng thái mở rõ ràng.
+- Minh họa cây cầu là SVG trong repository. Không phụ thuộc ảnh ngoài hoặc hồ sơ người dùng giả.
+- Hover, chuyển mục tiêu, đường chuyển động và reveal nhẹ. Tôn trọng prefers-reduced-motion, nội dung vẫn có sẵn nếu tắt JavaScript.
+- Dải 3 câu nói tự đổi mỗi 5,5 giây, tiếp tục chạy khi rê chuột hoặc dùng bàn phím; chỉ giữ nút chọn câu, không có nút tạm dừng. Tắt tự chuyển khi người dùng yêu cầu giảm chuyển động.
 
-### Semantic Colors
+## Tính trung thực của nội dung
 
-- Primary (Indigo): `#BDC2FF` / Container: `#5E6AD2`
-- Secondary / Success (Escrow Emerald): `#48DFA3` / `#27C98F`
-- Pending / Warning (Amber): `#FFB955` / `#F5A623`
-- Error / Dispute (Rose): `#FFB4AB` / `#FF5C5C`
-
-## Layout & Components Rules
-
-- Cards: Radius 8px/12px, hairline borders, subtle hover transitions.
-- Zero-token in browser: Toàn bộ form/action client gọi qua Route Handler `/api/*`.
+Không hiển thị số lượng người dùng, đánh giá, lời chứng thực, trạng thái dịch vụ, giao dịch hoặc hồ sơ mentor khi không có dữ liệu thật. Tính năng chưa tích hợp phải có trạng thái chưa khả dụng. Không có nút đăng nhập nhanh, Google giả hay thanh toán mô phỏng.

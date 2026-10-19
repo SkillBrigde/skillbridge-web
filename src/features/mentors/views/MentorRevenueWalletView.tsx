@@ -8,7 +8,10 @@ import {
   Input,
   NoticeBanner,
 } from "@/components/ui";
+<<<<<<< HEAD
 import { StatCard } from "@/components/ui/stat-card";
+=======
+>>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
 import { RevenueStats } from "@/features/wallet/RevenueStats";
 import {
   Table,
@@ -19,6 +22,7 @@ import {
   TableCell,
 } from "@/components/ui/data-table";
 import {
+<<<<<<< HEAD
   Wallet,
   ArrowUpRight,
   ShieldCheck,
@@ -26,6 +30,11 @@ import {
   Banknote,
   CheckCircle2,
   Clock,
+=======
+  ArrowUpRight,
+  Banknote,
+  CheckCircle2,
+>>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
 } from "lucide-react";
 import { RequireRole } from "@/components/auth/require-role";
 import { useAppState, useSession, actions, mentorEscrowSummary } from "@/lib/store";

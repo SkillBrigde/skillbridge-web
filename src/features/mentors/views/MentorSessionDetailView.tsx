@@ -25,13 +25,20 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { RequireRole } from "@/components/auth/require-role";
+<<<<<<< HEAD
 import { useAppState, useSession, actions, useNow } from "@/lib/store";
+=======
+import { useAppState, actions, useNow } from "@/lib/store";
+>>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
 
 export function MentorSessionDetailView() {
   const params = useParams<{ bookingId: string }>();
   const router = useRouter();
   const state = useAppState();
+<<<<<<< HEAD
   const session = useSession();
+=======
+>>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
   const now = useNow("second");
 
   const bookingId = params.bookingId;
@@ -52,12 +59,22 @@ export function MentorSessionDetailView() {
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [success, setSuccess] = useState(false);
+<<<<<<< HEAD
 
   useEffect(() => {
     if (booking) {
       actions.joinSession(booking.id, "mentor");
     }
   }, [booking?.id]);
+=======
+  const sessionBookingId = booking?.id;
+
+  useEffect(() => {
+    if (sessionBookingId) {
+      actions.joinSession(sessionBookingId, "mentor");
+    }
+  }, [sessionBookingId]);
+>>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
 
   if (!booking) {
     return (
@@ -108,7 +125,11 @@ export function MentorSessionDetailView() {
   };
 
   const elapsedSeconds = booking.startedAt
+<<<<<<< HEAD
     ? Math.max(0, Math.floor(((now || Date.now()) - booking.startedAt) / 1000))
+=======
+    ? Math.max(0, Math.floor((now - booking.startedAt) / 1000))
+>>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
     : 3490;
 
   return (

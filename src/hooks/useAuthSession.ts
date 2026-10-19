@@ -1,4 +1,5 @@
 "use client";
+<<<<<<< HEAD
 
 import { useSession, useAppState, actions } from "@/lib/store";
 import { getAccessToken } from "@/lib/api-client";
@@ -35,4 +36,16 @@ export function useAuthSession() {
   };
 }
 
+=======
+import { useSession, actions } from "@/lib/store";
+export function useAuthSession() {
+  const session = useSession();
+  return {
+    ...session,
+    isAuthenticated: !!session.user,
+    logout: actions.logout,
+    switchRole: actions.switchRole,
+  };
+}
+>>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
 export { useAuthSession as default };

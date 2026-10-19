@@ -1,6 +1,10 @@
 "use client";
 
+<<<<<<< HEAD
 import { useState, useMemo, useEffect } from "react";
+=======
+import { useState, useMemo } from "react";
+>>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -30,6 +34,7 @@ import {
   WEEKDAYS,
   type WeekdayId,
   type AvailabilityRules,
+<<<<<<< HEAD
 } from "@/lib/domain";
 
 export function MentorScheduleView() {
@@ -39,6 +44,21 @@ export function MentorScheduleView() {
   const now = useNow("minute");
 
   const mentor = session.mentor;
+=======
+  type MentorRec,
+} from "@/lib/domain";
+
+export function MentorScheduleView() {
+  const { mentor } = useSession();
+  return <MentorScheduleContent key={mentor?.id || "guest"} mentor={mentor} />;
+}
+
+function MentorScheduleContent({ mentor }: { mentor: MentorRec | null }) {
+  const router = useRouter();
+  const state = useAppState();
+  const now = useNow("minute");
+
+>>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
   const mentorId = mentor?.id || "mentor-an-nguyen";
 
   const [rules, setRules] = useState<AvailabilityRules>(
@@ -53,6 +73,7 @@ export function MentorScheduleView() {
     }
   );
 
+<<<<<<< HEAD
   const [duration, setDuration] = useState("60");
   const [buffer, setBuffer] = useState("15");
   const [leadTime, setLeadTime] = useState("24");
@@ -69,6 +90,13 @@ export function MentorScheduleView() {
     }
   }, [mentor]);
 
+=======
+  const [duration, setDuration] = useState(String(mentor?.defaults.durationMin ?? 60));
+  const [buffer, setBuffer] = useState(String(mentor?.defaults.bufferMin ?? 15));
+  const [leadTime, setLeadTime] = useState(String(mentor?.defaults.leadHours ?? 24));
+  const [savedMsg, setSavedMsg] = useState("");
+
+>>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
   const toggleDay = (dayId: WeekdayId) => {
     setRules((prev) => {
       const current = prev[dayId];
@@ -302,7 +330,11 @@ export function MentorScheduleView() {
                 const timeText = b.startMs && b.endMs
                   ? bookingTimeLabel(b.startMs, b.endMs)
                   : "Chưa xác định";
+<<<<<<< HEAD
                 const countdown = b.startMs ? relativeFuture(b.startMs, now || Date.now()) : "";
+=======
+                const countdown = b.startMs ? relativeFuture(b.startMs, now) : "";
+>>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
 
                 return (
                   <Card key={b.id} className="p-5">

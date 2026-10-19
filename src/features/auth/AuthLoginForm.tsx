@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 "use client";
 
 import { useState } from "react";
@@ -297,3 +298,9 @@ export function AuthLoginForm() {
 }
 
 export const LoginForm = AuthLoginForm;
+=======
+import { AccountForm } from "./components/AccountForm";
+export function AuthLoginForm() {
+  return <AccountForm mode="login" />;
+}
+>>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da

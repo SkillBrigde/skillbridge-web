@@ -2,7 +2,10 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
+<<<<<<< HEAD
 import { useRouter } from "next/navigation";
+=======
+>>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
 import {
   Button,
   Input,
@@ -32,7 +35,10 @@ const BANKS = [
 ];
 
 export function MentorOnboardingView() {
+<<<<<<< HEAD
   const router = useRouter();
+=======
+>>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
   const state = useAppState();
   const session = useSession();
 

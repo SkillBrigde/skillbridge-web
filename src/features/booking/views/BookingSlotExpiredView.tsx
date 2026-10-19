@@ -25,7 +25,11 @@ function SlotExpiredContent() {
 
   const altSlots = useMemo(() => {
     if (!mentor) return [];
+<<<<<<< HEAD
     return availableSlots(state, mentor.id, now || Date.now(), 4);
+=======
+    return availableSlots(state, mentor.id, now, 4);
+>>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
   }, [state, mentor, now]);
 
   const handleReLock = (slotId: string) => {

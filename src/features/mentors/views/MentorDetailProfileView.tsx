@@ -56,9 +56,16 @@ export function MentorDetailProfileView() {
   }
 
   const handleSelectTier = (serviceId: string) => {
+<<<<<<< HEAD
     // If user is not logged in, log in as Linh (demo mentee) or prompt
     if (!session.user) {
       actions.loginAs("u-linh");
+=======
+    // Authentication is required before starting a booking.
+    if (!session.user) {
+      router.push("/login?next=" + encodeURIComponent("/mentors/" + mentorId));
+      return;
+>>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
     }
     const res = actions.startBooking(mentor.id, serviceId);
     if (res.ok && res.bookingId) {

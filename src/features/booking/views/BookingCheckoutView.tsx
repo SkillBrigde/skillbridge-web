@@ -58,7 +58,11 @@ export function BookingCheckoutView() {
   // Check if lock expired
   const lockRemainingSeconds = useMemo(() => {
     if (!booking || !booking.lockExpiresAt) return 0;
+<<<<<<< HEAD
     const diff = Math.floor((booking.lockExpiresAt - (now || Date.now())) / 1000);
+=======
+    const diff = Math.floor((booking.lockExpiresAt - now) / 1000);
+>>>>>>> 61e2e93070d5da971e2d688117daa9ff6f0b57da
     return Math.max(0, diff);
   }, [booking, now]);
 

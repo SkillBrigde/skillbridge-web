@@ -13,9 +13,9 @@ import {
 } from "@/components/ui";
 import { RadioGroup } from "@/components/ui/radio-group";
 import { FileUpload } from "@/components/ui/file-upload";
-import { Scale, Clock, CheckCircle2, ShieldCheck, ArrowLeft } from "lucide-react";
+import { Scale, Clock, ShieldCheck, ArrowLeft } from "lucide-react";
 import { useAppState, useSession, actions } from "@/lib/store";
-import { vnd, slotDateLabel } from "@/lib/domain";
+import { vnd } from "@/lib/domain";
 
 const RESOLUTION_OPTIONS = [
   {
