@@ -1,9 +1,43 @@
 "use client";
 
 import { useMemo, useSyncExternalStore } from "react";
-import type { AppState, Role, User, MentorRec, Slot, Result } from "./domain";
-import type { SessionUser } from "./server/auth";
-import { unavailableAction } from "./feature-availability";
+import type { DisputeReason, DisputeRuling, MentorServiceTier } from "@/types";
+import {
+  ACCEPT_WINDOW_MS,
+  DISPUTE_MENTOR_MS,
+  DISPUTE_SLA_MS,
+  MIN_PAYOUT_VND,
+  SLOT_LOCK_SECONDS,
+  type AppState,
+  type AvailabilityRules,
+  type BookingRec,
+  type DisputeRec,
+  type GatewayKind,
+  type KycApp,
+  type LedgerEntry,
+  type MentorRec,
+  type Result,
+  type ReviewRec,
+  type Role,
+  type Slot,
+  type User,
+  cancelQuote,
+  emptyRules,
+  fakeHash,
+  fmtDuration,
+  generateSlots,
+  isValidWindow,
+  looksLikeContactLeak,
+  normalizeName,
+  platformFeePercent,
+} from "./domain";
+import { STATE_VERSION, buildSeed } from "./seed";
+
+/* ------------------------------------------------------------------ */
+/*  External store (localStorage-backed, SSR-safe)                    */
+/* ------------------------------------------------------------------ */
+
+const STORAGE_KEY = "skillbridge.state.v1";
 
 const EMPTY_STATE: AppState = {
   v: 1,

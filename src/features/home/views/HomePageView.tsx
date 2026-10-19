@@ -2,15 +2,12 @@ import Link from "next/link";
 import {
   ArrowDown,
   ArrowRight,
-  ArrowUpRight,
-  Asterisk,
-  Check,
-  Compass,
-  MoveUpRight,
-  Plus,
+  ShieldCheck,
+  Scale,
   Sparkles,
-  Target,
-  Route,
+  Lock,
+  CheckCircle2,
+  ChevronRight,
 } from "lucide-react";
 import { areas, questions } from "../content/home-content";
 import { HomeHeroArtwork } from "../components/HomeHeroArtwork";

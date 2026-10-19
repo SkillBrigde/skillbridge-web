@@ -1,8 +1,6 @@
 "use client";
 
-
 import { useState, useMemo } from "react";
-
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -32,7 +30,6 @@ import {
   WEEKDAYS,
   type WeekdayId,
   type AvailabilityRules,
-
   type MentorRec,
 } from "@/lib/domain";
 
@@ -59,7 +56,6 @@ function MentorScheduleContent({ mentor }: { mentor: MentorRec | null }) {
       sun: { enabled: false, windows: [] },
     }
   );
-
 
   const [duration, setDuration] = useState(String(mentor?.defaults.durationMin ?? 60));
   const [buffer, setBuffer] = useState(String(mentor?.defaults.bufferMin ?? 15));
@@ -296,8 +292,6 @@ function MentorScheduleContent({ mentor }: { mentor: MentorRec | null }) {
                 const timeText = b.startMs && b.endMs
                   ? bookingTimeLabel(b.startMs, b.endMs)
                   : "Chưa xác định";
-
-
                 const countdown = b.startMs ? relativeFuture(b.startMs, now) : "";
 
                 return (

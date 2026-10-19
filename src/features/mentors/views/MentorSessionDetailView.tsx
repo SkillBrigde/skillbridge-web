@@ -25,15 +25,12 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { RequireRole } from "@/components/auth/require-role";
-
 import { useAppState, actions, useNow } from "@/lib/store";
-
 
 export function MentorSessionDetailView() {
   const params = useParams<{ bookingId: string }>();
   const router = useRouter();
   const state = useAppState();
-
   const now = useNow("second");
 
   const bookingId = params.bookingId;
@@ -54,6 +51,7 @@ export function MentorSessionDetailView() {
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [success, setSuccess] = useState(false);
+  const sessionBookingId = booking?.id;
 
   const sessionBookingId = booking?.id;
 
@@ -113,7 +111,6 @@ export function MentorSessionDetailView() {
 
   const elapsedSeconds = booking.startedAt
     ? Math.max(0, Math.floor((now - booking.startedAt) / 1000))
-
     : 3490;
 
   return (
