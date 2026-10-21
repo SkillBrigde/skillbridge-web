@@ -20,13 +20,8 @@ export interface SessionUser {
   createdAt?: string;
 }
 
-interface BackendAuth {
-  userId: string;
-  fullName: string;
-  email: string;
-  role: string;
+interface BackendToken {
   accessToken: string;
-  refreshToken: string;
   expiresIn: number;
 }
 
@@ -51,33 +46,71 @@ export async function backendFetch(path: string, options: RequestInit = {}) {
   });
 }
 
-export async function saveSession(data: BackendAuth): Promise<SessionUser> {
+function parseUser(data: unknown): SessionUser {
+  if (
+    !data ||
+    typeof data !== "object" ||
+    !("role" in data) ||
+    !("id" in data) ||
+    !("fullName" in data) ||
+    !("email" in data)
+  )
+    throw new Error("Invalid user response");
   const role = parseRole(data.role);
   if (
     !role ||
-    typeof data.userId !== "string" ||
-    !data.userId ||
+    typeof data.id !== "string" ||
+    !data.id ||
     typeof data.fullName !== "string" ||
-    typeof data.email !== "string" ||
+    typeof data.email !== "string"
+  )
+    throw new Error("Invalid user response");
+  return { id: data.id, fullName: data.fullName, email: data.email, role };
+}
+
+function refreshTokenFrom(response: Response): string {
+  const setCookie = response.headers
+    .getSetCookie()
+    .find((value) => value.startsWith("refreshToken="));
+  const encoded = setCookie?.split(";", 1)[0].slice("refreshToken=".length);
+  if (!encoded) throw new Error("Missing refresh token cookie");
+  try {
+    return decodeURIComponent(encoded);
+  } catch {
+    throw new Error("Invalid refresh token cookie");
+  }
+}
+
+export function backendRefreshCookie(token: string): string {
+  return `refreshToken=${encodeURIComponent(token)}`;
+}
+
+export async function saveSession(response: Response): Promise<SessionUser> {
+  const data = (await response.json()) as BackendToken;
+  if (
+    !data ||
     typeof data.accessToken !== "string" ||
     !data.accessToken ||
-    typeof data.refreshToken !== "string" ||
-    !data.refreshToken ||
     !Number.isFinite(data.expiresIn) ||
     data.expiresIn <= 0
-  ) {
+  )
     throw new Error("Invalid authentication response");
-  }
+  const refreshToken = refreshTokenFrom(response);
+  const profile = await backendFetch("users/me", {
+    headers: { Authorization: `Bearer ${data.accessToken}` },
+  });
+  if (!profile.ok) throw new Error("User service unavailable");
+  const user = parseUser(await profile.json());
   const jar = await cookies();
   jar.set(ACCESS_COOKIE, data.accessToken, {
     ...cookieOptions,
     maxAge: data.expiresIn,
   });
-  jar.set(REFRESH_COOKIE, data.refreshToken, {
+  jar.set(REFRESH_COOKIE, refreshToken, {
     ...cookieOptions,
     maxAge: 7 * 24 * 60 * 60,
   });
-  return { id: data.userId, fullName: data.fullName, email: data.email, role };
+  return user;
 }
 
 export async function clearSession() {
@@ -102,26 +135,16 @@ export async function readSession(): Promise<SessionUser | null> {
       headers: { Authorization: `Bearer ${tokens.access}` },
     });
     if (response.ok) {
-      const data = await response.json();
-      const role = parseRole(data.role);
-      if (!data.id || !role) throw new Error("Invalid user response");
-      return {
-        id: data.id,
-        fullName: data.fullName,
-        email: data.email,
-        role,
-        avatar: data.avatarUrl,
-        createdAt: data.createdAtUtc,
-      };
+      return parseUser(await response.json());
     }
     if (response.status !== 401) throw new Error("Session service unavailable");
   }
   if (tokens.refresh) {
     const response = await backendFetch("auth/refresh", {
       method: "POST",
-      body: JSON.stringify({ refreshToken: tokens.refresh }),
+      headers: { Cookie: backendRefreshCookie(tokens.refresh) },
     });
-    if (response.ok) return saveSession(await response.json());
+    if (response.ok) return saveSession(response);
     if (response.status !== 401 && response.status !== 400)
       throw new Error("Session service unavailable");
   }

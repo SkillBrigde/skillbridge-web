@@ -1,5 +1,6 @@
 import {
   backendFetch,
+  backendRefreshCookie,
   clearSession,
   readSession,
   saveSession,
@@ -55,8 +56,12 @@ export async function POST(request: Request, context: Context) {
         if (tokens.access)
           await backendFetch("auth/logout", {
             method: "POST",
-            headers: { Authorization: `Bearer ${tokens.access}` },
-            body: JSON.stringify({ refreshToken: tokens.refresh }),
+            headers: {
+              Authorization: `Bearer ${tokens.access}`,
+              ...(tokens.refresh
+                ? { Cookie: backendRefreshCookie(tokens.refresh) }
+                : {}),
+            },
           });
       } finally {
         await clearSession();
@@ -165,7 +170,19 @@ export async function POST(request: Request, context: Context) {
         status >= 500 ? 503 : status,
       );
     }
-    return json({ user: await saveSession(await response.json()) });
+    if (action === "register") {
+      const login = await backendFetch("auth/login", {
+        method: "POST",
+        body: JSON.stringify({ email: payload.email, password: payload.password }),
+      });
+      if (!login.ok)
+        return json(
+          { error: "Tài khoản đã được tạo. Vui lòng đăng nhập." },
+          503,
+        );
+      return json({ user: await saveSession(login) });
+    }
+    return json({ user: await saveSession(response) });
   } catch {
     return json(
       { error: "Chưa thể kết nối dịch vụ tài khoản. Vui lòng thử lại sau." },

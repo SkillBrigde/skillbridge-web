@@ -12,10 +12,12 @@ const root = fileURLToPath(new URL("../", import.meta.url));
 test("production pages and server-owned authentication", async (t) => {
   let authUnavailable = false;
   let invalidAuthResponse = false;
+  let missingRefreshCookie = false;
   let identityInvalidCredentials = false;
   let lastRegistration;
   let registrationProblem;
   let revoked = false;
+  const refreshToken = "fixture+refresh/=";
   const user = {
     id: "test-user",
     email: "mentor@example.test",
@@ -23,14 +25,10 @@ test("production pages and server-owned authentication", async (t) => {
     role: "Mentor",
   };
   const tokenResponse = {
-    userId: user.id,
-    email: user.email,
-    fullName: user.fullName,
-    role: user.role,
     accessToken: "fixture-access",
-    refreshToken: "fixture-refresh",
     expiresIn: 900,
   };
+  const refreshCookie = `refreshToken=${encodeURIComponent(refreshToken)}`;
   const backend = createServer(async (request, response) => {
     let body = "";
     for await (const chunk of request) body += chunk;
@@ -41,7 +39,7 @@ test("production pages and server-owned authentication", async (t) => {
       return;
     }
     if (request.url.endsWith("/auth/login")) {
-      if (input.password !== "integration-password") {
+      if (!["integration-password", "Integration123!"].includes(input.password)) {
         response
           .writeHead(identityInvalidCredentials ? 404 : 401)
           .end(
@@ -53,6 +51,8 @@ test("production pages and server-owned authentication", async (t) => {
           );
         return;
       }
+      if (!missingRefreshCookie)
+        response.setHeader("Set-Cookie", `${refreshCookie}; HttpOnly; Secure; SameSite=Strict; Path=/api/v1/identity/auth`);
       response.end(
         JSON.stringify(
           invalidAuthResponse ? { fullName: "Invalid" } : tokenResponse,
@@ -66,7 +66,7 @@ test("production pages and server-owned authentication", async (t) => {
           .end(JSON.stringify(registrationProblem.body));
         return;
       }
-      response.end(JSON.stringify(tokenResponse));
+      response.writeHead(201).end(JSON.stringify({ id: user.id }));
     } else if (request.url.endsWith("/users/me")) {
       if (request.headers.authorization !== "Bearer fixture-access") {
         response.writeHead(401).end("{}");
@@ -76,11 +76,14 @@ test("production pages and server-owned authentication", async (t) => {
         JSON.stringify({ ...user, createdAtUtc: "2026-01-01T00:00:00Z" }),
       );
     } else if (request.url.endsWith("/auth/refresh")) {
-      assert.equal(input.refreshToken, "fixture-refresh");
+      assert.equal(request.headers.cookie, refreshCookie);
+      assert.deepEqual(input, {});
+      response.setHeader("Set-Cookie", `${refreshCookie}; HttpOnly; Secure; SameSite=Strict; Path=/api/v1/identity/auth`);
       response.end(JSON.stringify(tokenResponse));
     } else if (request.url.endsWith("/auth/logout")) {
-      revoked = input.refreshToken === "fixture-refresh";
-      response.end("{}");
+      revoked = request.headers.cookie === refreshCookie && request.headers.authorization === "Bearer fixture-access";
+      assert.deepEqual(input, {});
+      response.writeHead(204).end();
     } else response.writeHead(404).end("{}");
   });
   await new Promise((resolve) => backend.listen(0, "127.0.0.1", resolve));
@@ -140,7 +143,7 @@ test("production pages and server-owned authentication", async (t) => {
     if (ready) break;
     await delay(250);
   }
-  assert.ok(ready, "Production server started");
+  assert.ok(ready, `Production server started: ${output}`);
   const post = (action, data, headers = {}) =>
     fetch(origin + "/api/auth/" + action, {
       method: "POST",
@@ -282,7 +285,7 @@ test("production pages and server-owned authentication", async (t) => {
     "expired access tokens use the server refresh token",
     async () => {
       const response = await fetch(origin + "/api/auth/session", {
-        headers: { Cookie: "sb_access=expired; sb_refresh=fixture-refresh" },
+        headers: { Cookie: `sb_access=expired; sb_refresh=${encodeURIComponent(refreshToken)}` },
       });
       assert.equal(response.status, 200);
       assert.equal((await response.json()).user.id, user.id);
@@ -300,6 +303,8 @@ test("production pages and server-owned authentication", async (t) => {
         phoneNumber: " +84 900 000 000 ",
       });
       assert.equal(response.status, 200);
+      assert.equal((await response.json()).user.id, user.id);
+      assert.equal(response.headers.getSetCookie().length, 2);
       assert.equal(lastRegistration.role, "Mentor");
       assert.equal(lastRegistration.fullName, user.fullName);
       assert.equal(lastRegistration.phoneNumber, "+84 900 000 000");
@@ -463,6 +468,14 @@ test("production pages and server-owned authentication", async (t) => {
       assert.equal(response.headers.get("set-cookie"), null);
       authUnavailable = false;
       invalidAuthResponse = true;
+      response = await post("login", {
+        email: user.email,
+        password: "integration-password",
+      });
+      assert.equal(response.status, 503);
+      assert.equal(response.headers.get("set-cookie"), null);
+      invalidAuthResponse = false;
+      missingRefreshCookie = true;
       response = await post("login", {
         email: user.email,
         password: "integration-password",
