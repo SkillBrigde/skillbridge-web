@@ -15,6 +15,25 @@ const json = (data: unknown, status = 200) =>
   Response.json(data, { status, headers: { "Cache-Control": "no-store" } });
 type Context = { params: Promise<{ action: string }> };
 
+function isSameOriginPost(request: Request) {
+  const fetchSite = request.headers.get("sec-fetch-site");
+  if (fetchSite && fetchSite !== "same-origin") return false;
+
+  const sourceHeader =
+    request.headers.get("origin") || request.headers.get("referer");
+  if (!sourceHeader) return false;
+
+  try {
+    const source = new URL(sourceHeader);
+    // Next can normalize request.url to localhost even when the browser uses
+    // 127.0.0.1. Compare against the incoming HTTP host instead.
+    const host = request.headers.get("host") || new URL(request.url).host;
+    return ["http:", "https:"].includes(source.protocol) && source.host === host;
+  } catch {
+    return false;
+  }
+}
+
 export async function GET(_request: Request, context: Context) {
   const { action } = await context.params;
   if (action !== "session")
@@ -31,22 +50,8 @@ export async function GET(_request: Request, context: Context) {
 
 export async function POST(request: Request, context: Context) {
   const { action } = await context.params;
-  const origin = request.headers.get("origin");
-  if (origin) {
-    try {
-      const source = new URL(origin);
-      // Next can normalize request.url to localhost even when the browser uses
-      // 127.0.0.1. Compare against the incoming HTTP host instead.
-      const host = request.headers.get("host") || new URL(request.url).host;
-      if (
-        !["http:", "https:"].includes(source.protocol) ||
-        source.host !== host
-      )
-        return json({ error: "Yêu cầu không hợp lệ." }, 403);
-    } catch {
-      return json({ error: "Yêu cầu không hợp lệ." }, 403);
-    }
-  }
+  if (!isSameOriginPost(request))
+    return json({ error: "Yêu cầu không hợp lệ." }, 403);
   if (!["login", "register", "logout"].includes(action))
     return json({ error: "Không tìm thấy yêu cầu." }, 404);
   try {
