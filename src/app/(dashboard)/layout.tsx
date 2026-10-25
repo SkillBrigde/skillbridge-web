@@ -1,6 +1,5 @@
-import { FeatureUnavailable } from "@/components/layout/FeatureUnavailable";
+import { ReactNode } from "react";
 
-// Transactional screens stay unavailable until their server integrations exist.
-export default function DashboardLayout() {
-  return <FeatureUnavailable />;
+export default function DashboardLayout({ children }: { children: ReactNode }) {
+  return <>{children}</>;
 }

@@ -147,7 +147,7 @@ test("production pages and server-owned authentication", async (t) => {
   const post = (action, data, headers = {}) =>
     fetch(origin + "/api/auth/" + action, {
       method: "POST",
-      headers: { "Content-Type": "application/json", ...headers },
+      headers: { "Content-Type": "application/json", Origin: origin, ...headers },
       body: JSON.stringify(data),
     });
   let cookie = "";
@@ -189,6 +189,12 @@ test("production pages and server-owned authentication", async (t) => {
   await t.test(
     "rejects foreign origins, invalid input and admin registration",
     async () => {
+      const requestWithoutSource = await fetch(origin + "/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: user.email, password: "integration-password" }),
+      });
+      assert.equal(requestWithoutSource.status, 403);
       assert.equal(
         (
           await post(
@@ -199,6 +205,22 @@ test("production pages and server-owned authentication", async (t) => {
         ).status,
         403,
       );
+      assert.equal(
+        (
+          await post(
+            "login",
+            { email: user.email, password: "integration-password" },
+            { "Sec-Fetch-Site": "cross-site" },
+          )
+        ).status,
+        403,
+      );
+      const refererFallback = await fetch(origin + "/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Referer: origin + "/login" },
+        body: JSON.stringify({ email: user.email, password: "wrong-password" }),
+      });
+      assert.equal(refererFallback.status, 401);
       assert.equal(
         (
           await post("register", {
@@ -216,7 +238,7 @@ test("production pages and server-owned authentication", async (t) => {
       );
       const malformed = await fetch(origin + "/api/auth/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", Origin: origin },
         body: "{",
       });
       assert.equal(malformed.status, 400);

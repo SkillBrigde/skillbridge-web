@@ -1,5 +1,5 @@
-import { MentorRevenueWalletView } from "@/features/mentors";
+import { FeatureUnavailable } from "@/components/layout/FeatureUnavailable";
 
 export default function MentorWalletPage() {
-  return <MentorRevenueWalletView />;
+  return <FeatureUnavailable />;
 }
