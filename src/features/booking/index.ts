@@ -3,6 +3,7 @@ export * from "./views/BookingIntakeView";
 export * from "./views/BookingMeetingRoomView";
 export * from "./views/BookingCheckoutView";
 export * from "./views/BookingSlotExpiredView";
+export * from "./views/BookingWizardView";
 export * from "./components/BookingSessionCard";
 export * from "./components/BookingServiceTierCard";
 export { BookingSessionCard as BookingCard } from "./components/BookingSessionCard";

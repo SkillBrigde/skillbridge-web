@@ -50,6 +50,19 @@ export async function httpAuthClient(
 }
 export const apiClient = httpAuthClient;
 
+async function parseResponseBody<T>(res: Response): Promise<T> {
+  if (res.status === 204 || res.headers.get("content-length") === "0") {
+    return null as T;
+  }
+  const text = await res.text();
+  if (!text) return null as T;
+  try {
+    return JSON.parse(text) as T;
+  } catch {
+    return text as unknown as T;
+  }
+}
+
 /** Helper methods for JSON API endpoints */
 export const http = {
   get: async <T = unknown>(
@@ -65,7 +78,7 @@ export const http = {
         errorData,
       );
     }
-    return res.json() as Promise<T>;
+    return parseResponseBody<T>(res);
   },
 
   post: async <T = unknown>(
@@ -91,7 +104,7 @@ export const http = {
         errorData,
       );
     }
-    return res.json() as Promise<T>;
+    return parseResponseBody<T>(res);
   },
 
   put: async <T = unknown>(
@@ -117,7 +130,33 @@ export const http = {
         errorData,
       );
     }
-    return res.json() as Promise<T>;
+    return parseResponseBody<T>(res);
+  },
+
+  patch: async <T = unknown>(
+    url: string,
+    body?: unknown,
+    options?: RequestOptions,
+  ): Promise<T> => {
+    const res = await httpAuthClient(url, {
+      ...options,
+      method: "PATCH",
+      body:
+        body !== undefined
+          ? typeof body === "string"
+            ? body
+            : JSON.stringify(body)
+          : undefined,
+    });
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => null);
+      throw new ApiError(
+        res.statusText || "Lỗi yêu cầu máy chủ",
+        res.status,
+        errorData,
+      );
+    }
+    return parseResponseBody<T>(res);
   },
 
   delete: async <T = unknown>(
@@ -133,6 +172,6 @@ export const http = {
         errorData,
       );
     }
-    return res.json() as Promise<T>;
+    return parseResponseBody<T>(res);
   },
 };
