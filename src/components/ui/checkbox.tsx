@@ -17,7 +17,7 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
     return (
       <label
         htmlFor={inputId}
-        className={cn("inline-flex items-center gap-2.5 cursor-pointer select-none text-sm text-[#E3E2E5]", className)}
+        className={cn("inline-flex items-center gap-2.5 cursor-pointer select-none text-sm text-[#27252d]", className)}
       >
         <div className="relative flex items-center justify-center">
           <input
@@ -29,10 +29,10 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
             className="peer sr-only"
             {...props}
           />
-          <div className="h-4 w-4 rounded bg-[#0F1115] border border-white/[0.16] transition-all peer-checked:bg-[#5E6AD2] peer-checked:border-[#5E6AD2] peer-focus-visible:ring-1 peer-focus-visible:ring-[#5E6AD2]" />
+          <div className="h-4.5 w-4.5 rounded bg-white border border-[#e5e2de] transition-all peer-checked:bg-[#6551a4] peer-checked:border-[#6551a4] peer-focus-visible:ring-2 peer-focus-visible:ring-[#ece5f5]" />
           <Check className="absolute h-3 w-3 text-white opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none stroke-[3]" />
         </div>
-        {label && <span className="leading-none">{label}</span>}
+        {label && <span className="leading-tight text-sm text-[#27252d]">{label}</span>}
       </label>
     );
   }

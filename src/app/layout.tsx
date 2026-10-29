@@ -19,8 +19,8 @@ const jetbrainsMono = JetBrains_Mono({
 
 const editorial = Lora({
   subsets: ["latin", "vietnamese"],
-  weight: "400",
-  style: "italic",
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
   variable: "--font-editorial",
   display: "swap",
 });

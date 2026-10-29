@@ -1,16 +1,11 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
-
 import { Button } from "./button";
 
 export interface EmptyStateProps {
-  /** Icon element */
   icon?: React.ReactNode;
-  /** Heading text */
   title: string;
-  /** Description text */
   description?: string;
-  /** Optional CTA action */
   action?: React.ReactNode | { label: string; onClick: () => void };
   className?: string;
 }
@@ -38,20 +33,20 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        "flex flex-col items-center justify-center text-center py-16 px-6",
+        "flex flex-col items-center justify-center text-center py-16 px-6 rounded-2xl bg-white border border-[#e5e2de] shadow-sm",
         className
       )}
     >
       {icon && (
-        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#14171D] border border-white/[0.08] text-[#5D6474] mb-4">
+        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#f1edf8] border border-[#d4c3e7] text-[#6551a4] mb-4">
           {icon}
         </div>
       )}
-      <h3 className="text-base font-semibold text-[#F0F2F5] tracking-tight mb-1">
+      <h3 className="text-lg font-semibold text-[#27252d] tracking-tight mb-1.5">
         {title}
       </h3>
       {description && (
-        <p className="text-sm text-[#9BA1B0] max-w-sm leading-relaxed">
+        <p className="text-sm text-[#5e5866] max-w-md leading-relaxed">
           {description}
         </p>
       )}

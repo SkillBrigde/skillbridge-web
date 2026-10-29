@@ -38,7 +38,7 @@ export function StarRating({
   const sizeStyles = {
     sm: "h-3.5 w-3.5",
     md: "h-4.5 w-4.5",
-    lg: "h-5.5 w-5.5",
+    lg: "h-6 w-6",
   };
 
   const displayValue = hovered ?? value;
@@ -46,10 +46,10 @@ export function StarRating({
   return (
     <div className={cn("flex items-center gap-2", className)}>
       {label && (
-        <span className="text-sm text-[#9BA1B0] min-w-[140px]">{label}</span>
+        <span className="text-sm text-[#5e5866] min-w-[140px]">{label}</span>
       )}
       <div
-        className="flex items-center gap-0.5"
+        className="flex items-center gap-1"
         onMouseLeave={() => isInteractive && setHovered(null)}
       >
         {Array.from({ length: max }, (_, i) => {
@@ -65,7 +65,7 @@ export function StarRating({
               onMouseEnter={() => isInteractive && setHovered(starIndex)}
               className={cn(
                 "transition-all duration-100 focus:outline-none disabled:cursor-default",
-                isInteractive && "cursor-pointer hover:scale-110"
+                isInteractive && "cursor-pointer hover:scale-115"
               )}
               aria-label={`${starIndex} sao`}
             >
@@ -74,8 +74,8 @@ export function StarRating({
                   sizeStyles[size],
                   "transition-colors duration-100",
                   isFilled
-                    ? "fill-[#F5A623] text-[#F5A623]"
-                    : "fill-transparent text-[#5D6474]"
+                    ? "fill-[#f5a623] text-[#f5a623]"
+                    : "fill-[#f1efea] text-[#e5e2de]"
                 )}
               />
             </button>
@@ -83,7 +83,7 @@ export function StarRating({
         })}
       </div>
       {showValue && (
-        <span className="text-xs font-mono text-[#F0F2F5]">
+        <span className="text-xs font-mono text-[#27252d]">
           {value}/{max}
         </span>
       )}

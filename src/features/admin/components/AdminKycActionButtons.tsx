@@ -18,20 +18,20 @@ export function AdminKycActionButtons({
   disabled = false,
 }: AdminKycActionButtonsProps) {
   return (
-    <div className="flex flex-wrap items-center gap-2.5 h-auto p-3 rounded-xl bg-[#14171D] border border-white/[0.08]">
+    <div className="flex flex-wrap items-center gap-3 p-4 rounded-2xl bg-white border border-[#e5e2de] shadow-xs">
       <Button
         variant="outline"
         disabled={disabled}
-        className="h-auto min-h-[40px] py-2 px-4 inline-flex items-center justify-center gap-2 whitespace-nowrap border-[#27C98F]/30 text-[#27C98F] hover:bg-[#27C98F]/10 flex-1 sm:flex-none"
+        className="h-auto min-h-[42px] py-2.5 px-5 inline-flex items-center justify-center gap-2 whitespace-nowrap border-[#1e7e45]/30 text-[#1e7e45] hover:bg-[#e8f5ed] flex-1 sm:flex-none font-semibold rounded-xl"
         onClick={onApprove}
       >
         <CheckCircle className="h-4 w-4 shrink-0" />
-        <span className="whitespace-nowrap">Duyệt &amp; Cấp Tích Xanh</span>
+        <span className="whitespace-nowrap">Duyệt & Cấp Tích Xanh</span>
       </Button>
       <Button
         variant="outline"
         disabled={disabled}
-        className="h-auto min-h-[40px] py-2 px-4 inline-flex items-center justify-center gap-2 whitespace-nowrap border-[#F5A623]/30 text-[#F5A623] hover:bg-[#F5A623]/10 flex-1 sm:flex-none"
+        className="h-auto min-h-[42px] py-2.5 px-5 inline-flex items-center justify-center gap-2 whitespace-nowrap border-[#946200]/30 text-[#946200] hover:bg-[#fdf6e7] flex-1 sm:flex-none font-semibold rounded-xl"
         onClick={onRequestMoreInfo}
       >
         <AlertTriangle className="h-4 w-4 shrink-0" />
@@ -40,7 +40,7 @@ export function AdminKycActionButtons({
       <Button
         variant="destructive"
         disabled={disabled}
-        className="h-auto min-h-[40px] py-2 px-4 inline-flex items-center justify-center gap-2 whitespace-nowrap flex-1 sm:flex-none"
+        className="h-auto min-h-[42px] py-2.5 px-5 inline-flex items-center justify-center gap-2 whitespace-nowrap flex-1 sm:flex-none font-semibold rounded-xl"
         onClick={onReject}
       >
         <XCircle className="h-4 w-4 shrink-0" />

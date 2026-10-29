@@ -17,7 +17,6 @@ export function Pagination({
   onPageChange,
   className,
 }: PaginationProps) {
-  // Generate visible page numbers with ellipsis
   const getPages = (): (number | "ellipsis")[] => {
     const pages: (number | "ellipsis")[] = [];
     if (totalPages <= 7) {
@@ -45,7 +44,7 @@ export function Pagination({
 
   return (
     <nav
-      className={cn("flex items-center justify-center gap-1", className)}
+      className={cn("flex items-center justify-center gap-1.5", className)}
       aria-label="Pagination"
     >
       {/* Previous */}
@@ -53,7 +52,7 @@ export function Pagination({
         type="button"
         disabled={currentPage <= 1}
         onClick={() => onPageChange(currentPage - 1)}
-        className="flex h-8 w-8 items-center justify-center rounded-lg text-[#9BA1B0] hover:bg-[#1F2022] hover:text-[#F0F2F5] disabled:opacity-30 disabled:pointer-events-none transition-colors cursor-pointer"
+        className="flex h-9 w-9 items-center justify-center rounded-lg text-[#5e5866] hover:bg-[#f1efea] hover:text-[#27252d] disabled:opacity-30 disabled:pointer-events-none transition-colors cursor-pointer border border-[#e5e2de] bg-white"
         aria-label="Trang trước"
       >
         <ChevronLeft className="h-4 w-4" />
@@ -64,7 +63,7 @@ export function Pagination({
         page === "ellipsis" ? (
           <span
             key={`ellipsis-${idx}`}
-            className="flex h-8 w-8 items-center justify-center text-xs text-[#5D6474]"
+            className="flex h-9 w-9 items-center justify-center text-xs text-[#9b919f]"
           >
             ···
           </span>
@@ -74,10 +73,10 @@ export function Pagination({
             type="button"
             onClick={() => onPageChange(page)}
             className={cn(
-              "flex h-8 w-8 items-center justify-center rounded-lg text-xs font-mono font-medium transition-all cursor-pointer",
+              "flex h-9 w-9 items-center justify-center rounded-lg text-xs font-mono font-medium transition-all cursor-pointer border",
               page === currentPage
-                ? "bg-[#5E6AD2] text-white shadow-sm shadow-[#5E6AD2]/20"
-                : "text-[#9BA1B0] hover:bg-[#1F2022] hover:text-[#F0F2F5]"
+                ? "bg-[#6551a4] text-white border-[#6551a4] shadow-sm font-semibold"
+                : "bg-white text-[#5e5866] border-[#e5e2de] hover:bg-[#faf9f6] hover:text-[#27252d]"
             )}
             aria-current={page === currentPage ? "page" : undefined}
           >
@@ -91,7 +90,7 @@ export function Pagination({
         type="button"
         disabled={currentPage >= totalPages}
         onClick={() => onPageChange(currentPage + 1)}
-        className="flex h-8 w-8 items-center justify-center rounded-lg text-[#9BA1B0] hover:bg-[#1F2022] hover:text-[#F0F2F5] disabled:opacity-30 disabled:pointer-events-none transition-colors cursor-pointer"
+        className="flex h-9 w-9 items-center justify-center rounded-lg text-[#5e5866] hover:bg-[#f1efea] hover:text-[#27252d] disabled:opacity-30 disabled:pointer-events-none transition-colors cursor-pointer border border-[#e5e2de] bg-white"
         aria-label="Trang sau"
       >
         <ChevronRight className="h-4 w-4" />

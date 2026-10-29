@@ -13,23 +13,15 @@ export type BookingStatus =
   | "cancelled";
 
 export interface BookingCardProps {
-  /** Booking code, e.g. "#SB-2026-98124" */
   bookingCode: string;
   status: BookingStatus;
-  /** Mentor name */
   mentorName: string;
   mentorAvatar?: string;
-  /** Service description */
   service: string;
-  /** Session time text */
   time: string;
-  /** Optional countdown text, e.g. "Còn 2 ngày" or "Còn 18h" */
   countdown?: string;
-  /** Star rating if completed */
   rating?: number;
-  /** Primary action */
   primaryAction?: { label: string; onClick: () => void };
-  /** Secondary / ghost action */
   secondaryAction?: { label: string; onClick: () => void };
   className?: string;
 }
@@ -54,23 +46,23 @@ export function BookingCard({
   return (
     <div
       className={cn(
-        "rounded-xl bg-[#14171D] border p-5 transition-colors",
+        "rounded-xl bg-white border p-5 sm:p-6 transition-all shadow-sm",
         status === "confirmed"
-          ? "border-[#27C98F]/25"
+          ? "border-[#bde6ca]"
           : status === "pending_review"
-          ? "border-[#F5A623]/25"
+          ? "border-[#f4dfad]"
           : status === "disputed"
-          ? "border-[#FF5C5C]/25"
+          ? "border-[#f5cac2]"
           : status === "pending_payment"
-          ? "border-[#5E6AD2]/25"
-          : "border-white/[0.08]",
-        status === "cancelled" && "opacity-75",
+          ? "border-[#d4c3e7]"
+          : "border-[#e5e2de]",
+        status === "cancelled" && "opacity-75 bg-[#faf9f6]",
         className
       )}
     >
       {/* Header: Code + Status */}
-      <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
-        <span className="text-xs font-mono text-[#5D6474]">{bookingCode}</span>
+      <div className="flex items-center justify-between flex-wrap gap-2 mb-3.5">
+        <span className="text-xs font-mono font-semibold text-[#5e5866]">{bookingCode}</span>
         <Badge variant={statusInfo.variant} dot>
           {statusInfo.label}
           {countdown && ` (${countdown})`}
@@ -78,18 +70,18 @@ export function BookingCard({
       </div>
 
       {/* Mentor + Service info */}
-      <div className="flex items-center gap-3 mb-3">
-        <Avatar src={mentorAvatar} alt={mentorName} size="sm" />
+      <div className="flex items-center gap-3.5 mb-3.5">
+        <Avatar src={mentorAvatar} alt={mentorName} size="md" />
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-[#F0F2F5] truncate">
+          <p className="text-base font-semibold text-[#27252d] truncate">
             {mentorName}
           </p>
-          <p className="text-xs text-[#9BA1B0] truncate">{service}</p>
+          <p className="text-xs text-[#5e5866] truncate mt-0.5">{service}</p>
         </div>
       </div>
 
       {/* Time */}
-      <p className="text-xs text-[#9BA1B0] mb-4 font-mono">{time}</p>
+      <p className="text-xs text-[#5e5866] mb-4 font-mono">{time}</p>
 
       {/* Rating for completed */}
       {status === "completed" && rating && (
@@ -99,19 +91,19 @@ export function BookingCard({
               key={i}
               className={cn(
                 "text-sm",
-                i < rating ? "text-[#F5A623]" : "text-[#5D6474]"
+                i < rating ? "text-[#f5a623]" : "text-[#e5e2de]"
               )}
             >
               ★
             </span>
           ))}
-          <span className="text-xs text-[#5D6474] ml-1">(Xem đánh giá)</span>
+          <span className="text-xs text-[#5e5866] ml-1 font-medium">(Đã đánh giá)</span>
         </div>
       )}
 
       {/* Actions */}
       {(primaryAction || secondaryAction) && (
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-2.5 flex-wrap pt-2 border-t border-[#f1efea]">
           {primaryAction && (
             <Button
               variant="primary"
@@ -123,7 +115,7 @@ export function BookingCard({
           )}
           {secondaryAction && (
             <Button
-              variant="ghost"
+              variant="secondary"
               size="sm"
               onClick={secondaryAction.onClick}
             >

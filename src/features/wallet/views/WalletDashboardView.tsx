@@ -52,15 +52,16 @@ export function WalletDashboardView() {
   };
 
   return (
-    <RequireRole role="mentee" title="Ví Cá Nhân &amp; Escrow" description="Đăng nhập để xem số dư và lịch sử giao dịch ký quỹ.">
+    <RequireRole role="mentee" title="Ví Cá Nhân & Ký Quỹ" description="Đăng nhập để xem số dư và lịch sử giao dịch ký quỹ.">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-10">
         {/* ── Header ── */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-[#F0F2F5] tracking-tight">
-              Ví Cá Nhân &amp; Lịch Sử Ký Quỹ
+            <span className="sb-eyebrow mb-1">Fintech & Escrow</span>
+            <h1 className="font-serif text-3xl font-semibold tracking-tight text-[#27252d]">
+              Ví Cá Nhân & Lịch Sử Ký Quỹ
             </h1>
-            <p className="text-xs text-[#9BA1B0] mt-1">
+            <p className="text-sm text-[#5e5866] mt-1">
               Quản lý số dư, tiền nạp và theo dõi các khoản bảo chứng học phí 100% qua Smart Escrow
             </p>
           </div>
@@ -84,7 +85,7 @@ export function WalletDashboardView() {
             value={vnd(summary.holding)}
             icon={<ShieldCheck className="h-4 w-4" />}
             variant="amber"
-            sublabel="Đang giữ an toàn trong Vault"
+            sublabel="Đang giữ an toàn trong Smart Vault"
           />
           <StatCard
             label="Tổng tiền đã chi tiêu"
@@ -98,20 +99,20 @@ export function WalletDashboardView() {
         {/* ── Transaction Ledger Table ── */}
         <section>
           <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
-            <h2 className="text-sm font-semibold text-[#F0F2F5] flex items-center gap-2">
-              <Clock className="h-4 w-4 text-[#5E6AD2]" />
+            <h2 className="text-base font-semibold text-[#27252d] flex items-center gap-2">
+              <Clock className="h-4 w-4 text-[#6551a4]" />
               Sổ Cái Giao Dịch ({ledgerEntries.length})
             </h2>
 
             {/* Filter pills */}
-            <div className="flex gap-1.5 text-xs">
+            <div className="flex gap-1.5 text-xs bg-[#f1efea] p-1 rounded-xl">
               <button
                 type="button"
                 onClick={() => setFilterType("all")}
-                className={`px-2.5 py-1 rounded-lg border text-xs transition-colors ${
+                className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
                   filterType === "all"
-                    ? "bg-[#1F2022] text-[#F0F2F5] border-white/[0.14]"
-                    : "bg-[#0D0E10] text-[#9BA1B0] border-white/[0.06]"
+                    ? "bg-white text-[#27252d] shadow-xs"
+                    : "text-[#5e5866] hover:text-[#27252d]"
                 }`}
               >
                 Tất cả
@@ -119,10 +120,10 @@ export function WalletDashboardView() {
               <button
                 type="button"
                 onClick={() => setFilterType("deposit")}
-                className={`px-2.5 py-1 rounded-lg border text-xs transition-colors ${
+                className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
                   filterType === "deposit"
-                    ? "bg-[#1F2022] text-[#F0F2F5] border-white/[0.14]"
-                    : "bg-[#0D0E10] text-[#9BA1B0] border-white/[0.06]"
+                    ? "bg-white text-[#27252d] shadow-xs"
+                    : "text-[#5e5866] hover:text-[#27252d]"
                 }`}
               >
                 Nạp tiền
@@ -130,13 +131,13 @@ export function WalletDashboardView() {
               <button
                 type="button"
                 onClick={() => setFilterType("escrow")}
-                className={`px-2.5 py-1 rounded-lg border text-xs transition-colors ${
+                className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
                   filterType === "escrow"
-                    ? "bg-[#1F2022] text-[#F0F2F5] border-white/[0.14]"
-                    : "bg-[#0D0E10] text-[#9BA1B0] border-white/[0.06]"
+                    ? "bg-white text-[#27252d] shadow-xs"
+                    : "text-[#5e5866] hover:text-[#27252d]"
                 }`}
               >
-                Escrow
+                Ký quỹ (Escrow)
               </button>
             </div>
           </div>
@@ -149,6 +150,7 @@ export function WalletDashboardView() {
           isOpen={depositModalOpen}
           onClose={() => setDepositModalOpen(false)}
           title="Nạp Tiền Vào Ví Escrow"
+          description="Nạp tiền tức thì để thanh toán dịch vụ cố vấn mà không cần nhập lại thẻ."
         >
           <div className="space-y-4 py-2">
             {depositSuccess ? (
@@ -159,7 +161,7 @@ export function WalletDashboardView() {
             ) : (
               <>
                 <div>
-                  <label className="block text-xs font-medium text-[#9BA1B0] mb-2">
+                  <label className="block text-xs font-medium text-[#5e5866] mb-2">
                     Chọn nhanh số tiền nạp:
                   </label>
                   <div className="grid grid-cols-4 gap-2 mb-3">
@@ -168,10 +170,10 @@ export function WalletDashboardView() {
                         key={amt}
                         type="button"
                         onClick={() => setDepositAmount(amt)}
-                        className={`rounded-lg py-2 text-xs font-mono font-medium border transition-colors ${
+                        className={`rounded-xl py-2 px-1 text-xs font-mono font-medium border transition-all ${
                           depositAmount === amt
-                            ? "bg-[#5E6AD2]/20 border-[#5E6AD2] text-white"
-                            : "bg-[#0D0E10] border-white/[0.08] text-[#9BA1B0] hover:text-white"
+                            ? "bg-[#ece5f5] border-[#6551a4] text-[#6551a4] shadow-xs"
+                            : "bg-[#faf9f6] border-[#e5e2de] text-[#5e5866] hover:border-[#6551a4]/40 hover:text-[#27252d]"
                         }`}
                       >
                         {vnd(amt)}
@@ -187,31 +189,31 @@ export function WalletDashboardView() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-[#9BA1B0] mb-2">
-                    Cổng thanh toán demo:
+                  <label className="block text-xs font-medium text-[#5e5866] mb-2">
+                    Phương thức nạp tiền:
                   </label>
                   <div className="grid grid-cols-2 gap-3">
                     <button
                       type="button"
                       onClick={() => setDepositGateway("PayOS")}
-                      className={`flex items-center justify-center gap-2 p-3 rounded-xl border text-xs font-medium transition-colors ${
+                      className={`flex items-center justify-center gap-2 p-3 rounded-xl border text-xs font-medium transition-all ${
                         depositGateway === "PayOS"
-                          ? "bg-[#27C98F]/15 border-[#27C98F] text-[#27C98F]"
-                          : "bg-[#0D0E10] border-white/[0.08] text-[#9BA1B0]"
+                          ? "bg-[#e8f5ed] border-[#1e7e45] text-[#1e7e45] shadow-xs font-semibold"
+                          : "bg-white border-[#e5e2de] text-[#5e5866] hover:border-[#27252d]/20"
                       }`}
                     >
-                      PayOS VietQR
+                      PayOS VietQR 24/7
                     </button>
                     <button
                       type="button"
                       onClick={() => setDepositGateway("VNPAY")}
-                      className={`flex items-center justify-center gap-2 p-3 rounded-xl border text-xs font-medium transition-colors ${
+                      className={`flex items-center justify-center gap-2 p-3 rounded-xl border text-xs font-medium transition-all ${
                         depositGateway === "VNPAY"
-                          ? "bg-[#5E6AD2]/15 border-[#5E6AD2] text-[#7C87ED]"
-                          : "bg-[#0D0E10] border-white/[0.08] text-[#9BA1B0]"
+                          ? "bg-[#ece5f5] border-[#6551a4] text-[#6551a4] shadow-xs font-semibold"
+                          : "bg-white border-[#e5e2de] text-[#5e5866] hover:border-[#27252d]/20"
                       }`}
                     >
-                      VNPAY Sandbox
+                      VNPAY Cổng Quốc Nội
                     </button>
                   </div>
                 </div>

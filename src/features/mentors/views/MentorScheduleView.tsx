@@ -1,8 +1,6 @@
 "use client";
 
-
 import { useState, useMemo } from "react";
-
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -32,7 +30,6 @@ import {
   WEEKDAYS,
   type WeekdayId,
   type AvailabilityRules,
-
   type MentorRec,
 } from "@/lib/domain";
 
@@ -59,7 +56,6 @@ function MentorScheduleContent({ mentor }: { mentor: MentorRec | null }) {
       sun: { enabled: false, windows: [] },
     }
   );
-
 
   const [duration, setDuration] = useState(String(mentor?.defaults.durationMin ?? 60));
   const [buffer, setBuffer] = useState(String(mentor?.defaults.bufferMin ?? 15));
@@ -123,19 +119,19 @@ function MentorScheduleContent({ mentor }: { mentor: MentorRec | null }) {
   }, [state.disputes]);
 
   return (
-    <RequireRole role="mentor" title="Lịch Dạy &amp; Khung Giờ" description="Đăng nhập tài khoản mentor để quản lý lịch dạy và quy tắc lặp tuần.">
+    <RequireRole role="mentor" title="Lịch Dạy & Khung Giờ" description="Đăng nhập tài khoản mentor để quản lý lịch dạy và quy tắc lặp tuần.">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
         {/* Disputes Alert Banner */}
         {disputesNeedingResponse.length > 0 && (
-          <div className="mb-8 rounded-xl border border-[#FF5C5C]/30 bg-[#FF5C5C]/10 p-4">
-            <div className="flex items-center justify-between">
+          <div className="mb-8 rounded-2xl border border-[#a64533]/25 bg-[#fceeea] p-5 shadow-xs">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="flex items-center gap-3">
-                <AlertTriangle className="h-5 w-5 text-[#FF5C5C]" />
+                <AlertTriangle className="h-5 w-5 text-[#a64533] shrink-0" />
                 <div>
-                  <p className="text-sm font-semibold text-white">
+                  <p className="text-sm font-semibold text-[#a64533]">
                     Có {disputesNeedingResponse.length} khiếu nại đang chờ bạn giải trình trong SLA 24h
                   </p>
-                  <p className="text-xs text-[#9BA1B0]">
+                  <p className="text-xs text-[#5e5866] mt-0.5">
                     Giải trình sớm để bảo vệ tiền ký quỹ Escrow và uy tín giảng dạy của bạn.
                   </p>
                 </div>
@@ -154,19 +150,22 @@ function MentorScheduleContent({ mentor }: { mentor: MentorRec | null }) {
         {/* SECTION 1: Availability Settings               */}
         {/* ═══════════════════════════════════════════════ */}
         <section className="mb-14">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-1">
-            <div className="flex items-center gap-3">
-              <Calendar className="h-5 w-5 text-[#5E6AD2]" />
-              <h1 className="text-xl font-bold text-[#F0F2F5] tracking-tight">
-                Quản Lý Lịch Trống &amp; Quy Tắc Lặp Tuần
-              </h1>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-2">
+            <div>
+              <span className="sb-eyebrow mb-1">Weekly Rules</span>
+              <div className="flex items-center gap-2">
+                <Calendar className="h-5 w-5 text-[#6551a4]" />
+                <h1 className="font-serif text-3xl font-semibold tracking-tight text-[#27252d]">
+                  Quản Lý Lịch Trống & Quy Tắc Lặp Tuần
+                </h1>
+              </div>
             </div>
             <Button variant="primary" onClick={handleSaveAvailability}>
               Lưu Cấu Hình Lịch
             </Button>
           </div>
-          <p className="text-sm text-[#9BA1B0] mb-6">
-            Cấu hình lịch trống mỗi tuần. Các slot sẽ tự động sinh ra cho 30 ngày tới trên Redis.
+          <p className="text-sm text-[#5e5866] mb-6">
+            Cấu hình lịch trống mỗi tuần. Các slot sẽ tự động sinh ra cho 30 ngày tới trên Redis với khóa nguyên tử (Atomic Lock).
           </p>
 
           {savedMsg && (
@@ -176,7 +175,7 @@ function MentorScheduleContent({ mentor }: { mentor: MentorRec | null }) {
           )}
 
           {/* Top Settings Bar */}
-          <div className="flex flex-wrap gap-4 mb-6 p-4 rounded-xl bg-[#14171D] border border-white/[0.08]">
+          <div className="flex flex-wrap gap-4 mb-6 p-5 rounded-2xl bg-white border border-[#e5e2de] shadow-xs">
             <Select
               label="Thời lượng mặc định"
               options={[
@@ -213,7 +212,7 @@ function MentorScheduleContent({ mentor }: { mentor: MentorRec | null }) {
           </div>
 
           {/* Weekly Matrix */}
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             {WEEKDAYS.map((day) => {
               const rule = rules[day.id as WeekdayId];
               const isEnabled = rule?.enabled ?? false;
@@ -224,30 +223,33 @@ function MentorScheduleContent({ mentor }: { mentor: MentorRec | null }) {
               return (
                 <div
                   key={day.id}
-                  className={`flex items-center gap-4 rounded-xl border p-3.5 transition-colors ${isEnabled
-                    ? "bg-[#14171D] border-white/[0.08]"
-                    : "bg-[#0D0E10] border-white/[0.04] opacity-60"
-                    }`}
+                  className={`flex items-center gap-4 rounded-xl border p-4 transition-all ${
+                    isEnabled
+                      ? "bg-white border-[#e5e2de] shadow-xs"
+                      : "bg-[#faf9f6] border-[#f1efea] opacity-70"
+                  }`}
                 >
                   {/* Toggle */}
                   <button
                     type="button"
                     onClick={() => toggleDay(day.id as WeekdayId)}
-                    className={`relative w-10 h-5 rounded-full transition-colors cursor-pointer flex-shrink-0 ${isEnabled ? "bg-[#27C98F]" : "bg-[#1F2022]"
-                      }`}
+                    className={`relative w-11 h-6 rounded-full transition-colors cursor-pointer shrink-0 ${
+                      isEnabled ? "bg-[#1e7e45]" : "bg-[#e5e2de]"
+                    }`}
                   >
                     <div
-                      className={`absolute top-0.5 h-4 w-4 rounded-full bg-white transition-transform ${isEnabled ? "translate-x-5" : "translate-x-0.5"
-                        }`}
+                      className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-xs transition-transform ${
+                        isEnabled ? "translate-x-5" : "translate-x-0.5"
+                      }`}
                     />
                   </button>
 
-                  <span className="text-sm font-medium text-[#F0F2F5] w-24">
+                  <span className="text-sm font-semibold text-[#27252d] w-24">
                     {day.label}
                   </span>
 
                   {isEnabled ? (
-                    <div className="flex items-center gap-2 flex-1 flex-wrap">
+                    <div className="flex items-center gap-3 flex-1 flex-wrap">
                       <Badge variant="brand" dot>
                         <Clock className="h-3 w-3 mr-0.5" />
                         {windowsText}
@@ -255,14 +257,14 @@ function MentorScheduleContent({ mentor }: { mentor: MentorRec | null }) {
                       <button
                         type="button"
                         onClick={() => addWindow(day.id as WeekdayId)}
-                        className="text-xs text-[#5E6AD2] hover:text-[#BDC2FF] transition-colors cursor-pointer flex items-center gap-1"
+                        className="text-xs font-medium text-[#6551a4] hover:text-[#523e8f] transition-colors cursor-pointer flex items-center gap-1"
                       >
-                        <Plus className="h-3 w-3" />
+                        <Plus className="h-3.5 w-3.5" />
                         Thêm khoảng giờ
                       </button>
                     </div>
                   ) : (
-                    <span className="text-xs text-[#5D6474]">
+                    <span className="text-xs text-[#5e5866]">
                       Không hoạt động
                     </span>
                   )}
@@ -277,8 +279,8 @@ function MentorScheduleContent({ mentor }: { mentor: MentorRec | null }) {
         {/* ═══════════════════════════════════════════════ */}
         <section>
           <div className="flex items-center gap-3 mb-6">
-            <Clock className="h-5 w-5 text-[#27C98F]" />
-            <h2 className="text-lg font-semibold text-[#F0F2F5] tracking-tight">
+            <Clock className="h-5 w-5 text-[#1e7e45]" />
+            <h2 className="font-serif text-2xl font-semibold text-[#27252d] tracking-tight">
               Lịch Dạy Sắp Tới
             </h2>
             <Badge variant="brand">
@@ -288,7 +290,7 @@ function MentorScheduleContent({ mentor }: { mentor: MentorRec | null }) {
 
           <div className="space-y-4">
             {upcomingBookings.length === 0 ? (
-              <Card className="p-8 text-center text-xs text-[#9BA1B0]">
+              <Card className="p-8 text-center text-sm text-[#5e5866]">
                 Chưa có buổi học nào được đặt trong thời gian tới.
               </Card>
             ) : (
@@ -297,39 +299,38 @@ function MentorScheduleContent({ mentor }: { mentor: MentorRec | null }) {
                   ? bookingTimeLabel(b.startMs, b.endMs)
                   : "Chưa xác định";
 
-
                 const countdown = b.startMs ? relativeFuture(b.startMs, now) : "";
 
                 return (
-                  <Card key={b.id} className="p-5">
+                  <Card key={b.id} className="p-6">
                     {/* Time + Countdown */}
-                    <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
+                    <div className="flex items-center justify-between flex-wrap gap-2 mb-4">
                       <div className="flex items-center gap-2">
                         <Badge variant="escrow" dot pulse>
                           {timeText}
                         </Badge>
                         {countdown && (
-                          <span className="text-xs text-[#F5A623] font-mono">
+                          <span className="text-xs text-[#946200] font-mono font-medium">
                             ({countdown})
                           </span>
                         )}
                       </div>
-                      <span className="text-xs font-mono text-[#27C98F] font-bold">
+                      <span className="text-sm font-mono text-[#1e7e45] font-bold">
                         {vnd(b.priceVnd)}
                       </span>
                     </div>
 
                     {/* Mentee + Package */}
-                    <div className="flex items-center gap-3 mb-3">
-                      <Avatar alt={b.menteeName} size="sm" />
+                    <div className="flex items-center gap-3 mb-4">
+                      <Avatar alt={b.menteeName} size="md" />
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-medium text-[#F0F2F5]">
+                          <span className="text-sm font-semibold text-[#27252d]">
                             {b.menteeName}
                           </span>
                           <Badge variant="brand">Mentee Pro</Badge>
                         </div>
-                        <p className="text-xs text-[#9BA1B0]">{b.serviceName} ({b.durationLabel})</p>
+                        <p className="text-xs text-[#5e5866] mt-0.5">{b.serviceName} ({b.durationLabel})</p>
                       </div>
                     </div>
 
@@ -341,25 +342,25 @@ function MentorScheduleContent({ mentor }: { mentor: MentorRec | null }) {
                             id: `intake-${b.id}`,
                             trigger: "Xem trước câu trả lời Khảo sát Intake của Mentee",
                             content: (
-                              <div className="space-y-3 text-sm">
+                              <div className="space-y-3 text-sm py-1">
                                 <div>
-                                  <span className="text-[10px] font-mono uppercase tracking-wider text-[#5D6474]">
+                                  <span className="text-[10px] font-mono uppercase tracking-wider text-[#5e5866]">
                                     Vấn đề kỹ thuật
                                   </span>
-                                  <p className="text-[#E3E2E5] mt-0.5 text-xs">
+                                  <p className="text-[#27252d] mt-0.5 text-xs">
                                     {b.intake.coreIssue}
                                   </p>
                                 </div>
                                 {b.intake.link && (
                                   <div>
-                                    <span className="text-[10px] font-mono uppercase tracking-wider text-[#5D6474]">
+                                    <span className="text-[10px] font-mono uppercase tracking-wider text-[#5e5866]">
                                       Link đính kèm
                                     </span>
                                     <a
                                       href={b.intake.link}
                                       target="_blank"
                                       rel="noopener noreferrer"
-                                      className="flex items-center gap-1 text-[#5E6AD2] hover:text-[#BDC2FF] text-xs mt-0.5"
+                                      className="flex items-center gap-1 text-[#6551a4] hover:text-[#523e8f] text-xs mt-0.5"
                                     >
                                       {b.intake.link}
                                       <ExternalLink className="h-3 w-3" />
@@ -367,10 +368,10 @@ function MentorScheduleContent({ mentor }: { mentor: MentorRec | null }) {
                                   </div>
                                 )}
                                 <div>
-                                  <span className="text-[10px] font-mono uppercase tracking-wider text-[#5D6474]">
+                                  <span className="text-[10px] font-mono uppercase tracking-wider text-[#5e5866]">
                                     Kỳ vọng kết quả
                                   </span>
-                                  <p className="text-[#E3E2E5] mt-0.5 text-xs">
+                                  <p className="text-[#27252d] mt-0.5 text-xs">
                                     {b.intake.expectation}
                                   </p>
                                 </div>
@@ -383,7 +384,7 @@ function MentorScheduleContent({ mentor }: { mentor: MentorRec | null }) {
                     )}
 
                     {/* Actions */}
-                    <div className="flex items-center gap-2 flex-wrap">
+                    <div className="flex items-center gap-3 flex-wrap pt-2 border-t border-[#f1efea]">
                       <Button
                         variant="primary"
                         size="sm"
@@ -392,7 +393,7 @@ function MentorScheduleContent({ mentor }: { mentor: MentorRec | null }) {
                         Vào Phòng Học Trực Tuyến
                       </Button>
                       <Button
-                        variant="ghost"
+                        variant="secondary"
                         size="sm"
                         onClick={() => router.push(`/bookings/${b.id}/room`)}
                       >
@@ -410,3 +411,5 @@ function MentorScheduleContent({ mentor }: { mentor: MentorRec | null }) {
     </RequireRole>
   );
 }
+
+export { MentorScheduleView as default };

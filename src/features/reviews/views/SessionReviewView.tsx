@@ -108,16 +108,17 @@ export function SessionReviewView() {
   return (
     <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8 py-10">
       {/* ── Modal-style Card ── */}
-      <div className="rounded-xl bg-[#14171D] border border-white/[0.08] overflow-hidden">
+      <div className="rounded-2xl bg-white border border-[#e5e2de] shadow-xs overflow-hidden">
         {/* Header */}
-        <div className="p-6 border-b border-white/[0.06]">
-          <div className="flex items-center gap-3 mb-2">
-            <Avatar src={mentor.avatarUrl} alt={mentor.fullName} size="md" />
+        <div className="p-6 border-b border-[#e5e2de]">
+          <div className="flex items-center gap-4">
+            <Avatar src={mentor.avatarUrl} alt={mentor.fullName} size="lg" />
             <div>
-              <h1 className="text-lg font-semibold text-[#F0F2F5] tracking-tight">
+              <span className="sb-eyebrow mb-1">Session Feedback</span>
+              <h1 className="font-serif text-2xl font-semibold text-[#27252d] tracking-tight">
                 Đánh Giá Buổi Học Với Mentor {mentor.fullName}
               </h1>
-              <p className="text-xs text-[#5D6474] font-mono">
+              <p className="text-xs text-[#5e5866] font-mono mt-0.5">
                 Booking #{booking.code} — {booking.serviceName}
               </p>
             </div>
@@ -125,7 +126,7 @@ export function SessionReviewView() {
         </div>
 
         {/* Body */}
-        <div className="p-6 space-y-6">
+        <div className="p-6 sm:p-8 space-y-6">
           {errorMsg && <NoticeBanner variant="error" message={errorMsg} />}
           {success && (
             <NoticeBanner
@@ -136,12 +137,12 @@ export function SessionReviewView() {
 
           {/* 4 Rating Criteria */}
           {CRITERIA.map((criterion) => (
-            <div key={criterion.id}>
+            <div key={criterion.id} className="pb-4 border-b border-[#f1efea] last:border-b-0">
               <div className="flex items-center justify-between mb-2">
-                <label className="text-sm font-medium text-[#E3E2E5]">
+                <label className="text-xs font-semibold text-[#27252d]">
                   {criterion.label}
                 </label>
-                <span className="text-xs font-mono text-[#F5A623]">
+                <span className="text-xs font-mono font-bold text-[#946200]">
                   {ratings[criterion.id]}/5
                 </span>
               </div>
@@ -157,7 +158,7 @@ export function SessionReviewView() {
 
           {/* Comment */}
           <div>
-            <label className="block text-sm font-medium text-[#E3E2E5] mb-2">
+            <label className="block text-xs font-medium text-[#5e5866] mb-2">
               Nhận xét chi tiết của bạn (Chia sẻ với cộng đồng)
             </label>
             <Textarea
@@ -177,15 +178,17 @@ export function SessionReviewView() {
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-white/[0.06]">
+        <div className="flex items-center justify-end gap-3 px-6 py-4 bg-[#fbfaf8] border-t border-[#e5e2de]">
           <Button variant="ghost" onClick={() => router.push("/bookings")}>
             Hủy
           </Button>
           <Button variant="primary" disabled={success} onClick={handleSubmit}>
-            Gửi Đánh Giá &amp; Hoàn Tất
+            Gửi Đánh Giá & Hoàn Tất
           </Button>
         </div>
       </div>
     </div>
   );
 }
+
+export { SessionReviewView as default };

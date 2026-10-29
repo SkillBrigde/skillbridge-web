@@ -47,44 +47,44 @@ export function CountdownTimer({
   return (
     <div
       className={cn(
-        "relative overflow-hidden rounded-xl bg-[#0D0E10] border border-[#F5A623]/25 p-4 shadow-xl",
+        "relative overflow-hidden rounded-xl bg-[#fffdfa] border border-[#f4dfad] p-4 sm:p-5 shadow-sm",
         className
       )}
     >
       {/* Depleting progress bar */}
       <div
-        className="absolute top-0 left-0 h-[2px] bg-[#F5A623] transition-all duration-1000 ease-linear"
+        className="absolute top-0 left-0 h-[3px] bg-[#b27400] transition-all duration-1000 ease-linear"
         style={{ width: `${percentLeft}%` }}
       />
 
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex items-center justify-between gap-4 flex-wrap sm:flex-nowrap">
         <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#F5A623]/10 border border-[#F5A623]/20 text-[#F5A623]">
-            <Clock className="h-4 w-4" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#fdf6e7] border border-[#f4dfad] text-[#946200] flex-shrink-0">
+            <Clock className="h-5 w-5" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] font-mono uppercase tracking-wider text-[#F5A623] font-semibold">
-                REDIS LOCK: EX {initialSeconds}
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-[11px] font-mono uppercase tracking-wider text-[#946200] font-semibold">
+                KHÓA ATOMIC REDIS: 10 PHÚT
               </span>
-              <span className="text-[11px] font-mono text-[#5D6474]">
-                KEY: {slotKey}
+              <span className="text-[11px] font-mono text-[#5e5866]">
+                {slotKey}
               </span>
             </div>
-            <p className="text-xs text-[#9BA1B0]">
-              Khóa độc quyền slot qua Redis — Slot sẽ giải phóng nếu không thanh toán kịp
+            <p className="text-xs text-[#5e5866] mt-0.5">
+              Khung giờ này đang được giữ riêng cho bạn — Đơn sẽ tự hủy nếu chưa hoàn tất thanh toán
             </p>
           </div>
         </div>
 
         {/* Timer readout */}
-        <div className="text-right flex-shrink-0">
-          <span className="text-[10px] font-mono text-[#9BA1B0] block uppercase tracking-wider">
+        <div className="text-right flex-shrink-0 ml-auto sm:ml-0">
+          <span className="text-[10px] font-mono text-[#5e5866] block uppercase tracking-wider">
             Thời Gian Còn Lại
           </span>
-          <span className="font-mono text-xl font-bold tracking-tight text-[#F5A623]">
+          <span className="font-mono text-2xl font-bold tracking-tight text-[#946200]">
             {formattedTime}
-            <span className="text-xs text-[#F5A623]/70 font-normal ml-0.5">s</span>
+            <span className="text-xs text-[#946200]/70 font-normal ml-0.5">s</span>
           </span>
         </div>
       </div>

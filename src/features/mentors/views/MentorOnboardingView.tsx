@@ -97,13 +97,16 @@ export function MentorOnboardingView() {
     <RequireRole role="any" title="Xác Thực Mentor eKYC" description="Đăng nhập để nộp hồ sơ thẩm định chuyên gia.">
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-10">
         {/* ── Header ── */}
-        <div className="flex items-center gap-3 mb-2">
-          <ShieldCheck className="h-5 w-5 text-[#5E6AD2]" />
-          <h1 className="text-xl font-bold text-[#F0F2F5] tracking-tight">
-            Hồ Sơ Đăng Ký Chuyên Gia (Mentor KYC &amp; Verification)
-          </h1>
+        <div className="mb-2">
+          <span className="sb-eyebrow">Trust & Verification</span>
+          <div className="flex items-center gap-2 mt-1">
+            <ShieldCheck className="h-6 w-6 text-[#6551a4]" />
+            <h1 className="font-serif text-3xl font-semibold tracking-tight text-[#27252d]">
+              Hồ Sơ Đăng Ký Chuyên Gia (Mentor eKYC)
+            </h1>
+          </div>
         </div>
-        <p className="text-sm text-[#9BA1B0] mb-8">
+        <p className="text-sm text-[#5e5866] mb-8">
           Hoàn tất xác minh danh tính và liên kết tài khoản ngân hàng để nhận tích xanh Verified Mentor.
         </p>
 
@@ -114,14 +117,14 @@ export function MentorOnboardingView() {
 
         {/* Approved state */}
         {existingKyc?.status === "Approved" ? (
-          <div className="rounded-2xl border border-[#27C98F]/30 bg-[#27C98F]/10 p-8 text-center space-y-4">
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#27C98F]/20 text-[#27C98F]">
+          <div className="rounded-2xl border border-[#1e7e45]/30 bg-[#e8f5ed] p-8 text-center space-y-4 shadow-xs">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-[#1e7e45] shadow-xs">
               <CheckCircle2 className="h-8 w-8" />
             </div>
-            <h2 className="text-xl font-bold text-white">
+            <h2 className="font-serif text-2xl font-semibold text-[#27252d]">
               Hồ Sơ Của Bạn Đã Được Phê Duyệt!
             </h2>
-            <p className="text-sm text-[#9BA1B0] max-w-md mx-auto">
+            <p className="text-sm text-[#5e5866] max-w-md mx-auto">
               Tài khoản của bạn đã đạt chuẩn Verified Mentor với huy hiệu tích xanh. Bạn có thể thiết lập các gói dịch vụ và mở lịch trống ngay.
             </p>
             <div className="pt-4 flex justify-center gap-3">
@@ -134,30 +137,30 @@ export function MentorOnboardingView() {
             </div>
           </div>
         ) : existingKyc?.status === "Pending" ? (
-          <div className="rounded-2xl border border-[#F5A623]/30 bg-[#F5A623]/10 p-8 text-center space-y-4">
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#F5A623]/20 text-[#F5A623]">
+          <div className="rounded-2xl border border-[#946200]/30 bg-[#fdf6e7] p-8 text-center space-y-4 shadow-xs">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-[#946200] shadow-xs">
               <ShieldCheck className="h-8 w-8" />
             </div>
-            <h2 className="text-xl font-bold text-white">
+            <h2 className="font-serif text-2xl font-semibold text-[#27252d]">
               Hồ Sơ Đang Trong Hàng Đợi Duyệt SLA 24h
             </h2>
-            <p className="text-sm text-[#9BA1B0] max-w-md mx-auto">
+            <p className="text-sm text-[#5e5866] max-w-md mx-auto">
               Ban Quản Trị đang đối soát thông tin CCCD và tài khoản ngân hàng của bạn. Bạn sẽ nhận được thông báo ngay khi có kết quả.
             </p>
             <div className="pt-2">
-              <span className="font-mono text-xs text-[#5D6474]">
+              <span className="font-mono text-xs text-[#5e5866]">
                 Mã hồ sơ: #{existingKyc.id}
               </span>
             </div>
           </div>
         ) : (
-          <>
+          <div className="space-y-10">
             {/* ── Section 1: CCCD ── */}
-            <section className="mb-10">
-              <h2 className="text-base font-semibold text-[#F0F2F5] mb-2">
+            <section className="bg-white rounded-2xl border border-[#e5e2de] p-6 shadow-xs">
+              <h2 className="font-serif text-lg font-semibold text-[#27252d] mb-1">
                 1. Căn cước công dân (CCCD 2 mặt)
               </h2>
-              <p className="text-xs text-[#5D6474] mb-4">
+              <p className="text-xs text-[#5e5866] mb-4">
                 Lưu trữ mã hóa riêng tư trên MinIO Private S3 bucket
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -175,10 +178,13 @@ export function MentorOnboardingView() {
             </section>
 
             {/* ── Section 2: Bằng cấp & Chứng chỉ ── */}
-            <section className="mb-10">
-              <h2 className="text-base font-semibold text-[#F0F2F5] mb-2">
-                2. Bằng cấp &amp; Chứng chỉ chuyên môn
+            <section className="bg-white rounded-2xl border border-[#e5e2de] p-6 shadow-xs">
+              <h2 className="font-serif text-lg font-semibold text-[#27252d] mb-1">
+                2. Bằng cấp & Chứng chỉ chuyên môn
               </h2>
+              <p className="text-xs text-[#5e5866] mb-4">
+                Chứng chỉ quốc tế hoặc xác nhận kinh nghiệm thực tế
+              </p>
               <div className="space-y-4">
                 <FileUpload
                   accept=".pdf,image/*"
@@ -186,24 +192,37 @@ export function MentorOnboardingView() {
                   label="Tải lên bằng cấp / chứng chỉ (PDF, PNG, JPG)"
                   multiple
                 />
-                <Input
-                  value={certUrl}
-                  onChange={(e) => setCertUrl(e.target.value)}
-                  placeholder="URL chứng chỉ trực tuyến (VD: Credly, LinkedIn)"
-                />
-                <Input
-                  value={org}
-                  onChange={(e) => setOrg(e.target.value)}
-                  placeholder="Tổ chức cấp (VD: AWS, Microsoft, Đại học Bách Khoa)"
-                />
+                <div>
+                  <label className="block text-xs font-medium text-[#5e5866] mb-1.5">
+                    URL chứng chỉ trực tuyến
+                  </label>
+                  <Input
+                    value={certUrl}
+                    onChange={(e) => setCertUrl(e.target.value)}
+                    placeholder="VD: Credly, LinkedIn, GitHub..."
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-[#5e5866] mb-1.5">
+                    Tổ chức cấp
+                  </label>
+                  <Input
+                    value={org}
+                    onChange={(e) => setOrg(e.target.value)}
+                    placeholder="VD: AWS, Google Cloud, Microsoft, Đại học Bách Khoa..."
+                  />
+                </div>
               </div>
             </section>
 
             {/* ── Section 3: Bank KYC Payout ── */}
-            <section className="mb-10">
-              <h2 className="text-base font-semibold text-[#F0F2F5] mb-2">
+            <section className="bg-white rounded-2xl border border-[#e5e2de] p-6 shadow-xs">
+              <h2 className="font-serif text-lg font-semibold text-[#27252d] mb-1">
                 3. Tài khoản ngân hàng nhận tiền (KYC Payout)
               </h2>
+              <p className="text-xs text-[#5e5866] mb-4">
+                Tên chủ tài khoản phải khớp chính xác 100% với tên trên CCCD
+              </p>
               <div className="space-y-4">
                 <Select
                   label="Tên ngân hàng"
@@ -212,17 +231,18 @@ export function MentorOnboardingView() {
                   onChange={setBank}
                 />
                 <div>
-                  <label className="block text-sm font-medium text-[#E3E2E5] mb-1.5">
-                    Số tài khoản
+                  <label className="block text-xs font-medium text-[#5e5866] mb-1.5">
+                    Số tài khoản ngân hàng
                   </label>
                   <Input
                     value={accountNumber}
                     onChange={(e) => setAccountNumber(e.target.value)}
                     placeholder="VD: 0987654321"
+                    className="font-mono"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#E3E2E5] mb-1.5">
+                  <label className="block text-xs font-medium text-[#5e5866] mb-1.5">
                     Tên chủ tài khoản (phải khớp chính xác với CCCD)
                   </label>
                   <Input
@@ -236,7 +256,7 @@ export function MentorOnboardingView() {
             </section>
 
             {/* ── Notice + SLA Agreement ── */}
-            <NoticeBanner variant="info" className="mb-6">
+            <NoticeBanner variant="info">
               Hồ sơ của bạn sẽ được Ban Quản Trị thẩm định trong vòng 24–48 giờ. Bạn sẽ nhận thông báo khi được cấp tích xanh Verified Mentor.
             </NoticeBanner>
 
@@ -244,7 +264,6 @@ export function MentorOnboardingView() {
               label="Tôi cam kết tuân thủ SLA phản hồi trong 24h và chính sách phòng học của SkillBridge."
               checked={agreedSLA}
               onChange={(e) => setAgreedSLA(e.target.checked)}
-              className="mb-8"
             />
 
             {/* ── Submit ── */}
@@ -257,9 +276,11 @@ export function MentorOnboardingView() {
             >
               Gửi Hồ Sơ Xác Minh Cho Ban Quản Trị
             </Button>
-          </>
+          </div>
         )}
       </div>
     </RequireRole>
   );
 }
+
+export { MentorOnboardingView as default };

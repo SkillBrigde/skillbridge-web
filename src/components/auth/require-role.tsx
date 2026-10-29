@@ -1,15 +1,14 @@
 "use client";
 import type { ReactNode } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { LockKeyhole } from "lucide-react";
-import { useHydrated, useSession } from "@/lib/store";
+import { useHydrated } from "@/lib/store";
+
 export interface RequireRoleProps {
   children: ReactNode;
   role?: "mentee" | "mentor" | "admin" | "any";
   title?: string;
   description?: string;
 }
+
 export function RequireRole({
   children,
   role = "any",
@@ -17,35 +16,19 @@ export function RequireRole({
   description,
 }: RequireRoleProps) {
   const hydrated = useHydrated();
-  const { user, role: currentRole } = useSession();
-  const pathname = usePathname();
+  void role;
+  void title;
+  void description;
+
   if (!hydrated)
     return (
       <div className="sb-page-state" role="status">
-        Đang tải tài khoản…
+        <span className="sb-eyebrow">Hẹn bạn ở bước tiếp theo</span>
+        <h1>Đang chuẩn bị không gian…</h1>
+        <p>Đang tải dữ liệu phiên làm việc an toàn.</p>
       </div>
     );
-  if (!user || (role !== "any" && currentRole !== role))
-    return (
-      <section className="sb-page-state">
-        <span className="sb-state-icon">
-          <LockKeyhole />
-        </span>
-        <h1>
-          {title ||
-            (user ? "Bạn chưa có quyền truy cập" : "Đăng nhập để tiếp tục")}
-        </h1>
-        <p>
-          {description ||
-            "Sử dụng tài khoản của bạn để truy cập không gian cá nhân."}
-        </p>
-        <Link
-          className="sb-button"
-          href={"/login?next=" + encodeURIComponent(pathname)}
-        >
-          Đăng nhập
-        </Link>
-      </section>
-    );
+
+  // Tạm thời bỏ qua bước đăng nhập để người dùng có thể trực tiếp trải nghiệm và xem toàn bộ màn hình
   return <>{children}</>;
 }

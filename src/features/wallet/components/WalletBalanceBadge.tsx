@@ -20,14 +20,14 @@ export function WalletBalanceBadge({
   return (
     <Link
       href={href}
-      className={`flex items-center gap-2 rounded-xl bg-[#03BD84]/10 border border-[#27C98F]/30 px-2.5 py-1.5 transition-colors hover:bg-[#03BD84]/15 ${className}`}
+      className={`inline-flex items-center gap-2 rounded-xl bg-[#e8f5ed] border border-[#1e7e45]/20 px-3 py-1.5 transition-all hover:bg-[#dcf0e4] ${className}`}
     >
-      <ShieldCheck className="h-4 w-4 text-[#27C98F] flex-shrink-0" />
-      <div className="flex flex-col items-start leading-none">
-        <span className="text-[10px] font-mono uppercase tracking-wider text-[#27C98F] whitespace-nowrap">
+      <ShieldCheck className="h-4 w-4 text-[#1e7e45] shrink-0" />
+      <div className="flex flex-col items-start leading-tight">
+        <span className="text-[10px] font-mono font-semibold uppercase tracking-wider text-[#1e7e45] whitespace-nowrap">
           {label}
         </span>
-        <span className="text-xs font-mono font-medium text-[#F0F2F5] whitespace-nowrap">
+        <span className="text-xs font-mono font-semibold text-[#27252d] whitespace-nowrap">
           {amount}
         </span>
       </div>

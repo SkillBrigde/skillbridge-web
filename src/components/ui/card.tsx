@@ -9,8 +9,8 @@ export function Card({ className, hoverable = false, ...props }: CardProps) {
   return (
     <div
       className={cn(
-        "rounded-xl bg-[#14171D] border border-white/[0.08] text-[#E3E2E5] transition-colors",
-        hoverable && "hover:bg-[#171A21] hover:border-white/[0.14] cursor-pointer",
+        "rounded-xl bg-white border border-[#e5e2de] text-[#27252d] transition-all shadow-[0_1px_3px_rgba(0,0,0,0.03)]",
+        hoverable && "hover:border-[#d4c3e7] hover:shadow-[0_4px_16px_rgba(101,81,164,0.08)] cursor-pointer",
         className
       )}
       {...props}
@@ -24,7 +24,7 @@ export function CardHeader({
 }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn("flex flex-col space-y-1.5 p-5 border-b border-white/[0.06]", className)}
+      className={cn("flex flex-col space-y-1.5 p-5 sm:p-6 border-b border-[#e5e2de]", className)}
       {...props}
     />
   );
@@ -36,7 +36,7 @@ export function CardTitle({
 }: React.HTMLAttributes<HTMLHeadingElement>) {
   return (
     <h3
-      className={cn("font-semibold text-base text-[#F0F2F5] tracking-tight", className)}
+      className={cn("font-semibold text-base sm:text-lg text-[#27252d] tracking-tight", className)}
       {...props}
     />
   );
@@ -48,7 +48,7 @@ export function CardDescription({
 }: React.HTMLAttributes<HTMLParagraphElement>) {
   return (
     <p
-      className={cn("text-xs text-[#9BA1B0] leading-relaxed", className)}
+      className={cn("text-xs sm:text-sm text-[#5e5866] leading-relaxed", className)}
       {...props}
     />
   );
@@ -58,7 +58,7 @@ export function CardContent({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("p-5", className)} {...props} />;
+  return <div className={cn("p-5 sm:p-6", className)} {...props} />;
 }
 
 export function CardFooter({
@@ -67,7 +67,7 @@ export function CardFooter({
 }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn("flex items-center p-5 pt-0 border-t border-white/[0.06] mt-4", className)}
+      className={cn("flex items-center p-5 sm:p-6 pt-0 border-t border-[#e5e2de] mt-4", className)}
       {...props}
     />
   );

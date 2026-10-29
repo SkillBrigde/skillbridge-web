@@ -17,30 +17,30 @@ export function NoticeBanner({
 }: NoticeBannerProps) {
   const variants = {
     info: {
-      bg: "bg-[#5E6AD2]/8 border-[#5E6AD2]/25",
-      icon: <Info className="h-4 w-4 text-[#BDC2FF] flex-shrink-0 mt-0.5" />,
-      text: "text-[#BDC2FF]",
+      bg: "bg-[#ece5f5]/60 border-[#d4c3e7]",
+      icon: <Info className="h-4.5 w-4.5 text-[#6551a4] flex-shrink-0 mt-0.5" />,
+      text: "text-[#4d3d7d]",
     },
     warning: {
-      bg: "bg-[#F5A623]/8 border-[#F5A623]/25",
+      bg: "bg-[#fdf6e7] border-[#f4dfad]",
       icon: (
-        <AlertTriangle className="h-4 w-4 text-[#F5A623] flex-shrink-0 mt-0.5" />
+        <AlertTriangle className="h-4.5 w-4.5 text-[#946200] flex-shrink-0 mt-0.5" />
       ),
-      text: "text-[#F5A623]",
+      text: "text-[#7a5000]",
     },
     success: {
-      bg: "bg-[#27C98F]/8 border-[#27C98F]/25",
+      bg: "bg-[#e8f5ed] border-[#bde6ca]",
       icon: (
-        <CheckCircle className="h-4 w-4 text-[#27C98F] flex-shrink-0 mt-0.5" />
+        <CheckCircle className="h-4.5 w-4.5 text-[#1e7e45] flex-shrink-0 mt-0.5" />
       ),
-      text: "text-[#27C98F]",
+      text: "text-[#1b6238]",
     },
     error: {
-      bg: "bg-[#FF5C5C]/8 border-[#FF5C5C]/25",
+      bg: "bg-[#fceeea] border-[#f5cac2]",
       icon: (
-        <AlertCircle className="h-4 w-4 text-[#FF5C5C] flex-shrink-0 mt-0.5" />
+        <AlertCircle className="h-4.5 w-4.5 text-[#a64533] flex-shrink-0 mt-0.5" />
       ),
-      text: "text-[#FF5C5C]",
+      text: "text-[#833021]",
     },
   };
 
@@ -49,7 +49,7 @@ export function NoticeBanner({
   return (
     <div
       className={cn(
-        "flex items-start gap-2.5 rounded-xl border p-3.5",
+        "flex items-start gap-3 rounded-xl border p-4 shadow-sm",
         v.bg,
         className
       )}
@@ -57,7 +57,7 @@ export function NoticeBanner({
       {...props}
     >
       {v.icon}
-      <div className={cn("text-xs leading-relaxed", v.text)}>
+      <div className={cn("text-xs sm:text-sm leading-relaxed", v.text)}>
         {children ?? message}
       </div>
     </div>

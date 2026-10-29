@@ -120,13 +120,14 @@ function MentorStudioDashboardContent({ mentor }: { mentor: MentorRec | null }) 
         {/* ── Header ── */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
           <div>
-            <div className="flex items-center gap-3 mb-1">
-              <Package className="h-5 w-5 text-[#5E6AD2]" />
-              <h1 className="text-xl font-bold text-[#F0F2F5] tracking-tight">
-                Studio Đóng Gói Dịch Vụ — Thiết Lập 3 Gói Cố Định
-              </h1>
+            <div className="flex items-center gap-2 mb-1">
+              <Package className="h-5 w-5 text-[#6551a4]" />
+              <span className="sb-eyebrow">Productized Services</span>
             </div>
-            <p className="text-sm text-[#9BA1B0]">
+            <h1 className="font-serif text-3xl font-semibold tracking-tight text-[#27252d]">
+              Thiết Lập 3 Gói Dịch Vụ Cố Định
+            </h1>
+            <p className="text-sm text-[#5e5866] mt-1">
               Thay vì tính tiền theo giờ mơ hồ, hãy định nghĩa rõ cam kết đầu ra (deliverables) minh bạch cho học viên.
             </p>
           </div>
@@ -144,14 +145,15 @@ function MentorStudioDashboardContent({ mentor }: { mentor: MentorRec | null }) 
         )}
 
         {/* ── 3 Service Editor Columns ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-10">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
           {services.map((service, idx) => (
             <div
               key={service.id || idx}
-              className={`rounded-xl border p-5 flex flex-col justify-between ${service.isFeatured
-                ? "bg-[#14171D] border-[#5E6AD2]/40 ring-1 ring-[#5E6AD2]/20"
-                : "bg-[#14171D] border-white/[0.08]"
-                }`}
+              className={`rounded-2xl border p-6 flex flex-col justify-between transition-all ${
+                service.isFeatured
+                  ? "bg-white border-[#6551a4] shadow-md ring-1 ring-[#6551a4]/20"
+                  : "bg-white border-[#e5e2de] shadow-xs hover:border-[#6551a4]/30"
+              }`}
             >
               <div>
                 {/* Tier label */}
@@ -160,10 +162,10 @@ function MentorStudioDashboardContent({ mentor }: { mentor: MentorRec | null }) 
                     Tier {service.tierNumber} • {service.category}
                   </Badge>
                   {service.tierNumber === 2 && (
-                    <div className="flex items-center gap-1.5">
-                      <Sparkles className="h-3 w-3 text-[#5E6AD2]" />
-                      <span className="text-[10px] text-[#7C87ED] font-mono">
-                        TOP PICK
+                    <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#ece5f5] text-[#6551a4]">
+                      <Sparkles className="h-3 w-3 text-[#6551a4]" />
+                      <span className="text-[10px] font-mono font-semibold">
+                        PHỔ BIẾN NHẤT
                       </span>
                     </div>
                   )}
@@ -171,7 +173,7 @@ function MentorStudioDashboardContent({ mentor }: { mentor: MentorRec | null }) 
 
                 {/* Package name */}
                 <div className="mb-4">
-                  <label className="block text-xs text-[#9BA1B0] mb-1 font-medium">
+                  <label className="block text-xs text-[#5e5866] mb-1.5 font-medium">
                     Tên gói dịch vụ
                   </label>
                   <Input
@@ -207,7 +209,7 @@ function MentorStudioDashboardContent({ mentor }: { mentor: MentorRec | null }) 
 
                 {/* Price */}
                 <div className="mb-4">
-                  <label className="block text-xs text-[#9BA1B0] mb-1 font-medium">
+                  <label className="block text-xs text-[#5e5866] mb-1.5 font-medium">
                     Giá dịch vụ (VND)
                   </label>
                   <Input
@@ -218,7 +220,7 @@ function MentorStudioDashboardContent({ mentor }: { mentor: MentorRec | null }) 
                     }
                     className="font-mono"
                   />
-                  <span className="text-[11px] text-[#27C98F] font-mono mt-1 block">
+                  <span className="text-xs text-[#1e7e45] font-mono font-semibold mt-1.5 block">
                     Hiển thị: {vnd(service.priceVnd)}
                   </span>
                 </div>
@@ -226,15 +228,15 @@ function MentorStudioDashboardContent({ mentor }: { mentor: MentorRec | null }) 
                 {/* Deliverables list */}
                 <div className="mb-4">
                   <div className="flex items-center justify-between mb-2">
-                    <label className="text-xs text-[#9BA1B0] font-medium">
+                    <label className="text-xs text-[#5e5866] font-medium">
                       Cam kết đầu ra ({service.deliverables.length})
                     </label>
                     <button
                       type="button"
                       onClick={() => addDeliverable(idx)}
-                      className="text-xs text-[#5E6AD2] hover:text-[#BDC2FF] flex items-center gap-1 transition-colors"
+                      className="text-xs text-[#6551a4] hover:text-[#523e8f] font-medium flex items-center gap-1 transition-colors"
                     >
-                      <Plus className="h-3 w-3" /> Thêm cam kết
+                      <Plus className="h-3.5 w-3.5" /> Thêm cam kết
                     </button>
                   </div>
 
@@ -249,7 +251,8 @@ function MentorStudioDashboardContent({ mentor }: { mentor: MentorRec | null }) 
                         <button
                           type="button"
                           onClick={() => removeDeliverable(idx, dIdx)}
-                          className="p-1.5 text-[#5D6474] hover:text-[#FF5C5C] transition-colors"
+                          className="p-1.5 text-[#5e5866] hover:text-[#a64533] transition-colors"
+                          title="Xóa cam kết"
                         >
                           <X className="h-3.5 w-3.5" />
                         </button>
@@ -260,7 +263,7 @@ function MentorStudioDashboardContent({ mentor }: { mentor: MentorRec | null }) 
               </div>
 
               {/* Bottom preview */}
-              <div className="pt-4 border-t border-white/[0.06] text-xs text-[#5D6474]">
+              <div className="pt-4 border-t border-[#e5e2de] text-xs text-[#5e5866]">
                 Học phí giải phóng qua Escrow từng buổi học
               </div>
             </div>

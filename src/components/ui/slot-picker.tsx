@@ -6,11 +6,8 @@ import { Clock } from "lucide-react";
 
 export interface SlotOption {
   id: string;
-  /** e.g. "Thứ 6, 18/09" */
   date: string;
-  /** e.g. "19:30 - 20:30" */
   time: string;
-  /** Whether the slot is available for selection */
   available?: boolean;
 }
 
@@ -19,7 +16,6 @@ export interface SlotPickerProps {
   selectedId?: string;
   onChange?: (slotId: string) => void;
   onSelect?: (slotId: string) => void;
-  /** Timezone label */
   timezone?: string;
   className?: string;
 }
@@ -39,18 +35,18 @@ export function SlotPicker({
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-2">
         <div className="flex items-center gap-2">
-          <Clock className="h-4 w-4 text-[#9BA1B0]" />
-          <span className="text-sm font-medium text-[#F0F2F5]">
-            Chọn Khung Giờ (Slot)
+          <Clock className="h-4 w-4 text-[#6551a4]" />
+          <span className="text-sm font-semibold text-[#27252d]">
+            Chọn Khung Giờ (Slot Lịch)
           </span>
-          <span className="text-xs text-[#5D6474]">— Múi giờ {timezone}</span>
+          <span className="text-xs text-[#5e5866]">— Múi giờ {timezone}</span>
         </div>
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-[#27C98F]/10 border border-[#27C98F]/25 px-2 py-0.5 text-[10px] font-mono text-[#27C98F] uppercase tracking-wider">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-[#e8f5ed] border border-[#bde6ca] px-2.5 py-0.5 text-[10px] font-mono text-[#1e7e45] uppercase tracking-wider font-medium">
           <span className="relative flex h-1.5 w-1.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#27C98F] opacity-75" />
-            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#27C98F]" />
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#1e7e45] opacity-75" />
+            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#1e7e45]" />
           </span>
-          Live Availability
+          Lịch Thực Tế
         </span>
       </div>
 
@@ -67,32 +63,32 @@ export function SlotPicker({
               disabled={isDisabled}
               onClick={() => !isDisabled && handleSelect?.(slot.id)}
               className={cn(
-                "relative flex flex-col items-start gap-0.5 rounded-xl border p-3.5 text-left transition-all duration-150 cursor-pointer select-none",
+                "relative flex flex-col items-start gap-1 rounded-xl border p-4 text-left transition-all duration-150 cursor-pointer select-none",
                 isSelected
-                  ? "bg-[#5E6AD2]/10 border-[#5E6AD2]/40 ring-1 ring-[#5E6AD2]/30"
+                  ? "bg-[#ece5f5]/30 border-[#6551a4] shadow-sm ring-1 ring-[#6551a4]"
                   : isDisabled
-                  ? "bg-[#0D0E10] border-white/[0.04] opacity-50 cursor-not-allowed"
-                  : "bg-[#14171D] border-white/[0.08] hover:bg-[#171A21] hover:border-white/[0.14]"
+                  ? "bg-[#f1efea] border-[#e5e2de] opacity-50 cursor-not-allowed"
+                  : "bg-white border-[#e5e2de] hover:border-[#d4c3e7] hover:bg-[#faf9f6]"
               )}
             >
               <span
                 className={cn(
                   "text-sm font-medium",
-                  isSelected ? "text-[#F0F2F5]" : "text-[#E3E2E5]"
+                  isSelected ? "text-[#6551a4] font-semibold" : "text-[#27252d]"
                 )}
               >
                 {slot.date}
               </span>
-              <span className="font-mono text-xs text-[#9BA1B0]">
+              <span className="font-mono text-xs text-[#5e5866]">
                 {slot.time}
               </span>
               {isDisabled && (
-                <span className="absolute top-2 right-2 text-[10px] font-mono text-[#FF5C5C] uppercase tracking-wider">
-                  Đã đặt
+                <span className="absolute top-3 right-3 text-[10px] font-mono text-[#a64533] uppercase tracking-wider font-medium">
+                  Đã kín
                 </span>
               )}
               {isSelected && (
-                <span className="absolute top-2 right-2 text-[10px] font-mono text-[#5E6AD2] uppercase tracking-wider">
+                <span className="absolute top-3 right-3 text-[10px] font-mono text-[#6551a4] uppercase tracking-wider font-semibold">
                   Đã chọn
                 </span>
               )}

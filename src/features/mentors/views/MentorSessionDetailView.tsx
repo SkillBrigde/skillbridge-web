@@ -25,9 +25,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { RequireRole } from "@/components/auth/require-role";
-
 import { useAppState, actions, useNow } from "@/lib/store";
-
 
 export function MentorSessionDetailView() {
   const params = useParams<{ bookingId: string }>();
@@ -113,25 +111,24 @@ export function MentorSessionDetailView() {
 
   const elapsedSeconds = booking.startedAt
     ? Math.max(0, Math.floor((now - booking.startedAt) / 1000))
-
     : 3490;
 
   return (
     <RequireRole role="mentor">
-      <div className="flex flex-col h-[calc(100vh-4rem)] bg-[#0B0C0E]">
+      <div className="flex flex-col h-[calc(100vh-4rem)] bg-[#27252d]">
         {/* ── Top Bar ── */}
-        <div className="flex items-center justify-between px-4 sm:px-6 h-12 border-b border-white/[0.08] bg-[#0D0E10] flex-shrink-0">
+        <div className="flex items-center justify-between px-4 sm:px-6 h-14 border-b border-[#3b3842] bg-[#1e1c23] shrink-0">
           <div className="flex items-center gap-3">
             <SessionTimer
               initialSeconds={elapsedSeconds}
               running={true}
               maxDuration={3600}
             />
-            <span className="text-xs text-[#9BA1B0] hidden sm:inline">
+            <span className="text-xs text-[#a9a4b2] hidden sm:inline">
               Phòng Học #{booking.code} — {booking.serviceName}
             </span>
             <Badge variant="brand" dot pulse>
-              MENTOR VIEW
+              MENTOR STUDIO VIEW
             </Badge>
           </div>
           <Button variant="destructive" size="sm" onClick={handleLeave}>
@@ -141,23 +138,23 @@ export function MentorSessionDetailView() {
         </div>
 
         {/* ── Video Workspace ── */}
-        <div className="flex-1 relative min-h-0">
+        <div className="flex-1 relative min-h-0 bg-[#19181d]">
           {/* Main video area */}
           <div className="absolute inset-0 flex items-center justify-center p-4">
-            <div className="w-full h-full max-w-4xl rounded-xl bg-[#14171D] border border-white/[0.08] flex items-center justify-center">
+            <div className="w-full h-full max-w-4xl rounded-2xl bg-[#27252d] border border-[#3b3842] flex items-center justify-center shadow-lg">
               <div className="text-center">
                 <Avatar alt={booking.menteeName} size="xl" />
-                <p className="mt-3 text-sm font-medium text-[#F0F2F5]">
+                <p className="mt-3 text-base font-semibold text-white">
                   {booking.menteeName}
                 </p>
-                <p className="text-xs text-[#9BA1B0]">Học viên (Mentee)</p>
+                <p className="text-xs text-[#a9a4b2]">Học viên (Mentee)</p>
                 {/* Audio visualizer */}
-                <div className="flex items-end gap-0.5 mt-3 h-6 justify-center">
+                <div className="flex items-end gap-1 mt-4 h-6 justify-center">
                   {[4, 6, 9, 7, 5, 8, 6, 4, 7, 5].map((h, i) => (
                     <div
                       key={i}
-                      className="w-1 bg-[#5E6AD2] rounded-full animate-pulse"
-                      style={{ height: `${h * 3}px`, animationDelay: `${i * 80}ms` }}
+                      className="w-1 bg-[#6551a4] rounded-full animate-pulse"
+                      style={{ height: `${h * 2.8}px`, animationDelay: `${i * 80}ms` }}
                     />
                   ))}
                 </div>
@@ -166,66 +163,75 @@ export function MentorSessionDetailView() {
           </div>
 
           {/* PiP: Mentor (you) */}
-          <div className="absolute top-4 right-4 w-36 h-28 rounded-lg bg-[#1C2028] border border-white/[0.12] flex items-center justify-center shadow-lg z-10">
+          <div className="absolute top-6 right-6 w-40 h-32 rounded-xl bg-[#2e2b35] border border-[#484451] flex items-center justify-center shadow-2xl z-10">
             <div className="text-center">
               <Avatar alt={booking.mentorName} size="sm" />
-              <p className="text-[10px] text-[#9BA1B0] mt-1">{booking.mentorName} (Bạn)</p>
+              <p className="text-[11px] text-[#e5e2de] mt-1.5 font-medium">{booking.mentorName} (Bạn)</p>
             </div>
           </div>
 
           {/* Meeting control dock */}
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 z-10">
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-3 z-10 bg-[#1e1c23]/90 backdrop-blur-md px-4 py-2 rounded-full border border-[#3b3842] shadow-xl">
             <button
               onClick={() => setMicOn(!micOn)}
-              className={`flex h-10 w-10 items-center justify-center rounded-full transition-all cursor-pointer ${micOn
-                ? "bg-[#14171D] border border-white/[0.08] text-[#E3E2E5] hover:bg-[#1F2022]"
-                : "bg-[#FF5C5C]/15 border border-[#FF5C5C]/30 text-[#FF5C5C]"
-                }`}
+              className={`flex h-10 w-10 items-center justify-center rounded-full transition-all cursor-pointer ${
+                micOn
+                  ? "bg-[#2e2b35] border border-[#484451] text-white hover:bg-[#3b3842]"
+                  : "bg-[#fceeea] border border-[#a64533] text-[#a64533]"
+              }`}
             >
               {micOn ? <Mic className="h-4 w-4" /> : <MicOff className="h-4 w-4" />}
             </button>
             <button
               onClick={() => setCamOn(!camOn)}
-              className={`flex h-10 w-10 items-center justify-center rounded-full transition-all cursor-pointer ${camOn
-                ? "bg-[#14171D] border border-white/[0.08] text-[#E3E2E5] hover:bg-[#1F2022]"
-                : "bg-[#FF5C5C]/15 border border-[#FF5C5C]/30 text-[#FF5C5C]"
-                }`}
+              className={`flex h-10 w-10 items-center justify-center rounded-full transition-all cursor-pointer ${
+                camOn
+                  ? "bg-[#2e2b35] border border-[#484451] text-white hover:bg-[#3b3842]"
+                  : "bg-[#fceeea] border border-[#a64533] text-[#a64533]"
+              }`}
             >
               {camOn ? <Video className="h-4 w-4" /> : <VideoOff className="h-4 w-4" />}
             </button>
-            <button className="flex h-10 w-10 items-center justify-center rounded-full bg-[#14171D] border border-white/[0.08] text-[#E3E2E5] hover:bg-[#1F2022] transition-all cursor-pointer">
+            <button className="flex h-10 w-10 items-center justify-center rounded-full bg-[#2e2b35] border border-[#484451] text-white hover:bg-[#3b3842] transition-all cursor-pointer">
               <MonitorUp className="h-4 w-4" />
             </button>
             <button
               onClick={() => router.push(`/bookings/${booking.id}/room`)}
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-[#14171D] border border-white/[0.08] text-[#E3E2E5] hover:bg-[#1F2022] transition-all cursor-pointer"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-[#2e2b35] border border-[#484451] text-white hover:bg-[#3b3842] transition-all cursor-pointer"
             >
               <MessageSquare className="h-4 w-4" />
             </button>
 
-            <div className="w-[1px] h-6 bg-white/[0.08] mx-1" />
+            <div className="w-[1px] h-6 bg-[#484451] mx-1" />
 
             {/* Submission drawer trigger */}
             <button
               onClick={() => setDrawerOpen(!drawerOpen)}
-              className="flex items-center gap-1.5 h-10 px-3 rounded-full bg-[#27C98F]/15 border border-[#27C98F]/30 text-[#27C98F] hover:bg-[#27C98F]/20 transition-all cursor-pointer text-xs font-medium"
+              className="flex items-center gap-1.5 h-10 px-4 rounded-full bg-[#6551a4] text-white hover:bg-[#523e8f] transition-all cursor-pointer text-xs font-semibold shadow-xs"
             >
               <Upload className="h-3.5 w-3.5" />
-              Nộp Bằng Chứng &amp; Nghiệm Thu
+              Nộp Bằng Chứng Nghiệm Thu
               <ChevronUp className={`h-3 w-3 transition-transform ${drawerOpen ? "rotate-180" : ""}`} />
             </button>
           </div>
         </div>
 
-        {/* ── Bottom Submission Drawer ── */}
+        {/* ── Bottom Submission Drawer (Editorial Paper Style) ── */}
         <div
-          className={`border-t border-white/[0.08] bg-[#0D0E10] transition-all duration-300 overflow-y-auto ${drawerOpen ? "max-h-[500px] py-6" : "max-h-0"
-            }`}
+          className={`border-t border-[#e5e2de] bg-[#faf9f6] transition-all duration-300 overflow-y-auto ${
+            drawerOpen ? "max-h-[500px] py-6" : "max-h-0"
+          }`}
         >
           <div className="mx-auto max-w-3xl px-6 space-y-5">
-            <h3 className="text-base font-semibold text-[#F0F2F5] tracking-tight">
-              Kết Thúc Buổi Học &amp; Nộp Bằng Chứng Nghiệm Thu (Proof-of-Work)
-            </h3>
+            <div>
+              <span className="sb-eyebrow mb-1">Proof-of-Work</span>
+              <h3 className="font-serif text-2xl font-semibold text-[#27252d] tracking-tight">
+                Kết Thúc Buổi Học & Bàn Giao Nghiệm Thu
+              </h3>
+              <p className="text-xs text-[#5e5866] mt-0.5">
+                Sau khi gửi bằng chứng, học viên sẽ có 24h để xác nhận giải phóng học phí từ Escrow.
+              </p>
+            </div>
 
             {errorMsg && <NoticeBanner variant="error" message={errorMsg} />}
             {success && (
@@ -263,9 +269,9 @@ export function MentorSessionDetailView() {
                 {proofFiles.map((file, idx) => (
                   <span
                     key={idx}
-                    className="flex items-center gap-1 rounded bg-[#1F2022] border border-white/[0.08] px-2.5 py-1 text-[#27C98F]"
+                    className="flex items-center gap-1.5 rounded-lg bg-[#e8f5ed] border border-[#1e7e45]/20 px-3 py-1 text-[#1e7e45] font-medium"
                   >
-                    <CheckCircle2 className="h-3 w-3" />
+                    <CheckCircle2 className="h-3.5 w-3.5" />
                     {file}
                   </span>
                 ))}
@@ -273,7 +279,7 @@ export function MentorSessionDetailView() {
             )}
 
             <div>
-              <label className="block text-sm font-medium text-[#E3E2E5] mb-1.5">
+              <label className="block text-xs font-medium text-[#5e5866] mb-1.5">
                 Ghi chú tóm tắt sau buổi học và lời khuyên dành cho Mentee
               </label>
               <Textarea
@@ -291,7 +297,7 @@ export function MentorSessionDetailView() {
               disabled={submitting || success}
               onClick={handleSubmitProof}
             >
-              Hoàn Tất Buổi Học &amp; Gửi Nghiệm Thu Cho Học Viên
+              Hoàn Tất Buổi Học & Gửi Nghiệm Thu Cho Học Viên
             </Button>
           </div>
         </div>
@@ -299,3 +305,5 @@ export function MentorSessionDetailView() {
     </RequireRole>
   );
 }
+
+export { MentorSessionDetailView as default };

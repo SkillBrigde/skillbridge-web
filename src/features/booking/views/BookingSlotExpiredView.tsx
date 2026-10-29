@@ -44,42 +44,42 @@ function SlotExpiredContent() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-8rem)] px-4 py-10">
-      <div className="w-full max-w-[500px] rounded-2xl bg-[#14171D] border border-[#F5A623]/25 p-8 text-center shadow-2xl relative">
+    <div className="flex items-center justify-center min-h-[calc(100vh-10rem)] px-4 py-12">
+      <div className="w-full max-w-[540px] rounded-2xl bg-white border border-[#f4dfad] p-8 text-center shadow-md relative">
         {/* Icon */}
-        <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-[#F5A623]/10 border border-[#F5A623]/20 mb-4 text-[#F5A623]">
+        <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-[#fdf6e7] border border-[#f4dfad] mb-4 text-[#946200]">
           <Clock className="h-8 w-8" />
         </div>
 
         {/* Badge */}
-        <div className="mb-4">
+        <div className="mb-3">
           <Badge variant="pending" dot>
             REDIS ATOMIC LOCK EXPIRED
           </Badge>
         </div>
 
         {/* Title */}
-        <h1 className="text-xl font-bold text-[#F0F2F5] tracking-tight mb-3">
+        <h1 className="text-xl sm:text-2xl font-bold text-[#27252d] tracking-tight mb-2">
           Khung Giờ Đã Hết Hạn Khóa Độc Quyền
         </h1>
 
         {/* Explanation */}
-        <p className="text-sm text-[#9BA1B0] leading-relaxed mb-6">
+        <p className="text-sm text-[#5e5866] leading-relaxed mb-6">
           Thời hạn giữ chỗ 10 phút trên Redis cho đơn đặt{" "}
-          <span className="font-mono text-[#F5A623]">
+          <span className="font-semibold text-[#27252d]">
             [{booking ? booking.serviceName : "Khung giờ"}]
           </span>{" "}
-          đã kết thúc. Để đảm bảo tính công bằng cho các học viên khác, slot đã được giải phóng trở lại lịch trống.
+          đã kết thúc. Để đảm bảo tính công bằng, slot đã được giải phóng trở lại lịch trống của chuyên gia.
         </p>
 
         {/* Live Availability */}
         <div className="text-left mb-6">
-          <p className="text-xs text-[#5D6474] mb-3">
-            Chọn khung giờ còn trống để khóa lại và tiếp tục thanh toán:
+          <p className="text-xs font-semibold text-[#5e5866] uppercase tracking-wider mb-3">
+            Chọn khung giờ còn trống để khóa lại và tiếp tục:
           </p>
           <div className="space-y-2">
             {altSlots.length === 0 ? (
-              <div className="p-4 rounded-xl border border-white/[0.06] bg-[#0D0E10] text-center text-xs text-[#5D6474]">
+              <div className="p-4 rounded-xl border border-[#e5e2de] bg-[#faf9f6] text-center text-xs text-[#5e5866]">
                 Hiện không còn slot trống nào trong tuần này.
               </div>
             ) : (
@@ -88,16 +88,17 @@ function SlotExpiredContent() {
                   key={slot.id}
                   type="button"
                   onClick={() => handleReLock(slot.id)}
-                  className={`w-full flex items-center justify-between rounded-xl border p-3 text-sm font-medium transition-all cursor-pointer ${idx === 0
-                    ? "bg-[#5E6AD2]/10 border-[#5E6AD2]/30 text-[#F0F2F5] hover:bg-[#5E6AD2]/20"
-                    : "bg-[#0D0E10] border-white/[0.08] text-[#9BA1B0] hover:border-white/[0.16] hover:text-[#F0F2F5]"
-                    }`}
+                  className={`w-full flex items-center justify-between rounded-xl border p-3.5 text-sm font-medium transition-all cursor-pointer ${
+                    idx === 0
+                      ? "bg-[#ece5f5]/30 border-[#b3a0d1] text-[#6551a4] hover:bg-[#ece5f5]/60"
+                      : "bg-white border-[#e5e2de] text-[#5e5866] hover:border-[#d4c3e7] hover:text-[#27252d]"
+                  }`}
                 >
-                  <span className="font-mono text-xs">
+                  <span className="font-mono text-xs font-semibold">
                     {slotTimeLabel(slot.startMs, slot.endMs)} ({slotDateLabel(slot.startMs)})
                   </span>
                   {idx === 0 ? (
-                    <Badge variant="escrow">Khóa lại ngay</Badge>
+                    <Badge variant="brand">Khóa lại ngay</Badge>
                   ) : (
                     <Badge variant="neutral">Khả dụng</Badge>
                   )}
@@ -121,7 +122,7 @@ function SlotExpiredContent() {
 
         <Link href="/mentors">
           <Button variant="ghost" size="sm" className="w-full">
-            Quay lại danh sách Mentors
+            Quay lại danh sách Chuyên gia
           </Button>
         </Link>
       </div>
@@ -131,7 +132,7 @@ function SlotExpiredContent() {
 
 export function BookingSlotExpiredView() {
   return (
-    <Suspense fallback={<div className="py-20 text-center text-sm font-mono text-[#9BA1B0]">Đang tải...</div>}>
+    <Suspense fallback={<div className="py-20 text-center text-sm font-mono text-[#5e5866]">Đang tải...</div>}>
       <SlotExpiredContent />
     </Suspense>
   );
