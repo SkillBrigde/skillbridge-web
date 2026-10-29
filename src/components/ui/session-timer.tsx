@@ -49,7 +49,7 @@ export function SessionTimer({
       )}
       <span
         className={cn(
-          "font-mono text-base font-bold tracking-tight",
+          "font-mono tabular-nums text-base font-bold tracking-tight",
           isOvertime ? "text-[#a64533]" : "text-[#1e7e45]"
         )}
       >

@@ -27,7 +27,7 @@ export function WalletBalanceBadge({
         <span className="text-[10px] font-mono font-semibold uppercase tracking-wider text-[#1e7e45] whitespace-nowrap">
           {label}
         </span>
-        <span className="text-xs font-mono font-semibold text-[#27252d] whitespace-nowrap">
+        <span className="text-xs font-mono tabular-nums font-semibold text-[#27252d] whitespace-nowrap">
           {amount}
         </span>
       </div>

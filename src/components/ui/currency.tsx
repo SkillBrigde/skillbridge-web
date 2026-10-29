@@ -34,7 +34,7 @@ export function Currency({
   return (
     <span
       className={cn(
-        "font-mono tracking-tight inline-flex items-baseline gap-0.5",
+        "font-mono tabular-nums tracking-tight inline-flex items-baseline gap-0.5",
         colorStyles[highlight],
         sizeStyles[size],
         className

@@ -56,7 +56,7 @@ export function StatCard({
           </p>
           <p
             className={cn(
-              "text-2xl font-mono font-bold tracking-tight",
+              "text-2xl font-mono tabular-nums font-bold tracking-tight",
               highlightStyles[activeHighlight]
             )}
           >
