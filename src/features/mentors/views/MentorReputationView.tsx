@@ -35,9 +35,16 @@ export function MentorReputationView() {
   const reviewCount = reviews.length || mentor?.reviewCount || 0;
   const completionRate = mentor?.satisfactionRate || 99.1;
 
-  const handleSendReply = (reviewId: string) => {
+  const handleSendReply = async (reviewId: string) => {
     const text = responses[reviewId];
     if (!text || !text.trim()) return;
+
+    try {
+      const { reviewService } = await import("@/services/reviewService");
+      await reviewService.replyReview(reviewId, text.trim());
+    } catch {
+      // Continue
+    }
 
     const res = actions.replyReview(reviewId, text.trim());
     if (res.ok) {

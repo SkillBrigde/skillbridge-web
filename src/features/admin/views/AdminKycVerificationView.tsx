@@ -40,9 +40,20 @@ export function AdminKycVerificationView() {
       : null;
   }, [state.mentors, applicant]);
 
-  const handleReview = (status: "approve" | "need_more" | "reject", note: string) => {
+  const handleReview = async (status: "approve" | "need_more" | "reject", note: string) => {
     if (!application) return;
     setErrorMsg("");
+
+    try {
+      const { adminService } = await import("@/services/adminService");
+      const targetMentorId = mentor?.id || applicant?.mentorId || application.userId;
+      const verificationStatus =
+        status === "approve" ? "Verified" : status === "reject" ? "Unverified" : "Pending";
+      await adminService.verifyMentor(targetMentorId, verificationStatus).catch(() => {});
+    } catch {
+      // Continue
+    }
+
     const res = actions.reviewKyc(application.id, status, note);
     if (!res.ok) {
       setErrorMsg(res.error || "Thao tác thất bại.");

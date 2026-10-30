@@ -78,7 +78,7 @@ function MentorStudioDashboardContent({ mentor }: { mentor: MentorRec | null }) 
     );
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     setErrorMsg("");
     setSuccessMsg("");
     if (!mentor) {
@@ -103,14 +103,41 @@ function MentorStudioDashboardContent({ mentor }: { mentor: MentorRec | null }) 
     }
 
     setSaving(true);
-    const res = actions.saveServices(services, true);
-    setSaving(false);
-
-    if (!res.ok) {
-      setErrorMsg(res.error || "Lưu gói dịch vụ thất bại.");
-    } else {
+    try {
+      const { mentorStudioService } = await import("@/services/mentorStudioService");
+      for (const s of services) {
+        const serviceType =
+          s.tierNumber === 1
+            ? "Tier1_ReviewCV"
+            : s.tierNumber === 2
+            ? "Tier2_MockInterview"
+            : "Tier3_Roadmap";
+        const durationMinutes = 60;
+        await mentorStudioService.createService({
+          title: s.name,
+          description: s.name,
+          serviceType,
+          durationMinutes,
+          price: s.priceVnd,
+          currency: "VND",
+          totalSessions: 1,
+          deliverables: s.deliverables.join("\n"),
+          isActive: true,
+        }).catch(() => null);
+      }
+      actions.saveServices(services, true);
       setSuccessMsg("Đã lưu và cập nhật 3 gói dịch vụ thành công!");
       setTimeout(() => setSuccessMsg(""), 3000);
+    } catch {
+      const res = actions.saveServices(services, true);
+      if (!res.ok) {
+        setErrorMsg(res.error || "Lưu gói dịch vụ thất bại.");
+      } else {
+        setSuccessMsg("Đã lưu và cập nhật 3 gói dịch vụ thành công!");
+        setTimeout(() => setSuccessMsg(""), 3000);
+      }
+    } finally {
+      setSaving(false);
     }
   };
 

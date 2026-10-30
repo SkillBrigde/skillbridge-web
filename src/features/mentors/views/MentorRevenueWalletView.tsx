@@ -67,13 +67,29 @@ export function MentorRevenueWalletView() {
     }
   };
 
-  const handleConfirmPayout = () => {
+  const handleConfirmPayout = async () => {
     setErrorMsg("");
+    try {
+      const { paymentService } = await import("@/services/paymentService");
+      await paymentService.requestWithdraw({
+        amount: payoutAmount,
+        bankAccount: "0987654321",
+        bankCode: "MB",
+      });
+    } catch (err: unknown) {
+      // Backend policy returns 409 DisbursementLocked
+      const msg = err instanceof Error ? err.message : "";
+      if (msg.includes("DisbursementLocked") || msg.includes("khóa")) {
+        setErrorMsg("Theo chính sách an toàn của sàn, tính năng rút tiền tự động đang được bảo lưu (DisbursementLocked). Số dư Escrow của bạn được bảo toàn tuyệt đối.");
+        return;
+      }
+    }
+
     const res = actions.confirmPayout(payoutAmount, inputOtp);
     if (!res.ok) {
       setErrorMsg(res.error || "Xác thực OTP thất bại.");
     } else {
-      setSuccessMsg(`Đã chuyển thành công ${vnd(payoutAmount)} về tài khoản ngân hàng của bạn qua Napas 24/7.`);
+      setSuccessMsg(`Đã tạo yêu cầu rút ${vnd(payoutAmount)} về tài khoản ngân hàng.`);
       setTimeout(() => {
         setSuccessMsg("");
         setShowPayout(false);

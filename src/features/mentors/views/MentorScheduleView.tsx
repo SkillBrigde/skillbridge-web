@@ -91,8 +91,20 @@ function MentorScheduleContent({ mentor }: { mentor: MentorRec | null }) {
     });
   };
 
-  const handleSaveAvailability = () => {
+  const handleSaveAvailability = async () => {
     if (!mentor) return;
+    try {
+      const { schedulingService } = await import("@/services/schedulingService");
+      await schedulingService.updateSettings({
+        sessionDurationMinutes: Number(duration) || 60,
+        bufferTimeMinutes: Number(buffer) || 15,
+        leadTimeHours: Number(leadTime) || 24,
+        maxDaysInAdvance: 30,
+        timezone: "Asia/Ho_Chi_Minh",
+      }).catch(() => null);
+    } catch {
+      // Continue
+    }
     const res = actions.saveAvailability(rules, {
       durationMin: Number(duration),
       bufferMin: Number(buffer),

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   Button,
   Modal,
@@ -23,6 +23,13 @@ export function WalletDashboardView() {
   const [depositGateway, setDepositGateway] = useState<"PayOS" | "VNPAY">("PayOS");
   const [depositSuccess, setDepositSuccess] = useState(false);
   const [filterType, setFilterType] = useState("all");
+  const [walletInfo, setWalletInfo] = useState<{ availableBalance: number; heldBalance: number } | null>(null);
+
+  useEffect(() => {
+    import("@/services/paymentService").then(({ paymentService }) => {
+      paymentService.getWallet().then(setWalletInfo).catch(() => null);
+    });
+  }, []);
 
   const userId = session.user?.id || "";
   const summary = useMemo(() => menteeEscrowSummary(state, userId), [state, userId]);
@@ -75,14 +82,14 @@ export function WalletDashboardView() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
           <StatCard
             label="Số dư ví khả dụng"
-            value={vnd(session.wallet)}
+            value={vnd(walletInfo?.availableBalance ?? session.wallet)}
             icon={<Wallet className="h-4 w-4" />}
             variant="emerald"
             sublabel="Có thể dùng đặt lịch tức thì"
           />
           <StatCard
             label="Tiền đang ký quỹ (Escrow Locked)"
-            value={vnd(summary.holding)}
+            value={vnd(walletInfo?.heldBalance ?? summary.holding)}
             icon={<ShieldCheck className="h-4 w-4" />}
             variant="amber"
             sublabel="Đang giữ an toàn trong Smart Vault"

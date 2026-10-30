@@ -132,12 +132,19 @@ export function BookingPageView() {
     return {};
   };
 
-  const handleCancelBooking = (bookingId: string) => {
-    const res = actions.cancelBooking(bookingId);
-    if (!res.ok) {
-      setCancelError(res.error || "Hủy lịch không thành công.");
-    } else {
+  const handleCancelBooking = async (bookingId: string) => {
+    try {
+      const { bookingService } = await import("@/services/bookingService");
+      await bookingService.cancelBooking(bookingId, "Người học yêu cầu hủy lịch");
       setCancelModalBooking(null);
+      window.location.reload();
+    } catch {
+      const res = actions.cancelBooking(bookingId);
+      if (!res.ok) {
+        setCancelError(res.error || "Hủy lịch không thành công.");
+      } else {
+        setCancelModalBooking(null);
+      }
     }
   };
 

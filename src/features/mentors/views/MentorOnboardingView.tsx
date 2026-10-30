@@ -54,7 +54,7 @@ export function MentorOnboardingView() {
       ? 4
       : 2;
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setErrorMsg("");
     if (!accountNumber.trim()) {
       setErrorMsg("Vui lòng nhập số tài khoản ngân hàng.");
@@ -70,6 +70,29 @@ export function MentorOnboardingView() {
     }
 
     setSubmitting(true);
+    try {
+      const { mentorStudioService } = await import("@/services/mentorStudioService");
+      await mentorStudioService.updateMyProfile({
+        headline: `${org || "Tech Lead"} - Chuyên gia SkillBridge`,
+        bio: `Hồ sơ chuyên môn đã được xác thực với ${org}. Kinh nghiệm thực chiến trong phát triển phần mềm và kiến trúc hệ thống.`,
+        hourlyRate: 500000,
+        currency: "VND",
+        timezone: "Asia/Ho_Chi_Minh",
+        isAcceptingMentees: true,
+      }).catch(() => null);
+
+      if (certUrl) {
+        await mentorStudioService.addCertification({
+          name: org || "Chứng chỉ chuyên môn",
+          issuingOrganization: org || "Đơn vị cấp",
+          issueDate: new Date().toISOString(),
+          credentialUrl: certUrl,
+        }).catch(() => null);
+      }
+    } catch {
+      // Continue
+    }
+
     const res = actions.submitKyc({
       idFront: "cccd_mat_truoc.png",
       idBack: "cccd_mat_sau.png",

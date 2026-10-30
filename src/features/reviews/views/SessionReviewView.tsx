@@ -77,31 +77,50 @@ export function SessionReviewView() {
     );
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setErrorMsg("");
     if (!comment.trim()) {
       setErrorMsg("Vui lòng nhập nhận xét của bạn.");
       return;
     }
 
-    const res = actions.submitReview(booking.id, {
-      ratings: {
-        technicalDepth: ratings.expertise || 5,
-        communication: ratings.communication || 5,
-        valueDelivered: ratings.helpfulness || 5,
-        overallSatisfaction: ratings.overall || 5,
-      },
-      comment: comment.trim(),
-      isPublic,
-    });
-
-    if (!res.ok) {
-      setErrorMsg(res.error || "Gửi đánh giá không thành công.");
-    } else {
+    try {
+      const { reviewService } = await import("@/services/reviewService");
+      await reviewService.submitReview({
+        bookingId: booking.id,
+        sessionId: booking.id,
+        mentorId: booking.mentorId,
+        overallRating: ratings.overall || 5,
+        communicationRating: ratings.communication || 5,
+        expertiseRating: ratings.expertise || 5,
+        helpfulnessRating: ratings.helpfulness || 5,
+        comment: comment.trim(),
+      });
       setSuccess(true);
       setTimeout(() => {
         router.push("/bookings");
       }, 1200);
+      return;
+    } catch {
+      const res = actions.submitReview(booking.id, {
+        ratings: {
+          technicalDepth: ratings.expertise || 5,
+          communication: ratings.communication || 5,
+          valueDelivered: ratings.helpfulness || 5,
+          overallSatisfaction: ratings.overall || 5,
+        },
+        comment: comment.trim(),
+        isPublic,
+      });
+
+      if (!res.ok) {
+        setErrorMsg(res.error || "Gửi đánh giá không thành công.");
+      } else {
+        setSuccess(true);
+        setTimeout(() => {
+          router.push("/bookings");
+        }, 1200);
+      }
     }
   };
 

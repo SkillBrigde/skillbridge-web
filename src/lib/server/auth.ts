@@ -20,7 +20,7 @@ export interface SessionUser {
   createdAt?: string;
 }
 
-interface BackendAuth {
+export interface BackendAuth {
   userId: string;
   fullName: string;
   email: string;
@@ -38,12 +38,17 @@ export function parseRole(value: unknown): Role | null {
     : null;
 }
 
-export async function backendFetch(path: string, options: RequestInit = {}) {
+export function getBackendBaseUrl(): string {
   const baseUrl =
     process.env.API_BASE_URL ||
     process.env.NEXT_PUBLIC_API_BASE_URL ||
     "http://localhost:5000";
-  return fetch(`${baseUrl.replace(/\/$/, "")}/api/v1/identity/${path}`, {
+  return baseUrl.replace(/\/$/, "");
+}
+
+export async function backendFetch(path: string, options: RequestInit = {}) {
+  const baseUrl = getBackendBaseUrl();
+  return fetch(`${baseUrl}/api/v1/identity/${path}`, {
     ...options,
     headers: { "Content-Type": "application/json", ...options.headers },
     cache: "no-store",
@@ -92,6 +97,25 @@ export async function sessionTokens() {
     access: jar.get(ACCESS_COOKIE)?.value,
     refresh: jar.get(REFRESH_COOKIE)?.value,
   };
+}
+
+export async function tryRefreshTokens(): Promise<string | null> {
+  const tokens = await sessionTokens();
+  if (!tokens.refresh) return null;
+  try {
+    const response = await backendFetch("auth/refresh", {
+      method: "POST",
+      body: JSON.stringify({ refreshToken: tokens.refresh }),
+    });
+    if (response.ok) {
+      const data: BackendAuth = await response.json();
+      await saveSession(data);
+      return data.accessToken;
+    }
+  } catch {
+    /* Silent refresh failure */
+  }
+  return null;
 }
 
 export async function readSession(): Promise<SessionUser | null> {

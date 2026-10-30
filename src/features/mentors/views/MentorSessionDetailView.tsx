@@ -81,7 +81,7 @@ export function MentorSessionDetailView() {
     router.push("/mentor/schedule");
   };
 
-  const handleSubmitProof = () => {
+  const handleSubmitProof = async () => {
     setErrorMsg("");
     if (proofFiles.length === 0) {
       setErrorMsg("Vui lòng đính kèm ít nhất 1 ảnh chụp màn hình bằng chứng buổi học.");
@@ -93,6 +93,13 @@ export function MentorSessionDetailView() {
     }
 
     setSubmitting(true);
+    try {
+      const { learningService } = await import("@/services/learningService");
+      await learningService.createNote(booking.id, note.trim(), false).catch(() => {});
+    } catch {
+      // Continue
+    }
+
     const res = actions.submitProof(booking.id, {
       files: proofFiles,
       note: note.trim(),

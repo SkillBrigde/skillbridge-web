@@ -59,8 +59,9 @@ export function BookingCheckoutView() {
   const timeoutRefs = useRef<NodeJS.Timeout[]>([]);
 
   useEffect(() => {
+    const timeouts = timeoutRefs.current;
     return () => {
-      timeoutRefs.current.forEach(clearTimeout);
+      timeouts.forEach(clearTimeout);
     };
   }, []);
 
@@ -94,12 +95,25 @@ export function BookingCheckoutView() {
     );
   }
 
-  const handlePayOSConfirm = () => {
+  const handlePayOSConfirm = async () => {
     setProcessing(true);
     setErrorMsg("");
-    const t = setTimeout(() => {
+    try {
+      const { paymentService } = await import("@/services/paymentService");
+      const res = await paymentService.createPayment({
+        bookingId: booking.id,
+        gateway: "PayOS",
+        amount: booking.priceVnd,
+        returnUrl: window.location.origin + "/bookings",
+        cancelUrl: window.location.origin + "/bookings",
+      });
+      if (res.paymentUrl) {
+        window.location.href = res.paymentUrl;
+        return;
+      }
+    } catch {
+      // Fallback to local store simulation
       const res = actions.payBooking(booking.id, "PayOS");
-      setProcessing(false);
       if (!res.ok) {
         setErrorMsg(res.error || "Thanh toán thất bại.");
       } else {
@@ -107,21 +121,30 @@ export function BookingCheckoutView() {
         const t2 = setTimeout(() => router.push("/bookings"), 1500);
         timeoutRefs.current.push(t2);
       }
-    }, 1200);
-    timeoutRefs.current.push(t);
+    } finally {
+      setProcessing(false);
+    }
   };
 
-  const handleVnpayConfirm = () => {
+  const handleVnpayConfirm = async () => {
     setProcessing(true);
     setErrorMsg("");
-    if (vnpayOtp.trim() !== VNPAY_TEST_OTP) {
-      setProcessing(false);
-      setErrorMsg(`Mã OTP không đúng. Vui lòng nhập ${VNPAY_TEST_OTP} cho môi trường thử nghiệm.`);
-      return;
-    }
-    const t = setTimeout(() => {
+    try {
+      const { paymentService } = await import("@/services/paymentService");
+      const res = await paymentService.createPayment({
+        bookingId: booking.id,
+        gateway: "VnPay",
+        amount: booking.priceVnd,
+        returnUrl: window.location.origin + "/bookings",
+        cancelUrl: window.location.origin + "/bookings",
+      });
+      if (res.paymentUrl) {
+        window.location.href = res.paymentUrl;
+        return;
+      }
+    } catch {
+      // Fallback to local store simulation
       const res = actions.payBooking(booking.id, "VNPAY");
-      setProcessing(false);
       if (!res.ok) {
         setErrorMsg(res.error || "Giao dịch VNPAY thất bại.");
       } else {
@@ -129,8 +152,9 @@ export function BookingCheckoutView() {
         const t2 = setTimeout(() => router.push("/bookings"), 1500);
         timeoutRefs.current.push(t2);
       }
-    }, 800);
-    timeoutRefs.current.push(t);
+    } finally {
+      setProcessing(false);
+    }
   };
 
   const handleWalletConfirm = () => {

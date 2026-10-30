@@ -21,11 +21,8 @@ import {
   Video,
   VideoOff,
   MonitorUp,
-  MessageSquare,
   LogOut,
   ShieldCheck,
-  AlertTriangle,
-  FileImage,
   Send,
   VideoIcon,
   Code,
@@ -63,6 +60,9 @@ export function BookingMeetingRoomView() {
   useEffect(() => {
     if (sessionBookingId) {
       actions.joinSession(sessionBookingId, "mentee");
+      import("@/services/learningService").then(({ learningService }) => {
+        learningService.joinSession(sessionBookingId).catch(() => {});
+      });
     }
   }, [sessionBookingId]);
 
@@ -90,6 +90,9 @@ export function BookingMeetingRoomView() {
 
   const handleLeave = () => {
     actions.leaveSession(booking.id, "mentee");
+    import("@/services/learningService").then(({ learningService }) => {
+      learningService.leaveSession(booking.id).catch(() => {});
+    });
     router.push("/bookings");
   };
 
@@ -109,10 +112,19 @@ export function BookingMeetingRoomView() {
 
   const handleScratchpadChange = (val: string) => {
     actions.setScratchpad(booking.id, val);
+    import("@/services/learningService").then(({ learningService }) => {
+      learningService.createNote(booking.id, val, false).catch(() => {});
+    });
   };
 
-  const handleAcceptSession = () => {
+  const handleAcceptSession = async () => {
     setAccepting(true);
+    try {
+      const { learningService } = await import("@/services/learningService");
+      await learningService.endSession(booking.id);
+    } catch {
+      // Fallback
+    }
     const res = actions.acceptSession(booking.id);
     setAccepting(false);
     if (res.ok) {
