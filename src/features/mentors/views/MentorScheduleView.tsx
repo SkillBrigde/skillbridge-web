@@ -310,7 +310,6 @@ function MentorScheduleContent({ mentor }: { mentor: MentorRec | null }) {
                 const timeText = b.startMs && b.endMs
                   ? bookingTimeLabel(b.startMs, b.endMs)
                   : "Chưa xác định";
-
                 const countdown = b.startMs ? relativeFuture(b.startMs, now) : "";
 
                 return (

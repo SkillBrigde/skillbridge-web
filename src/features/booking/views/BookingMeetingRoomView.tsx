@@ -60,9 +60,6 @@ export function BookingMeetingRoomView() {
   useEffect(() => {
     if (sessionBookingId) {
       actions.joinSession(sessionBookingId, "mentee");
-      import("@/services/learningService").then(({ learningService }) => {
-        learningService.joinSession(sessionBookingId).catch(() => {});
-      });
     }
   }, [sessionBookingId]);
 

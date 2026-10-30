@@ -31,7 +31,6 @@ export function MentorSessionDetailView() {
   const params = useParams<{ bookingId: string }>();
   const router = useRouter();
   const state = useAppState();
-
   const now = useNow("second");
 
   const bookingId = params.bookingId;
@@ -52,6 +51,7 @@ export function MentorSessionDetailView() {
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [success, setSuccess] = useState(false);
+  const sessionBookingId = booking?.id;
 
   const sessionBookingId = booking?.id;
 

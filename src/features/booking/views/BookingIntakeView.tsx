@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useMemo, useEffect, Suspense } from "react";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useState, useMemo } from "react";
+import { useParams, useRouter } from "next/navigation";
 import {
   Avatar,
   Badge,
@@ -52,7 +52,6 @@ function BookingIntakeContent() {
     booking?.intake?.expectation || "Nắm chắc cách giải bài toán System Design và tự tin vượt qua phỏng vấn kỹ thuật"
   );
   const [selectedSlotId, setSelectedSlot] = useState("");
-  const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [apiSlots, setApiSlots] = useState<SlotOption[]>([]);
 
@@ -87,8 +86,8 @@ function BookingIntakeContent() {
   }, [mentorId]);
 
   const slotOptions: SlotOption[] = useMemo(() => {
-    if (apiSlots.length > 0) return apiSlots;
-    const list = mentorSlotsForPicker(state, mentorId, booking?.id || "", now, 12);
+    if (!booking) return [];
+    const list = mentorSlotsForPicker(state, booking.mentorId, booking.id, now, 12);
     return list.map(({ slot, available }) => ({
       id: slot.id,
       date: slotDateLabel(slot.startMs),
@@ -98,6 +97,21 @@ function BookingIntakeContent() {
   }, [apiSlots, state, mentorId, booking, now]);
 
   const selectedSlot = selectedSlotId || booking?.slotId || slotOptions.find((s) => s.available)?.id || "";
+
+  if (!booking || !mentor) {
+    return (
+      <div className="mx-auto max-w-3xl px-4 py-20">
+        <EmptyState
+          title="Không tìm thấy đơn đặt lịch"
+          description="Đơn đặt lịch không tồn tại hoặc đã hết hạn."
+          action={{
+            label: "Quay lại danh sách mentors",
+            onClick: () => router.push("/mentors"),
+          }}
+        />
+      </div>
+    );
+  }
 
   const handleProceed = async () => {
     setErrorMsg("");

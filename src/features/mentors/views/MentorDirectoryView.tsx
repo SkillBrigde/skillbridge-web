@@ -1,7 +1,8 @@
 "use client";
 
-import { Suspense, useState, useEffect, useCallback } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useMemo, Suspense } from "react";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import {
   ArrowUpRight,
   Compass,
@@ -30,29 +31,18 @@ function Directory() {
   const router = useRouter();
   const state = useAppState();
 
-  const query = params.get("q") || "";
-  const [loading, setLoading] = useState(true);
-  const [mentors, setMentors] = useState<MentorListItemDto[]>([]);
-  const [categories, setCategories] = useState<string[]>(DEFAULT_TOPICS);
-  const [isUsingFallback, setIsUsingFallback] = useState(false);
+  const [search, setSearch] = useState(initialQuery);
+  const [previousQuery, setPreviousQuery] = useState(initialQuery);
+  const [activeCategory, setActiveCategory] = useState("Tất cả");
+  const [verifiedOnly, setVerifiedOnly] = useState(false);
+  const [priceFilter, setPriceFilter] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const setQuery = (value: string) =>
-    router.push(value ? "/mentors?q=" + encodeURIComponent(value) : "/mentors");
-
-  // Load categories from API
-  useEffect(() => {
-    catalogService
-      .getCategories()
-      .then((cats: CategoryDto[]) => {
-        if (cats && cats.length > 0) {
-          const names = ["Tất cả", ...cats.map((c) => c.name)];
-          setCategories(names);
-        }
-      })
-      .catch(() => {
-        // Keep DEFAULT_TOPICS
-      });
-  }, []);
+  if (previousQuery !== initialQuery) {
+    setPreviousQuery(initialQuery);
+    setSearch(initialQuery);
+    setCurrentPage(1);
+  }
 
   // Fetch mentors from API with fallback to seed data
   const [refreshTick, setRefreshTick] = useState(0);
@@ -162,19 +152,103 @@ function Directory() {
           const input = new FormData(event.currentTarget);
           setQuery(String(input.get("query") || "").trim());
         }}
-      >
-        <Search size={20} />
-        <input
-          type="search"
-          name="query"
-          defaultValue={query}
-          aria-label="Tìm mentor theo kỹ năng hoặc lĩnh vực"
-          placeholder="Bạn đang muốn phát triển điều gì?"
-        />
-        <button className="sb-button sb-button-small" type="submit">
-          Tìm mentor <ArrowUpRight size={17} />
-        </button>
-      </form>
+        priceFilter={priceFilter}
+        onPriceFilterChange={(price) => {
+          setPriceFilter(price);
+          setCurrentPage(1);
+        }}
+        verifiedOnly={verifiedOnly}
+        onVerifiedOnlyChange={(val) => {
+          setVerifiedOnly(val);
+          setCurrentPage(1);
+        }}
+      />
+
+      {/* ── Mentor Grid or Empty ── */}
+      {filtered.length === 0 ? (
+        <div className="my-12">
+          <EmptyState
+            title="Không tìm thấy chuyên gia phù hợp"
+            description="Hãy thử thay đổi từ khóa tìm kiếm, mức giá hoặc bỏ chọn lọc tích xanh để tìm thêm mentors."
+            action={{
+              label: "Xóa tất cả bộ lọc",
+              onClick: () => {
+                setSearch("");
+                setActiveCategory("Tất cả");
+                setPriceFilter("all");
+                setVerifiedOnly(false);
+              },
+            }}
+          />
+        </div>
+      ) : (
+        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
+          {pagedMentors.map((mentor) => {
+            const nextSlots = availableSlots(state, mentor.id, now, 1);
+            const nextSlot = nextSlots[0];
+            const nextSlotText = nextSlot
+              ? `${slotTimeLabel(nextSlot.startMs, nextSlot.endMs)} ${slotDateLabel(nextSlot.startMs)}`
+              : null;
+
+            return (
+              <div
+                key={mentor.id}
+                className="rounded-xl bg-[#14171D] border border-white/[0.08] p-5 transition-all hover:bg-[#171A21] hover:border-white/[0.14] group flex flex-col justify-between"
+              >
+                <div>
+                  {/* Header */}
+                  <div className="flex items-start gap-3.5 mb-3.5">
+                    <Avatar
+                      src={mentor.avatarUrl}
+                      alt={mentor.fullName}
+                      size="lg"
+                      online={mentor.isOnline}
+                      shape="rounded"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        <h3 className="text-base font-semibold text-[#F0F2F5] truncate">
+                          {mentor.fullName}
+                        </h3>
+                        {mentor.isVerified && (
+                          <BadgeCheck className="h-4 w-4 text-[#5E6AD2] flex-shrink-0" />
+                        )}
+                      </div>
+                      <p className="text-xs text-[#9BA1B0] mt-0.5 truncate">
+                        {mentor.title} @ {mentor.company} • {mentor.yearsOfExperience} YOE
+                      </p>
+                      <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
+                        <Star className="h-3.5 w-3.5 fill-[#F5A623] text-[#F5A623]" />
+                        <span className="text-xs font-mono text-[#F0F2F5]">
+                          {mentor.ratingAverage.toFixed(2)}
+                        </span>
+                        <span className="text-xs text-[#5D6474]">
+                          ({mentor.reviewCount} đánh giá) • {mentor.totalSessions} Buổi
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Skills preview */}
+                  <div className="flex flex-wrap gap-1 mb-3">
+                    {mentor.skills.slice(0, 3).map((skill) => (
+                      <span
+                        key={skill}
+                        className="rounded bg-[#1F2022] px-2 py-0.5 text-[11px] font-mono text-[#9BA1B0] border border-white/[0.04]"
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Service tiers badges */}
+                  <div className="flex flex-wrap gap-1.5 mb-3.5">
+                    {mentor.services.map((s) => (
+                      <Badge key={s.id} variant="neutral">
+                        {s.name} ({vndShort(s.priceVnd)})
+                      </Badge>
+                    ))}
+                  </div>
 
       {/* Filters */}
       <div className="sb-directory-filters">

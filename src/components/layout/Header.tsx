@@ -10,11 +10,79 @@ import { useAuth } from "@/hooks/useAuth";
 export function Header() {
   const { user } = useAuth();
   const pathname = usePathname();
-  const [open, setOpen] = useState(false);
-  const [previousPath, setPreviousPath] = useState(pathname);
-  if (previousPath !== pathname) {
-    setPreviousPath(pathname);
-    setOpen(false);
+  const router = useRouter();
+  const state = useAppState();
+  const { user, role, mentor, wallet } = useAuth();
+
+  const [searchVal, setSearchVal] = useState("");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [menuPathname, setMenuPathname] = useState(pathname);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  // Reset the drawer before rendering a new route.
+  if (menuPathname !== pathname) {
+    setMenuPathname(pathname);
+    setMobileMenuOpen(false);
+  }
+
+  useEffect(() => {
+    function handleResize() {
+      if (window.innerWidth >= 1024) {
+        setMobileMenuOpen(false);
+      }
+    }
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // ⌘K shortcut
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchVal.trim()) {
+      router.push(`/mentors?q=${encodeURIComponent(searchVal.trim())}`);
+    } else {
+      router.push("/mentors");
+    }
+  };
+
+  // Role-based Nav items
+  const activeRole = role || "mentee";
+  const navItems = getNavItemsForRole(activeRole);
+
+  // Escrow balance display
+  let badgeLabel = "SỐ DƯ";
+  let badgeAmount = "0 ₫";
+  let badgeHref = "/wallet";
+
+  if (user) {
+    if (role === "mentor" && user.mentorId) {
+      badgeLabel = "SỐ DƯ";
+      badgeAmount = vnd(wallet);
+      badgeHref = "/mentor/wallet";
+    } else if (role === "admin") {
+      const pendingTotal = state.bookings
+        .filter((b) => b.escrow.state === "Holding")
+        .reduce((sum, b) => sum + b.escrow.heldVnd, 0);
+      badgeLabel = "KÝ QUỸ SLA";
+      badgeAmount = vnd(pendingTotal);
+      badgeHref = "/admin/escrow";
+    } else {
+      const summary = menteeEscrowSummary(state, user.id);
+      badgeLabel = "SỐ DƯ";
+      badgeAmount = vnd(summary.holding);
+      badgeHref = "/wallet";
+    }
   }
   const close = () => setOpen(false);
   return (

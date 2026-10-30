@@ -21,7 +21,6 @@ import {
   ArrowUpRight,
   Banknote,
   CheckCircle2,
-  Clock,
 } from "lucide-react";
 import { RequireRole } from "@/components/auth/require-role";
 import { useAppState, useSession, actions, mentorEscrowSummary } from "@/lib/store";

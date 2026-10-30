@@ -119,8 +119,8 @@ export function AdminKycVerificationView() {
             </Badge>
           </div>
         </div>
-        <p className="text-sm text-[#5e5866] mb-8">
-          Ứng viên: <span className="text-[#27252d] font-semibold">{applicant?.name || application?.name || "Nguyễn Văn An"}</span> • Nộp lúc: {application ? slotDateLabel(application.submittedAt) : "Chưa có hồ sơ"}
+        <p className="text-sm text-[#9BA1B0] mb-8">
+          Ứng viên: <span className="text-white font-medium">{applicant?.name || application?.name || "Nguyễn Văn An"}</span> • Nộp lúc: {application ? slotDateLabel(application.submittedAt) : "Chưa có hồ sơ"}
         </p>
 
         {/* ── Two-Pane Layout ── */}
