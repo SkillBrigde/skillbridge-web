@@ -104,21 +104,21 @@ export function AdminDisputeResolutionView() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
         {/* Queue Selector Bar */}
         <div className="flex items-center gap-2 mb-6 overflow-x-auto pb-2">
-          <span className="text-xs font-mono text-[#5D6474] uppercase tracking-wider flex-shrink-0">
+          <span className="text-xs font-mono font-semibold text-[#5e5866] uppercase tracking-wider shrink-0">
             Hàng đợi tranh chấp ({disputes.length}):
           </span>
           {disputes.map((d) => (
             <button
               key={d.id}
               onClick={() => setSelectedDisputeId(d.id)}
-              className={`rounded-lg px-3 py-1.5 text-xs font-mono border transition-all flex items-center gap-1.5 flex-shrink-0 ${
+              className={`rounded-xl px-3 py-1.5 text-xs font-mono border transition-all flex items-center gap-1.5 shrink-0 ${
                 d.id === dispute?.id
-                  ? "bg-[#FF5C5C]/20 border-[#FF5C5C] text-white font-bold"
-                  : "bg-[#14171D] border-white/[0.08] text-[#9BA1B0] hover:text-white"
+                  ? "bg-[#ece5f5] border-[#6551a4] text-[#6551a4] font-bold shadow-xs"
+                  : "bg-white border-[#e5e2de] text-[#5e5866] hover:text-[#27252d] hover:border-[#6551a4]/40"
               }`}
             >
               <span>#{d.id}</span>
-              <span className="text-[10px] text-[#5D6474]">({d.status})</span>
+              <span className="text-[10px] text-[#5e5866]">({d.status})</span>
             </button>
           ))}
         </div>
@@ -127,46 +127,48 @@ export function AdminDisputeResolutionView() {
         {successMsg && <div className="mb-6"><NoticeBanner variant="success" message={successMsg} /></div>}
 
         {/* ── Urgency Banner ── */}
-        <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl bg-[#FF5C5C]/5 border border-[#FF5C5C]/20 p-4 mb-8">
+        <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-white border border-[#e5e2de] p-5 mb-8 shadow-xs">
           <div className="flex items-center gap-3">
-            <Scale className="h-5 w-5 text-[#FF5C5C]" />
+            <div className="h-10 w-10 rounded-xl bg-[#fceeea] flex items-center justify-center shrink-0">
+              <Scale className="h-5 w-5 text-[#a64533]" />
+            </div>
             <div>
               <div className="flex items-center gap-2 flex-wrap">
-                <h1 className="text-base font-semibold text-[#F0F2F5]">
+                <h1 className="font-serif text-2xl font-semibold text-[#27252d]">
                   Khiếu Nại #{dispute?.id}
                 </h1>
                 <Badge variant={dispute?.status === "Resolved" ? "escrow" : "dispute"} dot pulse>
                   {dispute?.status}
                 </Badge>
               </div>
-              <p className="text-xs text-[#9BA1B0]">
+              <p className="text-xs text-[#5e5866] mt-0.5">
                 Đơn học: #{booking?.code} • Tiền ký quỹ Escrow:{" "}
-                <span className="font-mono text-[#F5A623]">
+                <span className="font-mono font-semibold text-[#946200]">
                   {booking ? vnd(booking.priceVnd) : "0 ₫"}
                 </span>
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Clock className="h-4 w-4 text-[#F5A623]" />
-            <span className="font-mono text-lg font-bold text-[#F5A623]">
+          <div className="flex items-center gap-2 bg-[#fdf6e7] px-4 py-2 rounded-xl border border-[#946200]/20">
+            <Clock className="h-4 w-4 text-[#946200]" />
+            <span className="font-mono text-lg font-bold text-[#946200]">
               {fmtCountdown(remainingSeconds)}
             </span>
-            <span className="text-xs text-[#5D6474]">SLA 48h deadline</span>
+            <span className="text-xs text-[#5e5866]">SLA 48h deadline</span>
           </div>
         </div>
 
         {/* ── Side-by-Side Split Review ── */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
           {/* Column 1: Mentee Claim */}
-          <Card className="p-5 border-[#FF5C5C]/15">
+          <Card className="p-6 border-[#e5e2de]">
             <div className="flex items-center gap-3 mb-4">
-              <Avatar alt={dispute?.menteeName} size="sm" />
+              <Avatar alt={dispute?.menteeName} size="md" />
               <div>
-                <span className="text-sm font-medium text-[#F0F2F5]">
+                <span className="text-sm font-semibold text-[#27252d]">
                   {dispute?.menteeName}
                 </span>
-                <span className="text-xs text-[#5D6474] ml-2">
+                <span className="text-xs text-[#5e5866] ml-2 font-mono">
                   (Học viên khiếu nại)
                 </span>
               </div>
@@ -174,29 +176,29 @@ export function AdminDisputeResolutionView() {
                 {dispute?.reason}
               </Badge>
             </div>
-            <p className="text-sm text-[#E3E2E5] leading-relaxed mb-4 bg-[#FF5C5C]/5 p-3 rounded-lg border border-[#FF5C5C]/10">
+            <p className="text-sm text-[#27252d] leading-relaxed mb-4 bg-[#fceeea]/50 p-4 rounded-xl border border-[#a64533]/15 italic">
               &ldquo;{dispute?.menteeStatement}&rdquo;
             </p>
 
-            <div className="rounded-lg bg-[#0B0C0E] border border-white/[0.06] p-3 text-xs">
-              <p className="text-[10px] font-mono uppercase tracking-wider text-[#5D6474] mb-1">
+            <div className="rounded-xl bg-[#faf9f6] border border-[#e5e2de] p-4 text-xs">
+              <p className="text-[10px] font-mono font-semibold uppercase tracking-wider text-[#5e5866] mb-1">
                 Yêu cầu xử lý từ Mentee:
               </p>
-              <p className="text-white font-medium">
+              <p className="text-[#27252d] font-semibold">
                 {dispute?.menteeWish === "full_refund" ? "Hoàn tiền 100% về ví" : "Đổi lịch học bù phiên khác"}
               </p>
             </div>
           </Card>
 
           {/* Column 2: Mentor Defense */}
-          <Card className="p-5 border-[#5E6AD2]/15">
+          <Card className="p-6 border-[#e5e2de]">
             <div className="flex items-center gap-3 mb-4">
-              <Avatar alt={booking?.mentorName} size="sm" />
+              <Avatar alt={booking?.mentorName} size="md" />
               <div>
-                <span className="text-sm font-medium text-[#F0F2F5]">
+                <span className="text-sm font-semibold text-[#27252d]">
                   {booking?.mentorName}
                 </span>
-                <span className="text-xs text-[#5D6474] ml-2">
+                <span className="text-xs text-[#5e5866] ml-2 font-mono">
                   (Mentor giải trình)
                 </span>
               </div>
@@ -206,35 +208,35 @@ export function AdminDisputeResolutionView() {
             </div>
 
             {dispute?.mentorStatement ? (
-              <p className="text-sm text-[#E3E2E5] leading-relaxed mb-4 bg-[#5E6AD2]/5 p-3 rounded-lg border border-[#5E6AD2]/10">
+              <p className="text-sm text-[#27252d] leading-relaxed mb-4 bg-[#ece5f5]/50 p-4 rounded-xl border border-[#6551a4]/15">
                 &ldquo;{dispute.mentorStatement}&rdquo;
               </p>
             ) : (
-              <p className="text-sm text-[#5D6474] italic mb-4">
+              <p className="text-sm text-[#5e5866] italic mb-4">
                 Chưa có văn bản giải trình từ phía Mentor (trong thời hạn SLA 24h).
               </p>
             )}
 
             {/* Attendance Log */}
-            <div className="rounded-lg bg-[#0B0C0E] border border-white/[0.06] p-3">
+            <div className="rounded-xl bg-[#faf9f6] border border-[#e5e2de] p-4">
               <div className="flex items-center gap-1.5 mb-2">
-                <Server className="h-3 w-3 text-[#5D6474]" />
-                <span className="text-[10px] font-mono uppercase tracking-wider text-[#5D6474]">
+                <Server className="h-3.5 w-3.5 text-[#5e5866]" />
+                <span className="text-[10px] font-mono font-semibold uppercase tracking-wider text-[#5e5866]">
                   WebRTC Server Attendance Log
                 </span>
               </div>
-              <div className="space-y-1 text-xs font-mono">
+              <div className="space-y-1.5 text-xs font-mono">
                 <div className="flex justify-between">
-                  <span className="text-[#9BA1B0]">Mentee Online:</span>
-                  <span className="text-[#E3E2E5]">19:30 – 20:17</span>
+                  <span className="text-[#5e5866]">Mentee Online:</span>
+                  <span className="text-[#27252d] font-medium">19:30 – 20:17</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-[#9BA1B0]">Mentor Online:</span>
-                  <span className="text-[#E3E2E5]">19:41 – 20:16</span>
+                  <span className="text-[#5e5866]">Mentor Online:</span>
+                  <span className="text-[#27252d] font-medium">19:41 – 20:16</span>
                 </div>
-                <div className="flex justify-between pt-1 border-t border-white/[0.06]">
-                  <span className="text-[#9BA1B0]">Thời gian trùng:</span>
-                  <span className="text-[#F5A623] font-medium">35m 10s / 60m</span>
+                <div className="flex justify-between pt-1.5 border-t border-[#e5e2de]">
+                  <span className="text-[#5e5866]">Thời gian trùng:</span>
+                  <span className="text-[#946200] font-semibold">35m 10s / 60m</span>
                 </div>
               </div>
             </div>
@@ -243,52 +245,52 @@ export function AdminDisputeResolutionView() {
 
         {/* ── 4 Ruling Commands ── */}
         <section className="mb-10">
-          <h2 className="text-sm font-semibold text-[#F0F2F5] mb-4 flex items-center gap-2">
-            <ShieldCheck className="h-4 w-4 text-[#5E6AD2]" />
+          <h2 className="font-serif text-xl font-semibold text-[#27252d] mb-4 flex items-center gap-2">
+            <ShieldCheck className="h-5 w-5 text-[#6551a4]" />
             Quyết Định Phán Quyết (Admin SLA Actions)
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <Button
               variant="destructive"
-              className="h-auto py-3 flex-col gap-1"
+              className="h-auto py-3.5 flex-col gap-1 rounded-xl"
               disabled={dispute?.status === "Resolved"}
               onClick={() => handleRule("FullRefund", "Hoàn 100% tiền học phí cho Mentee")}
             >
               <span className="text-xs font-semibold">Hoàn 100% Mentee</span>
-              <span className="text-[10px] opacity-70">
+              <span className="text-[10px] opacity-80">
                 Chấp thuận khiếu nại
               </span>
             </Button>
             <Button
               variant="primary"
-              className="h-auto py-3 flex-col gap-1"
+              className="h-auto py-3.5 flex-col gap-1 rounded-xl"
               disabled={dispute?.status === "Resolved"}
               onClick={() => handleRule("Split5050", "Chia đôi 50/50 tiền ký quỹ")}
             >
               <span className="text-xs font-semibold">Chia Đôi 50/50</span>
-              <span className="text-[10px] opacity-70">
+              <span className="text-[10px] opacity-80">
                 Mỗi bên 50% thù lao
               </span>
             </Button>
             <Button
               variant="outline"
-              className="h-auto py-3 flex-col gap-1 border-[#F5A623]/30 text-[#F5A623] hover:bg-[#F5A623]/5"
+              className="h-auto py-3.5 flex-col gap-1 rounded-xl border-[#946200]/30 text-[#946200] hover:bg-[#fdf6e7]"
               disabled={dispute?.status === "Resolved"}
               onClick={() => handleRule("MakeUpSession", "Yêu cầu Mentor dạy bù 1 buổi")}
             >
               <span className="text-xs font-semibold">Cấp Slot Dạy Bù</span>
-              <span className="text-[10px] opacity-70">
+              <span className="text-[10px] opacity-80">
                 Giữ Escrow, Mentor bù
               </span>
             </Button>
             <Button
               variant="outline"
-              className="h-auto py-3 flex-col gap-1 border-[#27C98F]/30 text-[#27C98F] hover:bg-[#27C98F]/5"
+              className="h-auto py-3.5 flex-col gap-1 rounded-xl border-[#1e7e45]/30 text-[#1e7e45] hover:bg-[#e8f5ed]"
               disabled={dispute?.status === "Resolved"}
               onClick={() => handleRule("ReleaseMentor", "Giải phóng tiền cho Mentor")}
             >
               <span className="text-xs font-semibold">Giải Phóng Mentor</span>
-              <span className="text-[10px] opacity-70">
+              <span className="text-[10px] opacity-80">
                 Bác khiếu nại (đúng cam kết)
               </span>
             </Button>
@@ -297,7 +299,7 @@ export function AdminDisputeResolutionView() {
 
         {/* ── Audit Trail ── */}
         <section>
-          <h2 className="text-sm font-semibold text-[#F0F2F5] mb-4">
+          <h2 className="font-serif text-xl font-semibold text-[#27252d] mb-4">
             Audit Trail Log
           </h2>
           <Timeline events={auditEvents} />
@@ -306,3 +308,5 @@ export function AdminDisputeResolutionView() {
     </RequireRole>
   );
 }
+
+export { AdminDisputeResolutionView as default };

@@ -123,9 +123,8 @@ export function FeaturedMentorsCarousel() {
               type="button"
               onClick={() => setCurrentIndex(idx)}
               aria-label={`Trang mentor ${idx + 1}`}
-              className={`transition-all rounded-full h-1.5 ${
-                isActive ? "w-6 bg-[#5E6AD2]" : "w-1.5 bg-white/20 hover:bg-white/40"
-              }`}
+              className={`transition-all rounded-full h-1.5 ${isActive ? "w-6 bg-[#5E6AD2]" : "w-1.5 bg-white/20 hover:bg-white/40"
+                }`}
             />
           );
         })}

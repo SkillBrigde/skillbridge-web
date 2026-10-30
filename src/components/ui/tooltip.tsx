@@ -2,9 +2,7 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 export interface TooltipProps {
-  /** Content to display in the tooltip */
   content: React.ReactNode;
-  /** Tooltip position */
   side?: "top" | "bottom" | "left" | "right";
   children: React.ReactNode;
   className?: string;
@@ -30,7 +28,7 @@ export function Tooltip({
         role="tooltip"
         className={cn(
           "absolute z-50 hidden group-hover:block pointer-events-none",
-          "rounded-lg bg-[#1F2022] border border-white/[0.12] px-2.5 py-1.5 text-xs text-[#E3E2E5] shadow-xl whitespace-nowrap",
+          "rounded-md bg-[#27252d] text-white px-2.5 py-1 text-xs shadow-lg whitespace-nowrap",
           "animate-fade-in",
           positions[side]
         )}

@@ -33,7 +33,7 @@ export function Avatar({
     <div className={cn("relative inline-block flex-shrink-0", className)} {...props}>
       <div
         className={cn(
-          "relative overflow-hidden bg-[#1F2022] border border-white/[0.12] flex items-center justify-center text-[#9BA1B0]",
+          "relative overflow-hidden bg-[#ece5f5] border border-[#d4c3e7] flex items-center justify-center text-[#6551a4]",
           sizeStyles[size],
           roundedStyles
         )}
@@ -53,10 +53,10 @@ export function Avatar({
       {online && (
         <span
           className={cn(
-            "absolute bottom-0 right-0 rounded-full bg-[#27C98F] ring-2 ring-[#0B0C0E]",
-            size === "sm" && "h-2 w-2",
-            size === "md" && "h-3 w-3",
-            (size === "lg" || size === "xl") && "h-3.5 w-3.5 ring-4"
+            "absolute bottom-0 right-0 rounded-full bg-[#1e7e45] ring-2 ring-white",
+            size === "sm" && "h-2.5 w-2.5",
+            size === "md" && "h-3.5 w-3.5",
+            (size === "lg" || size === "xl") && "h-4 w-4 ring-2"
           )}
         />
       )}

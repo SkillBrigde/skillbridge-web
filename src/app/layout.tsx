@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono, Lora } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -17,9 +17,21 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
+const editorial = Lora({
+  subsets: ["latin", "vietnamese"],
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
+  variable: "--font-editorial",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
-  title: "SkillBridge — 1-on-1 Mentoring & Escrow Ledger",
-  description: "Nền tảng kết nối 1-on-1 Mentoring & Escrow Ledger minh bạch, bảo vệ quyền lợi học viên và chuyên gia.",
+  title: {
+    default: "SkillBridge — Đi xa hơn, cùng người đã đi qua",
+    template: "%s | SkillBridge",
+  },
+  description:
+    "Kết nối kinh nghiệm, mở lối tiến xa. Khám phá mentoring 1:1 cho kỹ năng công nghệ, sự nghiệp và những bước tiến tiếp theo của bạn.",
 };
 
 export default function RootLayout({
@@ -28,13 +40,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi" className="dark">
+    <html lang="vi">
       <body
-        className={`${inter.variable} ${jetbrainsMono.variable} min-h-screen bg-[#0B0C0E] text-[#E3E2E5] font-sans antialiased flex flex-col`}
+        className={`${inter.variable} ${jetbrainsMono.variable} ${editorial.variable} min-h-screen font-sans antialiased flex flex-col`}
       >
         <StoreBootstrap />
+        <a className="sb-skip-link" href="#main-content">
+          Đến nội dung chính
+        </a>
         <Header />
-        <main className="flex-1">{children}</main>
+        <main id="main-content" className="flex-1">
+          {children}
+        </main>
         <Footer />
       </body>
     </html>

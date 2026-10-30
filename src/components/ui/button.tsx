@@ -10,30 +10,30 @@ export interface ButtonProps
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = "primary", size = "md", children, disabled, ...props }, ref) => {
     const baseStyles =
-      "inline-flex items-center justify-center font-medium rounded-xl transition-all duration-150 focus:outline-none focus:ring-1 disabled:opacity-50 disabled:pointer-events-none cursor-pointer";
+      "inline-flex items-center justify-center font-medium rounded-lg transition-all duration-150 focus:outline-none focus-visible:outline-2 focus-visible:outline-[#9982d2] disabled:opacity-50 disabled:pointer-events-none cursor-pointer";
 
     const variantStyles = {
-      // Primary: Brand Indigo (#5E6AD2 -> #6F7BE2 -> #525DBB)
+      // Primary: Signature SkillBridge Purple (#6551a4 -> #514085)
       primary:
-        "bg-[#5E6AD2] hover:bg-[#6F7BE2] active:bg-[#525DBB] text-[#F0F2F5] border border-white/10 shadow-sm shadow-[#5E6AD2]/20 focus:ring-[#5E6AD2]/60",
-      // Secondary: Dark Slate Surface (#14171D -> #171A21)
+        "bg-[#6551a4] hover:bg-[#514085] active:bg-[#43346f] text-white border border-transparent shadow-sm",
+      // Secondary: Crisp warm surface with hairline border
       secondary:
-        "bg-[#14171D] hover:bg-[#171A21] active:bg-[#0F1115] text-[#F0F2F5] border border-white/[0.08] hover:border-white/[0.16] focus:ring-white/20",
-      // Destructive: Rose Alert (#FF5C5C)
+        "bg-white hover:bg-[#f0ede7] active:bg-[#e7e3dc] text-[#27252d] border border-[#e5e2de]",
+      // Destructive: Editorial red tint
       destructive:
-        "bg-[#FF5C5C]/10 hover:bg-[#FF5C5C]/20 active:bg-[#FF5C5C]/25 text-[#FF5C5C] border border-[#FF5C5C]/25 focus:ring-[#FF5C5C]/40",
+        "bg-[#fceeea] hover:bg-[#f9ded7] active:bg-[#f5cfc5] text-[#a64533] border border-[#f5cac2]",
       // Ghost
       ghost:
-        "bg-transparent hover:bg-white/[0.06] active:bg-white/[0.1] text-[#9BA1B0] hover:text-[#F0F2F5] focus:ring-white/20",
+        "bg-transparent hover:bg-[#f1efea] active:bg-[#e8e4dc] text-[#5e5866] hover:text-[#27252d]",
       // Outline
       outline:
-        "bg-transparent hover:bg-white/[0.04] text-[#E3E2E5] border border-white/[0.12] hover:border-white/[0.2] focus:ring-[#5E6AD2]/40",
+        "bg-transparent hover:bg-[#f1efea] text-[#27252d] border border-[#e5e2de]",
     };
 
     const sizeStyles = {
-      sm: "h-7 px-2.5 text-xs gap-1.5",
-      md: "h-9 px-3.5 text-sm gap-2",
-      lg: "h-11 px-5 text-base gap-2.5",
+      sm: "h-8 px-3 text-xs gap-1.5",
+      md: "h-10 px-4 text-sm gap-2",
+      lg: "h-12 px-6 text-base gap-2.5",
     };
 
     return (

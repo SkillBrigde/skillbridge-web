@@ -2,24 +2,19 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 export interface ProgressBarProps {
-  /** Progress value from 0 to 100 */
   value: number;
-  /** Optional label displayed above the bar */
   label?: string;
-  /** Show percentage text */
   showPercent?: boolean;
-  /** Bar color variant */
   variant?: "brand" | "success" | "warning" | "error";
-  /** Height size */
   size?: "sm" | "md";
   className?: string;
 }
 
 const barColors: Record<string, string> = {
-  brand: "bg-[#5E6AD2]",
-  success: "bg-[#27C98F]",
-  warning: "bg-[#F5A623]",
-  error: "bg-[#FF5C5C]",
+  brand: "bg-[#6551a4]",
+  success: "bg-[#1e7e45]",
+  warning: "bg-[#946200]",
+  error: "bg-[#a64533]",
 };
 
 export function ProgressBar({
@@ -37,12 +32,12 @@ export function ProgressBar({
       {(label || showPercent) && (
         <div className="flex items-center justify-between mb-1.5">
           {label && (
-            <span className="text-xs font-medium text-[#E3E2E5]">
+            <span className="text-xs font-medium text-[#27252d]">
               {label}
             </span>
           )}
           {showPercent && (
-            <span className="text-xs font-mono text-[#9BA1B0]">
+            <span className="text-xs font-mono text-[#5e5866]">
               {Math.round(clampedValue)}%
             </span>
           )}
@@ -50,8 +45,8 @@ export function ProgressBar({
       )}
       <div
         className={cn(
-          "w-full rounded-full bg-white/[0.06] overflow-hidden",
-          size === "sm" ? "h-1" : "h-2"
+          "w-full rounded-full bg-[#f1efea] overflow-hidden border border-[#e5e2de]",
+          size === "sm" ? "h-1.5" : "h-2.5"
         )}
       >
         <div

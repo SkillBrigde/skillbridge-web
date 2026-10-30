@@ -16,25 +16,25 @@ export function Badge({
   ...props
 }: BadgeProps) {
   const variantStyles = {
-    escrow: "bg-[#27C98F]/10 text-[#27C98F] border-[#27C98F]/25",
-    pending: "bg-[#F5A623]/10 text-[#F5A623] border-[#F5A623]/25",
-    dispute: "bg-[#FF5C5C]/10 text-[#FF5C5C] border-[#FF5C5C]/25",
-    neutral: "bg-[#0F1115] text-[#9BA1B0] border-white/[0.08]",
-    brand: "bg-[#5E6AD2]/15 text-[#BDC2FF] border-[#5E6AD2]/30",
+    escrow: "bg-[#e8f5ed] text-[#1e7e45] border-[#bde6ca]",
+    pending: "bg-[#fdf6e7] text-[#946200] border-[#f4dfad]",
+    dispute: "bg-[#fceeea] text-[#a64533] border-[#f5cac2]",
+    neutral: "bg-[#f1efea] text-[#5e5866] border-[#e5e2de]",
+    brand: "bg-[#ece5f5] text-[#6551a4] border-[#d4c3e7]",
   };
 
   const dotColors = {
-    escrow: "bg-[#27C98F]",
-    pending: "bg-[#F5A623]",
-    dispute: "bg-[#FF5C5C]",
-    neutral: "bg-[#9BA1B0]",
-    brand: "bg-[#5E6AD2]",
+    escrow: "bg-[#1e7e45]",
+    pending: "bg-[#946200]",
+    dispute: "bg-[#a64533]",
+    neutral: "bg-[#5e5866]",
+    brand: "bg-[#6551a4]",
   };
 
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-mono uppercase tracking-wider font-medium border border-solid",
+        "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono tracking-wider font-medium border",
         variantStyles[variant],
         className
       )}

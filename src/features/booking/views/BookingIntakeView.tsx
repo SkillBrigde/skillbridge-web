@@ -8,44 +8,82 @@ import {
   Button,
   Textarea,
   Input,
-  EmptyState,
 } from "@/components/ui";
 import { SlotPicker, type SlotOption } from "@/components/ui/slot-picker";
 import { NoticeBanner } from "@/components/ui/notice-banner";
-import { Calendar, ShieldCheck, ArrowLeft } from "lucide-react";
+import { Calendar, ShieldCheck, ArrowLeft, ArrowUpRight, Loader2 } from "lucide-react";
 import { useAppState, useNow, actions, mentorSlotsForPicker } from "@/lib/store";
 import { vnd, slotDateLabel, slotTimeLabel } from "@/lib/domain";
+import { bookingService } from "@/services/bookingService";
+import { schedulingService } from "@/services/schedulingService";
 
 const QUICK_CHIPS = [
-  "System Design Event-Driven & Microservices scale 100k CCU",
-  "Tối ưu CV Senior .NET/Go chuẩn FAANG & kiến trúc phân tán",
-  "Nghẽn DB PostgreSQL 10k RPS, deadlocks và query plan",
+  "Tối ưu kiến trúc Event-Driven Microservices scale 100k CCU",
+  "Review & Tối ưu CV Senior .NET/Java Backend chuẩn ATS",
+  "Nghẽn Database PostgreSQL, phân tích query execution plan",
 ];
 
-export function BookingIntakeView() {
+function BookingIntakeContent() {
   const params = useParams<{ bookingId: string }>();
+  const searchParams = useSearchParams();
   const router = useRouter();
   const state = useAppState();
   const now = useNow("second");
 
   const bookingId = params.bookingId;
+  const serviceIdParam = searchParams.get("serviceId") || "";
+  const mentorIdParam = searchParams.get("mentorId") || "";
+
+  // Check state booking or mock booking
   const booking = useMemo(
     () => state.bookings.find((b) => b.id === bookingId),
     [state.bookings, bookingId]
   );
 
+  const mentorId = mentorIdParam || booking?.mentorId || "mentor-an-nguyen";
   const mentor = useMemo(
-    () => (booking ? state.mentors.find((m) => m.id === booking.mentorId) : null),
-    [state.mentors, booking]
+    () => state.mentors.find((m) => m.id === mentorId) || state.mentors[0],
+    [state.mentors, mentorId]
   );
 
   const [issue, setIssue] = useState(booking?.intake?.coreIssue || "");
-  const [link, setLink] = useState(booking?.intake?.link || "https://github.com/");
+  const [link, setLink] = useState(booking?.intake?.link || "https://github.com/my-profile");
   const [expectation, setExpectation] = useState(
-    booking?.intake?.expectation || "Nắm chắc cách giải bài toán System Design và tự tin pass vòng kỹ thuật"
+    booking?.intake?.expectation || "Nắm chắc cách giải bài toán System Design và tự tin vượt qua phỏng vấn kỹ thuật"
   );
   const [selectedSlotId, setSelectedSlot] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
+  const [apiSlots, setApiSlots] = useState<SlotOption[]>([]);
+
+  // Fetch live slots from Scheduling API
+  useEffect(() => {
+    if (!mentorId) return;
+    const today = new Date();
+    const startDate = today.toISOString().split("T")[0];
+    const twoWeeksLater = new Date(today.getTime() + 14 * 24 * 60 * 60 * 1000);
+    const endDate = twoWeeksLater.toISOString().split("T")[0];
+
+    schedulingService
+      .getMentorSlots(mentorId, startDate, endDate, 1, 24)
+      .then((res) => {
+        if (res && res.items && res.items.length > 0) {
+          const mapped: SlotOption[] = res.items.map((s) => {
+            const startMs = new Date(s.startAtUtc).getTime();
+            const endMs = new Date(s.endAtUtc).getTime();
+            return {
+              id: s.id,
+              date: slotDateLabel(startMs),
+              time: slotTimeLabel(startMs, endMs),
+              available: s.status === "Available",
+            };
+          });
+          setApiSlots(mapped);
+        }
+      })
+      .catch(() => {
+        // Fallback to local slots
+      });
+  }, [mentorId]);
 
   const slotOptions: SlotOption[] = useMemo(() => {
     if (!booking) return [];
@@ -56,7 +94,7 @@ export function BookingIntakeView() {
       time: slotTimeLabel(slot.startMs, slot.endMs),
       available,
     }));
-  }, [state, booking, now]);
+  }, [apiSlots, state, mentorId, booking, now]);
 
   const selectedSlot = selectedSlotId || booking?.slotId || slotOptions.find((s) => s.available)?.id || "";
 
@@ -75,16 +113,16 @@ export function BookingIntakeView() {
     );
   }
 
-  const handleProceed = () => {
+  const handleProceed = async () => {
     setErrorMsg("");
 
-    if (issue.trim().length < 30) {
-      setErrorMsg("Vui lòng mô tả chi tiết vấn đề kỹ thuật (tối thiểu 30 ký tự).");
+    if (issue.trim().length < 20) {
+      setErrorMsg("Vui lòng mô tả chi tiết vấn đề kỹ thuật (tối thiểu 20 ký tự).");
       return;
     }
 
     if (!link.trim() || !link.startsWith("http")) {
-      setErrorMsg("Vui lòng cung cấp link hợp lệ (bắt đầu bằng http:// hoặc https://).");
+      setErrorMsg("Vui lòng cung cấp link tài liệu hợp lệ (bắt đầu bằng http:// hoặc https://).");
       return;
     }
 
@@ -98,55 +136,83 @@ export function BookingIntakeView() {
       return;
     }
 
-    const res = actions.lockSlot(booking.id, selectedSlot, {
-      coreIssue: issue.trim(),
-      link: link.trim(),
-      expectation: expectation.trim(),
-    });
+    setSubmitting(true);
+    try {
+      const targetServiceId = serviceIdParam || booking?.serviceId || "019a0000-0000-7000-8000-000000000001";
+      const createdBooking = await bookingService.createBooking({
+        serviceId: targetServiceId,
+        serviceVersion: 1,
+        slotIds: [selectedSlot],
+        intakeForm: {
+          coreQuestion: issue.trim(),
+          attachedLinks: link.trim(),
+          targetGoals: expectation.trim(),
+        },
+      });
 
-    if (!res.ok) {
-      setErrorMsg(res.error || "Không thể khóa slot. Vui lòng thử chọn slot khác.");
-      return;
+      if (createdBooking?.id) {
+        router.push(`/checkout/${createdBooking.id}`);
+        return;
+      }
+    } catch (err: unknown) {
+      // If backend call fails (e.g. offline or slot held), try local store fallback
+      if (booking) {
+        const res = actions.lockSlot(booking.id, selectedSlot, {
+          coreIssue: issue.trim(),
+          link: link.trim(),
+          expectation: expectation.trim(),
+        });
+        if (res.ok) {
+          router.push(`/checkout/${booking.id}`);
+          return;
+        }
+      }
+      const message = err instanceof Error ? err.message : "Không thể tạo đơn đặt lịch. Vui lòng thử lại.";
+      setErrorMsg(message);
+    } finally {
+      setSubmitting(false);
     }
-
-    router.push(`/checkout/${booking.id}`);
   };
 
+  const serviceName = booking?.serviceName || "Gói Tư Vấn & Định Hướng Kỹ Thuật";
+  const durationLabel = booking?.durationLabel || "60 phút";
+  const priceVnd = booking?.priceVnd || mentor?.services[0]?.priceVnd || 1_500_000;
+  const mentorName = booking?.mentorName || mentor?.fullName || "Chuyên gia SkillBridge";
+
   return (
-    <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-10">
+    <div className="sb-container max-w-4xl py-10 sm:py-12">
       {/* ── Top Summary ── */}
       <div className="mb-6 flex items-center justify-between">
         <button
           type="button"
           onClick={() => router.back()}
-          className="inline-flex items-center gap-1.5 text-xs text-[#9BA1B0] hover:text-[#F0F2F5] transition-colors"
+          className="sb-text-link text-xs text-[#5e5866] hover:text-[#6551a4] transition-colors inline-flex items-center gap-1.5"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
           Quay lại
         </button>
-        <span className="text-xs font-mono text-[#5D6474]">Đơn #{booking.code}</span>
+        <span className="text-xs font-mono font-semibold text-[#5e5866]">
+          Khảo sát & Khóa lịch Atomic 10 Phút
+        </span>
       </div>
 
-      <div className="flex flex-wrap items-center gap-3 mb-6 p-4 rounded-xl bg-[#14171D] border border-white/[0.08]">
-        <Avatar src={mentor.avatarUrl} alt={booking.mentorName} size="md" />
+      <div className="flex flex-wrap items-center gap-4 mb-8 p-5 rounded-2xl bg-white border border-[#e5e2de] shadow-sm">
+        <Avatar src={mentor?.avatarUrl} alt={mentorName} size="md" />
         <div className="flex-1 min-w-0">
-          <h1 className="text-lg font-semibold text-[#F0F2F5] tracking-tight">
-            {booking.serviceName} ({booking.durationLabel})
+          <h1 className="text-xl font-bold text-[#27252d] tracking-tight">
+            {serviceName} ({durationLabel})
           </h1>
-          <p className="text-xs text-[#9BA1B0]">
-            Mentor: <span className="text-[#F0F2F5] font-medium">{booking.mentorName}</span> • Tạm tính:{" "}
-            <span className="font-mono text-[#27C98F] font-semibold">
-              {vnd(booking.priceVnd)}
+          <p className="text-xs text-[#5e5866] mt-0.5">
+            Cố vấn: <span className="text-[#27252d] font-semibold">{mentorName}</span> • Tạm tính trọn gói:{" "}
+            <span className="font-mono text-[#6551a4] font-bold text-sm">
+              {vnd(priceVnd)}
             </span>
           </p>
         </div>
+        <Badge variant="brand" dot>
+          Escrow Bảo Chứng
+        </Badge>
       </div>
-
-      {/* ── Notice ── */}
-      <NoticeBanner variant="info" className="mb-8">
-        Khảo sát bắt buộc để Mentor nghiên cứu case trước giờ học, cam kết 100%
-        thời lượng vào giải pháp thay vì tìm hiểu bối cảnh.
-      </NoticeBanner>
 
       {errorMsg && (
         <div className="mb-6">
@@ -154,108 +220,126 @@ export function BookingIntakeView() {
         </div>
       )}
 
-      {/* ── 3 Mandatory Fields ── */}
-      <section className="space-y-6 mb-10">
-        {/* Q1 */}
-        <div>
-          <label className="block text-sm font-medium text-[#E3E2E5] mb-2">
-            1. Vấn đề hoặc mục tiêu kỹ thuật lớn nhất bạn muốn giải quyết?{" "}
-            <span className="text-[#FF5C5C]">*</span>
-          </label>
-          <Textarea
-            placeholder="Mô tả chi tiết vấn đề kỹ thuật bạn đang gặp... (Tối thiểu 30 ký tự)"
-            value={issue}
-            onChange={(e) => setIssue(e.target.value)}
-            rows={4}
-            className="mb-2"
-          />
-          <div className="flex items-center justify-between text-xs text-[#5D6474] mb-2">
-            <span>Gợi ý mẫu câu nhanh:</span>
-            <span className={issue.length < 30 ? "text-[#FF5C5C]" : "text-[#27C98F]"}>
-              {issue.length}/30 ký tự tối thiểu
-            </span>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Left 2 Cols: Intake Form */}
+        <div className="lg:col-span-2 space-y-6">
+          <div className="rounded-2xl bg-white border border-[#e5e2de] p-6 shadow-sm">
+            <h2 className="text-base font-bold text-[#27252d] mb-1">
+              1. Khảo Sát Nhu Cầu Trước Buổi Học
+            </h2>
+            <p className="text-xs text-[#5e5866] mb-5">
+              Cung cấp chi tiết vấn đề giúp chuyên gia chuẩn bị tài liệu và giải pháp trọng tâm nhất.
+            </p>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-[#27252d] mb-1.5">
+                  Vấn đề kỹ thuật / Chủ đề cốt lõi cần tháo gỡ *
+                </label>
+                <Textarea
+                  value={issue}
+                  onChange={(e) => setIssue(e.target.value)}
+                  placeholder="Mô tả cụ thể bối cảnh, công nghệ đang dùng, lỗi hoặc trở ngại bạn đang gặp phải..."
+                  rows={4}
+                />
+                <div className="flex items-center gap-1.5 mt-2 flex-wrap">
+                  <span className="text-[11px] text-[#5e5866]">Gợi ý nhanh:</span>
+                  {QUICK_CHIPS.map((chip) => (
+                    <button
+                      key={chip}
+                      type="button"
+                      onClick={() => setIssue(chip)}
+                      className="text-[11px] bg-[#f1efea] hover:bg-[#e5e2de] text-[#27252d] px-2 py-0.5 rounded-md transition-colors"
+                    >
+                      {chip.slice(0, 32)}...
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-[#27252d] mb-1.5">
+                  Link tài liệu / Mã nguồn / CV đính kèm *
+                </label>
+                <Input
+                  value={link}
+                  onChange={(e) => setLink(e.target.value)}
+                  placeholder="https://github.com/... hoặc link Google Drive/Figma"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-[#27252d] mb-1.5">
+                  Kỳ vọng kết quả cụ thể sau buổi hướng dẫn *
+                </label>
+                <Input
+                  value={expectation}
+                  onChange={(e) => setExpectation(e.target.value)}
+                  placeholder="Mục tiêu bạn muốn đạt được (VD: hiểu rõ sơ đồ DB, sửa xong query chậm...)"
+                />
+              </div>
+            </div>
           </div>
-          <div className="flex flex-wrap gap-1.5">
-            {QUICK_CHIPS.map((chip) => (
-              <button
-                key={chip}
-                type="button"
-                onClick={() => setIssue(chip)}
-                className="inline-flex items-center rounded-full bg-[#14171D] border border-white/[0.08] px-2.5 py-1 text-xs text-[#9BA1B0] hover:text-[#F0F2F5] hover:bg-[#1F2022] hover:border-white/[0.14] transition-all cursor-pointer select-none"
-              >
-                {chip}
-              </button>
-            ))}
+        </div>
+
+        {/* Right Col: Slot Picker & Action */}
+        <div className="space-y-6">
+          <div className="rounded-2xl bg-white border border-[#e5e2de] p-6 shadow-sm">
+            <div className="flex items-center gap-2 mb-3">
+              <Calendar className="h-4 w-4 text-[#6551a4]" />
+              <h2 className="text-base font-bold text-[#27252d]">
+                2. Chọn Khung Giờ Rảnh
+              </h2>
+            </div>
+            <p className="text-xs text-[#5e5866] mb-4">
+              Khung giờ sẽ được khóa giữ chỗ trong 10 phút sau khi bạn chuyển tiếp thanh toán.
+            </p>
+
+            <SlotPicker
+              slots={slotOptions}
+              selectedId={selectedSlot}
+              onSelect={(slotId: string) => setSelectedSlot(slotId)}
+            />
+          </div>
+
+          <div className="rounded-2xl bg-[#faf9f6] border border-[#e5e2de] p-5">
+            <div className="flex items-start gap-2.5 mb-4">
+              <ShieldCheck className="h-5 w-5 text-[#1e7e45] flex-shrink-0 mt-0.5" />
+              <p className="text-xs text-[#5e5866] leading-relaxed">
+                Tiền của bạn được giữ an toàn tại <strong>Két Escrow</strong> và chỉ giải ngân sau khi buổi học kết thúc đạt chuẩn.
+              </p>
+            </div>
+
+            <Button
+              variant="primary"
+              className="w-full"
+              disabled={submitting}
+              onClick={handleProceed}
+            >
+              {submitting ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  Đang khóa slot...
+                </>
+              ) : (
+                <>
+                  Khóa Slot & Thanh Toán Escrow
+                  <ArrowUpRight className="h-4 w-4 ml-1.5" />
+                </>
+              )}
+            </Button>
           </div>
         </div>
-
-        {/* Q2 */}
-        <div>
-          <label className="block text-sm font-medium text-[#E3E2E5] mb-2">
-            2. Link GitHub repo, Figma hoặc CV Drive đính kèm{" "}
-            <span className="text-[#FF5C5C]">*</span>
-          </label>
-          <Input
-            type="url"
-            placeholder="https://github.com/..."
-            value={link}
-            onChange={(e) => setLink(e.target.value)}
-          />
-        </div>
-
-        {/* Q3 */}
-        <div>
-          <label className="block text-sm font-medium text-[#E3E2E5] mb-2">
-            3. Kỳ vọng kết quả cụ thể sau buổi Mentoring?{" "}
-            <span className="text-[#FF5C5C]">*</span>
-          </label>
-          <Input
-            value={expectation}
-            onChange={(e) => setExpectation(e.target.value)}
-            placeholder="Ví dụ: Nắm vững kiến trúc cache và tự tin pass vòng System Design..."
-          />
-        </div>
-      </section>
-
-      {/* ── Slot Selection Grid ── */}
-      <section className="mb-10">
-        <div className="flex items-center gap-3 mb-4 flex-wrap">
-          <Calendar className="h-5 w-5 text-[#5E6AD2]" />
-          <h2 className="text-base font-semibold text-[#F0F2F5] tracking-tight">
-            Chọn Khung Giờ (Slot)
-          </h2>
-          <span className="text-xs text-[#5D6474]">
-            Múi giờ Asia/Ho_Chi_Minh (UTC+7)
-          </span>
-          <Badge variant="escrow" dot pulse className="ml-auto">
-            Live Redis Availability
-          </Badge>
-        </div>
-
-        {slotOptions.length === 0 ? (
-          <div className="p-6 text-center text-xs text-[#9BA1B0] rounded-xl border border-white/[0.08] bg-[#14171D]">
-            Hiện chưa có slot trống nào trong 14 ngày tới. Vui lòng liên hệ hỗ trợ hoặc chọn mentor khác.
-          </div>
-        ) : (
-          <SlotPicker
-            slots={slotOptions}
-            selectedId={selectedSlot}
-            onChange={setSelectedSlot}
-          />
-        )}
-      </section>
-
-      {/* ── Footer ── */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-white/[0.06]">
-        <p className="text-xs text-[#5D6474] flex items-center gap-1.5">
-          <ShieldCheck className="h-3.5 w-3.5 text-[#F5A623]" />
-          Khung giờ sẽ được khóa 10 phút trên Redis để đảm bảo tính công bằng
-        </p>
-        <Button variant="primary" size="lg" onClick={handleProceed}>
-          Khóa Slot &amp; Sang Thanh Toán →
-        </Button>
       </div>
     </div>
+  );
+}
+
+export function BookingIntakeView() {
+  return (
+    <Suspense fallback={<div className="sb-container py-20 text-center">Đang tải biểu mẫu...</div>}>
+      <BookingIntakeContent />
+    </Suspense>
   );
 }
 

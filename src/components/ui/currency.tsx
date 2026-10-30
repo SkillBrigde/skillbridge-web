@@ -17,24 +17,24 @@ export function Currency({
   const formatted = new Intl.NumberFormat("vi-VN").format(amount);
 
   const colorStyles = {
-    default: "text-[#F0F2F5]",
-    emerald: "text-[#27C98F]",
-    amber: "text-[#F5A623]",
-    rose: "text-[#FF5C5C]",
-    indigo: "text-[#BDC2FF]",
+    default: "text-[#27252d]",
+    emerald: "text-[#1e7e45]",
+    amber: "text-[#946200]",
+    rose: "text-[#a64533]",
+    indigo: "text-[#6551a4]",
   };
 
   const sizeStyles = {
     sm: "text-xs",
     md: "text-sm",
-    lg: "text-lg",
-    xl: "text-2xl font-bold",
+    lg: "text-base font-semibold",
+    xl: "text-xl font-bold",
   };
 
   return (
     <span
       className={cn(
-        "font-mono tracking-tight inline-flex items-baseline gap-0.5",
+        "font-mono tabular-nums tracking-tight inline-flex items-baseline gap-0.5",
         colorStyles[highlight],
         sizeStyles[size],
         className
@@ -42,7 +42,7 @@ export function Currency({
       {...props}
     >
       <span>{formatted}</span>
-      <span className="text-[0.85em] font-normal opacity-80">₫</span>
+      <span className="text-[0.85em] font-normal opacity-75">₫</span>
     </span>
   );
 }

@@ -13,10 +13,10 @@ export function StatusDot({
   className,
 }: StatusDotProps) {
   const colorStyles = {
-    online: "bg-[#27C98F]",
-    pending: "bg-[#F5A623]",
-    dispute: "bg-[#FF5C5C]",
-    offline: "bg-[#5D6474]",
+    online: "bg-[#1e7e45]",
+    pending: "bg-[#946200]",
+    dispute: "bg-[#a64533]",
+    offline: "bg-[#9b919f]",
   };
 
   return (
