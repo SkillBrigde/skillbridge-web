@@ -4,25 +4,32 @@ import { useState, useMemo, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import {
-  Badge,
-  Avatar,
-  Button,
-  EmptyState,
-} from "@/components/ui";
-import { SearchBar } from "@/components/ui/search-bar";
-import { Pagination } from "@/components/ui/pagination";
-import { Star, BadgeCheck, Sparkles } from "lucide-react";
-import { useAppState, useNow, publishedMentors, availableSlots } from "@/lib/store";
-import { vndShort, slotDateLabel, slotTimeLabel } from "@/lib/domain";
-import { MentorFilter } from "@/features/mentors/MentorFilter";
-import { SKILL_SUGGESTIONS } from "@/constants/mentorFilters";
+  ArrowUpRight,
+  Compass,
+  Search,
+  SlidersHorizontal,
+  Loader2,
+  RefreshCw,
+} from "lucide-react";
+import { MentorCard } from "@/components/mentor-card";
+import { mentorService, type MentorListItemDto } from "@/services/mentorService";
+import { catalogService, type CategoryDto } from "@/services/catalogService";
+import { useAppState, publishedMentors } from "@/lib/store";
+import { vnd } from "@/lib/domain";
 
-function MentorDirectoryContent() {
-  const searchParams = useSearchParams();
-  const initialQuery = searchParams.get("q") || "";
+const DEFAULT_TOPICS = [
+  "Tất cả",
+  "Backend",
+  "Frontend",
+  "Data",
+  "Career",
+  "Leadership",
+];
 
+function Directory() {
+  const params = useSearchParams();
+  const router = useRouter();
   const state = useAppState();
-  const now = useNow("minute");
 
   const [search, setSearch] = useState(initialQuery);
   const [previousQuery, setPreviousQuery] = useState(initialQuery);
@@ -37,81 +44,113 @@ function MentorDirectoryContent() {
     setCurrentPage(1);
   }
 
-  const allPublished = useMemo(() => publishedMentors(state), [state]);
+  // Fetch mentors from API with fallback to seed data
+  const [refreshTick, setRefreshTick] = useState(0);
 
-  const filtered = useMemo(() => {
-    return allPublished.filter((m) => {
-      if (verifiedOnly && !m.isVerified) return false;
+  useEffect(() => {
+    let ignore = false;
 
-      if (activeCategory !== "Tất cả") {
-        const matchesCategory =
-          m.categories?.includes(activeCategory) ||
-          m.skills?.some((s) => s.toLowerCase().includes(activeCategory.toLowerCase()));
-        if (!matchesCategory) return false;
+    async function load() {
+      try {
+        const res = await mentorService.searchMentors({
+          searchTerm: query || undefined,
+          sortBy: "rating",
+          sortDesc: true,
+          page: 1,
+          pageSize: 20,
+        });
+
+        if (ignore) return;
+
+        if (res && res.items && res.items.length > 0) {
+          setMentors(res.items);
+          setIsUsingFallback(false);
+        } else {
+          // Fallback to seed state if no items returned from fresh DB
+          const fallbackList = publishedMentors(state).filter((m) => {
+            if (!query) return true;
+            const q = query.toLowerCase();
+            return (
+              m.fullName.toLowerCase().includes(q) ||
+              m.title.toLowerCase().includes(q) ||
+              m.skills.some((s) => s.toLowerCase().includes(q))
+            );
+          });
+
+          if (fallbackList.length > 0) {
+            setMentors(
+              fallbackList.map((m) => ({
+                id: m.id,
+                fullName: m.fullName,
+                headline: `${m.title} tại ${m.company}`,
+                hourlyRate: m.services[0]?.priceVnd || 500000,
+                currency: "VND",
+                ratingAverage: m.ratingAverage,
+                totalReviews: m.reviewCount,
+                verificationStatus: m.isVerified ? "Verified" : "Unverified",
+                avatarUrl: m.avatarUrl,
+              })),
+            );
+            setIsUsingFallback(true);
+          } else {
+            setMentors([]);
+          }
+        }
+      } catch {
+        if (ignore) return;
+        // Offline fallback
+        const fallbackList = publishedMentors(state);
+        setMentors(
+          fallbackList.map((m) => ({
+            id: m.id,
+            fullName: m.fullName,
+            headline: `${m.title} tại ${m.company}`,
+            hourlyRate: m.services[0]?.priceVnd || 500000,
+            currency: "VND",
+            ratingAverage: m.ratingAverage,
+            totalReviews: m.reviewCount,
+            verificationStatus: m.isVerified ? "Verified" : "Unverified",
+            avatarUrl: m.avatarUrl,
+          })),
+        );
+        setIsUsingFallback(true);
+      } finally {
+        if (!ignore) {
+          setLoading(false);
+        }
       }
+    }
 
-      if (priceFilter !== "all") {
-        const minPrice = Math.min(...m.services.map((s) => s.priceVnd));
-        if (priceFilter === "under_500" && minPrice > 500_000) return false;
-        if (priceFilter === "500_to_1500" && (minPrice < 500_000 || minPrice > 1_500_000)) return false;
-        if (priceFilter === "over_1500" && minPrice <= 1_500_000) return false;
-      }
+    void load();
 
-      if (search.trim()) {
-        const q = search.toLowerCase().trim();
-        const inName = m.fullName.toLowerCase().includes(q);
-        const inRole = (m.title + " " + m.company).toLowerCase().includes(q);
-        const inSkills = m.skills.some((s) => s.toLowerCase().includes(q));
-        const inServices = m.services.some((s) => s.name.toLowerCase().includes(q));
-        if (!inName && !inRole && !inSkills && !inServices) return false;
-      }
+    return () => {
+      ignore = true;
+    };
+  }, [query, state, refreshTick]);
 
-      return true;
-    });
-  }, [allPublished, verifiedOnly, activeCategory, priceFilter, search]);
-
-  const pageSize = 6;
-  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
-  const pageIndex = Math.min(currentPage, totalPages);
-  const pagedMentors = filtered.slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
+  const handleRefresh = useCallback(() => {
+    setLoading(true);
+    setRefreshTick((t) => t + 1);
+  }, []);
 
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
-      {/* ── Hero Section ── */}
-      <section className="text-center max-w-3xl mx-auto mb-10">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#5E6AD2]/10 border border-[#5E6AD2]/25 text-[#7C87ED] text-xs font-medium mb-3">
-          <Sparkles className="h-3.5 w-3.5" />
-          <span>Bảo chứng 100% học phí qua Escrow Vault minh bạch</span>
-        </div>
-        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#F0F2F5] mb-3">
-          Kết nối 1-on-1 với Tech Lead &amp; Chuyên Gia Thực Chiến
-        </h1>
-        <p className="text-sm text-[#9BA1B0] mb-6 leading-relaxed max-w-xl mx-auto">
-          Đặt lịch mentoring trực tiếp với các chuyên gia hàng đầu. Cam kết hoàn
-          tiền 100% qua Smart Escrow nếu không hài lòng hoặc có vi phạm SLA.
-        </p>
-        <SearchBar
-          value={search}
-          onChange={(val) => {
-            setSearch(val);
-            setCurrentPage(1);
-          }}
-          placeholder="Tìm kiếm mentor, kỹ năng, công nghệ..."
-          suggestions={SKILL_SUGGESTIONS}
-          onSuggestionClick={(val) => {
-            setSearch(val);
-            setCurrentPage(1);
-          }}
-          className="max-w-2xl mx-auto"
-        />
-      </section>
+    <div className="sb-directory sb-container">
+      <span className="sb-eyebrow">NHỮNG KẾT NỐI CÓ Ý NGHĨA</span>
+      <h1>
+        Đúng người.
+        <br />
+        <em>Đúng bước tiến.</em>
+      </h1>
+      <p>Khám phá góc nhìn mới cho điều bạn đang theo đuổi.</p>
 
-      {/* ── Filter Bar ── */}
-      <MentorFilter
-        activeCategory={activeCategory}
-        onCategoryChange={(cat) => {
-          setActiveCategory(cat);
-          setCurrentPage(1);
+      {/* Search Form */}
+      <form
+        className="sb-directory-search"
+        key={query}
+        onSubmit={(event) => {
+          event.preventDefault();
+          const input = new FormData(event.currentTarget);
+          setQuery(String(input.get("query") || "").trim());
         }}
         priceFilter={priceFilter}
         onPriceFilterChange={(price) => {
@@ -211,41 +250,81 @@ function MentorDirectoryContent() {
                     ))}
                   </div>
 
-                  {/* Available slot */}
-                  {nextSlotText ? (
-                    <div className="mb-4">
-                      <Badge variant="escrow" dot>
-                        Trống: {nextSlotText}
-                      </Badge>
-                    </div>
-                  ) : (
-                    <div className="mb-4">
-                      <Badge variant="neutral">
-                        Lịch theo yêu cầu
-                      </Badge>
-                    </div>
-                  )}
-                </div>
+      {/* Filters */}
+      <div className="sb-directory-filters">
+        <span>
+          <SlidersHorizontal size={16} /> Lĩnh vực
+        </span>
+        {categories.map((topic) => (
+          <button
+            type="button"
+            aria-pressed={topic === "Tất cả" ? !query : query === topic}
+            key={topic}
+            onClick={() => setQuery(topic === "Tất cả" ? "" : topic)}
+          >
+            {topic}
+          </button>
+        ))}
+      </div>
 
-                {/* CTA */}
-                <Link href={`/mentors/${mentor.id}`}>
-                  <Button variant="primary" size="sm" className="w-full">
-                    Xem Hồ Sơ &amp; Đặt Lịch
-                  </Button>
-                </Link>
-              </div>
-            );
-          })}
-        </section>
+      {isUsingFallback && (
+        <div className="flex items-center justify-between bg-amber-50 border border-amber-200 text-amber-900 px-4 py-2.5 rounded-xl text-xs mb-6">
+          <span>
+            Đang hiển thị danh sách chuyên gia mẫu. Kết nối trực tiếp máy chủ để đồng bộ dữ liệu thời gian thực.
+          </span>
+          <button
+            onClick={handleRefresh}
+            className="flex items-center gap-1 font-semibold hover:underline"
+          >
+            <RefreshCw size={13} /> Thử lại
+          </button>
+        </div>
       )}
 
-      {/* ── Pagination ── */}
-      {totalPages > 1 && (
-        <Pagination
-          currentPage={pageIndex}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />
+      {/* Content State */}
+      {loading ? (
+        <div className="flex flex-col items-center justify-center py-20 gap-3 text-[#5e5866]">
+          <Loader2 className="h-8 w-8 animate-spin text-[#6551a4]" />
+          <p className="text-sm">Đang tải danh sách chuyên gia...</p>
+        </div>
+      ) : mentors.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 my-8">
+          {mentors.map((mentor) => (
+            <MentorCard
+              key={mentor.id}
+              name={mentor.fullName || mentor.headline || "Chuyên gia SkillBridge"}
+              avatarSrc={mentor.avatarUrl}
+              verified={mentor.verificationStatus === "Verified"}
+              online={true}
+              role={mentor.headline}
+              rating={mentor.ratingAverage || 5.0}
+              reviewCount={mentor.totalReviews || 0}
+              sessionCount={mentor.totalReviews ? mentor.totalReviews * 2 : 12}
+              services={[
+                {
+                  label: "Gói tư vấn",
+                  price: vnd(mentor.hourlyRate || 500000),
+                },
+              ]}
+              availableSlot="Có lịch tuần này"
+              onViewProfile={() => router.push(`/mentors/${mentor.id}`)}
+            />
+          ))}
+        </div>
+      ) : (
+        <section className="sb-directory-empty">
+          <span className="sb-state-icon">
+            <Compass size={32} />
+          </span>
+          <span className="sb-eyebrow">CHƯA TÌM THẤY KẾT QUẢ PHÙ HỢP</span>
+          <h2>Không tìm thấy mentor nào phù hợp</h2>
+          <p>
+            Thử tìm kiếm với từ khóa khác hoặc xóa bộ lọc để xem toàn bộ danh sách chuyên gia.
+          </p>
+          <button className="sb-button" onClick={() => setQuery("")}>
+            Xem tất cả mentor <ArrowUpRight size={18} />
+          </button>
+        </section>
       )}
     </div>
   );
@@ -253,14 +332,8 @@ function MentorDirectoryContent() {
 
 export function MentorDirectoryView() {
   return (
-    <Suspense
-      fallback={
-        <div className="mx-auto max-w-7xl px-4 py-20 text-center font-mono text-sm text-[#9BA1B0]">
-          Đang tải danh sách mentors...
-        </div>
-      }
-    >
-      <MentorDirectoryContent />
+    <Suspense fallback={<div className="sb-page-state">Đang tải…</div>}>
+      <Directory />
     </Suspense>
   );
 }

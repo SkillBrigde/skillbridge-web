@@ -12,9 +12,7 @@ export interface AccordionItem {
 
 export interface AccordionProps {
   items: AccordionItem[];
-  /** Allow multiple panels open at once */
   multiple?: boolean;
-  /** IDs of initially expanded items */
   defaultOpenIds?: string[];
   className?: string;
 }
@@ -44,7 +42,7 @@ export function Accordion({
   return (
     <div
       className={cn(
-        "rounded-xl border border-white/[0.08] divide-y divide-white/[0.06] overflow-hidden",
+        "rounded-xl border border-[#e5e2de] bg-white divide-y divide-[#e5e2de] overflow-hidden shadow-sm",
         className
       )}
     >
@@ -52,17 +50,17 @@ export function Accordion({
         const isOpen = openIds.has(item.id);
 
         return (
-          <div key={item.id} className="bg-[#14171D]">
+          <div key={item.id} className="bg-white">
             <button
               type="button"
               onClick={() => toggle(item.id)}
-              className="flex items-center justify-between w-full px-4 py-3 text-left text-sm font-medium text-[#E3E2E5] hover:bg-[#171A21] transition-colors cursor-pointer"
+              className="flex items-center justify-between w-full px-5 py-4 text-left text-sm font-semibold text-[#27252d] hover:bg-[#faf9f6] transition-colors cursor-pointer"
               aria-expanded={isOpen}
             >
               <span>{item.trigger}</span>
               <ChevronDown
                 className={cn(
-                  "h-4 w-4 text-[#5D6474] transition-transform duration-200 flex-shrink-0 ml-2",
+                  "h-4 w-4 text-[#5e5866] transition-transform duration-200 flex-shrink-0 ml-2",
                   isOpen && "rotate-180"
                 )}
               />
@@ -73,7 +71,7 @@ export function Accordion({
                 isOpen ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"
               )}
             >
-              <div className="px-4 pb-4 pt-1 text-sm text-[#9BA1B0] border-t border-white/[0.04]">
+              <div className="px-5 pb-5 pt-1 text-sm text-[#5e5866] leading-relaxed border-t border-[#f1efea]">
                 {item.content}
               </div>
             </div>

@@ -110,16 +110,19 @@ function NewDisputeForm() {
   return (
     <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-10">
       {/* ── Header ── */}
-      <div className="flex items-center gap-3 mb-2">
-        <Scale className="h-5 w-5 text-[#FF5C5C]" />
-        <h1 className="text-xl font-bold text-[#F0F2F5] tracking-tight">
-          Khởi Tạo Khiếu Nại Buổi Học #{booking.code}
-        </h1>
+      <div className="mb-2">
+        <span className="sb-eyebrow">Escrow Protection & Dispute</span>
+        <div className="flex items-center gap-2 mt-1">
+          <Scale className="h-6 w-6 text-[#a64533]" />
+          <h1 className="font-serif text-3xl font-semibold tracking-tight text-[#27252d]">
+            Khởi Tạo Khiếu Nại Buổi Học #{booking.code}
+          </h1>
+        </div>
       </div>
       <div className="flex items-center gap-3 mb-6">
         <Avatar alt={booking.mentorName} size="sm" />
-        <span className="text-sm text-[#9BA1B0]">
-          Mentor: <span className="text-white font-medium">{booking.mentorName}</span> • Gói: {booking.serviceName}
+        <span className="text-sm text-[#5e5866]">
+          Mentor: <span className="text-[#27252d] font-semibold">{booking.mentorName}</span> • Gói: {booking.serviceName}
         </span>
       </div>
 
@@ -141,7 +144,7 @@ function NewDisputeForm() {
       )}
 
       {/* ── Form ── */}
-      <div className="space-y-8">
+      <div className="space-y-8 bg-white border border-[#e5e2de] rounded-2xl p-6 sm:p-8 shadow-xs">
         {/* 1. Reason dropdown */}
         <Select
           label="Lý do chính"
@@ -152,8 +155,8 @@ function NewDisputeForm() {
 
         {/* 2. Description */}
         <div>
-          <label className="block text-sm font-medium text-[#E3E2E5] mb-2">
-            Mô tả chi tiết sự việc <span className="text-[#FF5C5C]">*</span>
+          <label className="block text-xs font-medium text-[#5e5866] mb-2">
+            Mô tả chi tiết sự việc <span className="text-[#a64533]">*</span>
           </label>
           <Textarea
             value={description}
@@ -165,7 +168,7 @@ function NewDisputeForm() {
 
         {/* 3. File upload */}
         <div>
-          <label className="block text-sm font-medium text-[#E3E2E5] mb-2">
+          <label className="block text-xs font-medium text-[#5e5866] mb-2">
             Đính kèm ảnh chụp màn hình bằng chứng / biên bản tin nhắn chat
           </label>
           <FileUpload
@@ -179,13 +182,13 @@ function NewDisputeForm() {
             }}
           />
           {proofFiles.length > 0 && (
-            <div className="flex flex-wrap gap-2 mt-2">
+            <div className="flex flex-wrap gap-2 mt-3">
               {proofFiles.map((file, idx) => (
                 <span
                   key={idx}
-                  className="inline-flex items-center gap-1 rounded bg-[#1F2022] border border-white/[0.08] px-2.5 py-1 text-xs text-[#27C98F]"
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-[#e8f5ed] border border-[#1e7e45]/20 px-3 py-1 text-xs text-[#1e7e45] font-medium"
                 >
-                  <CheckCircle2 className="h-3 w-3" />
+                  <CheckCircle2 className="h-3.5 w-3.5" />
                   {file}
                 </span>
               ))}
@@ -204,7 +207,7 @@ function NewDisputeForm() {
       </div>
 
       {/* ── Footer ── */}
-      <div className="flex items-center justify-between gap-4 pt-8 mt-8 border-t border-white/[0.06]">
+      <div className="flex items-center justify-between gap-4 pt-6 mt-6 border-t border-[#e5e2de]">
         <Button variant="ghost" onClick={() => router.back()}>
           ← Quay lại
         </Button>
@@ -223,7 +226,7 @@ function NewDisputeForm() {
 
 export function DisputeCreateView() {
   return (
-    <Suspense fallback={<div className="py-20 text-center text-sm font-mono text-[#9BA1B0]">Đang tải...</div>}>
+    <Suspense fallback={<div className="py-20 text-center text-sm font-mono text-[#5e5866]">Đang tải...</div>}>
       <NewDisputeForm />
     </Suspense>
   );

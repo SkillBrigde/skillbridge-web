@@ -21,22 +21,22 @@ export function WalletTransactionTable({
   emptyMessage = "Chưa có giao dịch nào trong sổ cái.",
 }: WalletTransactionTableProps) {
   return (
-    <div className="rounded-xl border border-white/[0.08] bg-[#14171D] overflow-hidden">
+    <div className="rounded-xl border border-[#e5e2de] bg-white overflow-hidden shadow-xs">
       <Table>
         <TableHeader>
-          <TableRow>
-            <TableHead>MÃ GD</TableHead>
-            <TableHead>LOẠI</TableHead>
-            <TableHead>MÔ TẢ GIAO DỊCH</TableHead>
-            <TableHead className="text-right">SỐ TIỀN</TableHead>
-            <TableHead>TRẠNG THÁI</TableHead>
-            <TableHead className="text-right">THỜI GIAN</TableHead>
+          <TableRow className="border-b border-[#e5e2de] bg-[#fbfaf8]">
+            <TableHead className="text-[11px] font-semibold text-[#5e5866] uppercase tracking-wider">Mã GD</TableHead>
+            <TableHead className="text-[11px] font-semibold text-[#5e5866] uppercase tracking-wider">Loại</TableHead>
+            <TableHead className="text-[11px] font-semibold text-[#5e5866] uppercase tracking-wider">Mô tả giao dịch</TableHead>
+            <TableHead className="text-[11px] font-semibold text-[#5e5866] uppercase tracking-wider text-right">Số tiền</TableHead>
+            <TableHead className="text-[11px] font-semibold text-[#5e5866] uppercase tracking-wider">Trạng thái</TableHead>
+            <TableHead className="text-[11px] font-semibold text-[#5e5866] uppercase tracking-wider text-right">Thời gian</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {entries.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={6} className="text-center py-10 text-xs text-[#5D6474]">
+              <TableCell colSpan={6} className="text-center py-12 text-sm text-[#5e5866]">
                 {emptyMessage}
               </TableCell>
             </TableRow>
@@ -45,30 +45,30 @@ export function WalletTransactionTable({
               const isPositive = tx.type === "Deposit" || tx.type === "Refund";
               const isHold = tx.type === "EscrowHold";
               const amountColor = isPositive
-                ? "text-[#27C98F]"
+                ? "text-[#1e7e45]"
                 : isHold
-                ? "text-[#F5A623]"
-                : "text-[#9BA1B0]";
+                ? "text-[#946200]"
+                : "text-[#5e5866]";
               const { label: statusLabel, variant: statusVariant } = getLedgerTypeInfo(tx.type);
 
               return (
-                <TableRow key={tx.id}>
-                  <TableCell className="font-mono text-xs text-[#5D6474]">
+                <TableRow key={tx.id} className="border-b border-[#f1efea] hover:bg-[#faf9f6]/80 transition-colors">
+                  <TableCell className="font-mono text-xs text-[#5e5866]">
                     {tx.id}
                   </TableCell>
-                  <TableCell className="text-xs font-medium">
+                  <TableCell className="text-xs font-medium text-[#27252d]">
                     {tx.type}
                   </TableCell>
-                  <TableCell className="text-xs max-w-[240px] truncate text-[#E3E2E5]">
+                  <TableCell className="text-xs max-w-[260px] truncate text-[#27252d]">
                     {tx.note}
                   </TableCell>
-                  <TableCell className={`text-right font-mono font-medium ${amountColor}`}>
+                  <TableCell className={`text-right font-mono font-semibold ${amountColor}`}>
                     {isPositive ? "+" : "-"}{vnd(tx.amountVnd)}
                   </TableCell>
                   <TableCell>
                     <Badge variant={statusVariant}>{statusLabel}</Badge>
                   </TableCell>
-                  <TableCell className="text-right text-xs font-mono text-[#5D6474]">
+                  <TableCell className="text-right text-xs font-mono text-[#5e5866]">
                     {slotDateLabel(tx.ts)}
                   </TableCell>
                 </TableRow>

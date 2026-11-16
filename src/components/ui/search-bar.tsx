@@ -9,9 +9,7 @@ export interface SearchBarProps {
   onChange?: (value: string) => void;
   onSubmit?: (value: string) => void;
   placeholder?: string;
-  /** Keyboard shortcut hint text */
   shortcutHint?: string;
-  /** Auto-complete suggestion chips */
   suggestions?: string[];
   onSuggestionClick?: (suggestion: string) => void;
   className?: string;
@@ -21,7 +19,7 @@ export function SearchBar({
   value = "",
   onChange,
   onSubmit,
-  placeholder = "Tìm kiếm mentor, kỹ năng...",
+  placeholder = "Tìm kiếm chuyên gia, kỹ năng, lĩnh vực...",
   shortcutHint = "Ctrl+K",
   suggestions,
   onSuggestionClick,
@@ -61,17 +59,17 @@ export function SearchBar({
   return (
     <div className={cn("w-full space-y-2.5", className)}>
       <form onSubmit={handleSubmit} className="relative">
-        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#5D6474]" />
+        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#9b919f]" />
         <input
           ref={inputRef}
           type="text"
           value={internalValue}
           onChange={(e) => handleChange(e.target.value)}
           placeholder={placeholder}
-          className="w-full h-10 bg-[#0F1115] border border-white/[0.08] rounded-xl pl-10 pr-20 text-sm text-[#F0F2F5] placeholder:text-[#5D6474] font-sans transition-all outline-none hover:border-white/[0.16] focus:border-[#5E6AD2]/80 focus:ring-1 focus:ring-[#5E6AD2]/50"
+          className="w-full h-11 bg-white border border-[#e5e2de] rounded-xl pl-10 pr-20 text-sm text-[#27252d] placeholder:text-[#9b919f] font-sans transition-all outline-none hover:border-[#d4c3e7] focus:border-[#6551a4] focus:ring-2 focus:ring-[#ece5f5]"
         />
         {shortcutHint && (
-          <kbd className="absolute right-3 top-1/2 -translate-y-1/2 inline-flex items-center rounded bg-[#1F2022] border border-white/[0.1] px-1.5 py-0.5 text-[10px] font-mono text-[#5D6474] select-none">
+          <kbd className="absolute right-3 top-1/2 -translate-y-1/2 inline-flex items-center rounded bg-[#f1efea] border border-[#e5e2de] px-2 py-0.5 text-[10px] font-mono text-[#5e5866] select-none">
             {shortcutHint}
           </kbd>
         )}
@@ -88,7 +86,7 @@ export function SearchBar({
                 onSuggestionClick?.(suggestion);
                 handleChange(suggestion);
               }}
-              className="inline-flex items-center rounded-full bg-[#14171D] border border-white/[0.08] px-2.5 py-1 text-xs text-[#9BA1B0] hover:text-[#F0F2F5] hover:bg-[#1F2022] hover:border-white/[0.14] transition-all cursor-pointer select-none"
+              className="inline-flex items-center rounded-full bg-white border border-[#e5e2de] px-3 py-1 text-xs text-[#5e5866] hover:text-[#6551a4] hover:border-[#d4c3e7] hover:bg-[#ece5f5]/30 transition-all cursor-pointer select-none"
             >
               {suggestion}
             </button>

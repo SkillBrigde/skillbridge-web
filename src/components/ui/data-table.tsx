@@ -6,9 +6,9 @@ export function Table({
   ...props
 }: React.HTMLAttributes<HTMLTableElement>) {
   return (
-    <div className="w-full overflow-x-auto rounded-xl border border-white/[0.08] bg-[#14171D]">
+    <div className="w-full overflow-x-auto rounded-xl border border-[#e5e2de] bg-white shadow-sm">
       <table
-        className={cn("w-full caption-bottom text-sm text-[#E3E2E5]", className)}
+        className={cn("w-full caption-bottom text-sm text-[#27252d]", className)}
         {...props}
       />
     </div>
@@ -21,7 +21,7 @@ export function TableHeader({
 }: React.HTMLAttributes<HTMLTableSectionElement>) {
   return (
     <thead
-      className={cn("bg-[#0D0E10] border-b border-white/[0.08]", className)}
+      className={cn("bg-[#f1efea] border-b border-[#e5e2de]", className)}
       {...props}
     />
   );
@@ -33,7 +33,7 @@ export function TableBody({
 }: React.HTMLAttributes<HTMLTableSectionElement>) {
   return (
     <tbody
-      className={cn("[&_tr:last-child]:border-0", className)}
+      className={cn("[&_tr:last-child]:border-0 divide-y divide-[#e5e2de]", className)}
       {...props}
     />
   );
@@ -46,7 +46,7 @@ export function TableRow({
   return (
     <tr
       className={cn(
-        "border-b border-white/[0.04] transition-colors hover:bg-[#171A21]",
+        "transition-colors hover:bg-[#faf9f6]",
         className
       )}
       {...props}
@@ -61,7 +61,7 @@ export function TableHead({
   return (
     <th
       className={cn(
-        "h-10 px-4 text-left align-middle font-mono text-[11px] font-medium uppercase tracking-wider text-[#5D6474]",
+        "h-11 px-4 text-left align-middle font-mono text-[11px] font-semibold uppercase tracking-wider text-[#5e5866]",
         className
       )}
       {...props}
@@ -75,7 +75,7 @@ export function TableCell({
 }: React.TdHTMLAttributes<HTMLTableCellElement>) {
   return (
     <td
-      className={cn("p-4 align-middle text-sm text-[#E3E2E5]", className)}
+      className={cn("p-4 align-middle text-sm text-[#27252d]", className)}
       {...props}
     />
   );

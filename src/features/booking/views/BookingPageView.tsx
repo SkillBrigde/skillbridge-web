@@ -20,7 +20,7 @@ import {
   vnd,
   type BookingRec,
 } from "@/lib/domain";
-import { Clock } from "lucide-react";
+import { Clock, Plus } from "lucide-react";
 
 export function BookingPageView() {
   const router = useRouter();
@@ -132,31 +132,40 @@ export function BookingPageView() {
     return {};
   };
 
-  const handleCancelBooking = (bookingId: string) => {
-    const res = actions.cancelBooking(bookingId);
-    if (!res.ok) {
-      setCancelError(res.error || "Hủy lịch không thành công.");
-    } else {
+  const handleCancelBooking = async (bookingId: string) => {
+    try {
+      const { bookingService } = await import("@/services/bookingService");
+      await bookingService.cancelBooking(bookingId, "Người học yêu cầu hủy lịch");
       setCancelModalBooking(null);
+      window.location.reload();
+    } catch {
+      const res = actions.cancelBooking(bookingId);
+      if (!res.ok) {
+        setCancelError(res.error || "Hủy lịch không thành công.");
+      } else {
+        setCancelModalBooking(null);
+      }
     }
   };
 
   return (
-    <RequireRole role="mentee" title="Lịch Học Của Bạn" description="Đăng nhập để xem danh sách lịch học và quản lý escrow.">
-      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-10">
+    <RequireRole role="mentee" title="Lịch Học Của Bạn" description="Đăng nhập để xem danh sách lịch học và quản lý két ký quỹ Escrow.">
+      <div className="sb-container max-w-5xl py-10 sm:py-12">
         {/* ── Header ── */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-[#F0F2F5] tracking-tight">
+            <span className="sb-eyebrow">KHÔNG GIAN HỌC TẬP</span>
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#27252d] tracking-tight mt-1">
               Lịch Học Của Tôi
             </h1>
-            <p className="text-xs text-[#9BA1B0] mt-1">
-              Theo dõi tiến độ, tham gia phòng học trực tuyến và nghiệm thu giải ngân Escrow
+            <p className="text-xs sm:text-sm text-[#5e5866] mt-1">
+              Theo dõi tiến độ buổi học, tham gia phòng họp Google Meet và nghiệm thu giải ngân Két Escrow
             </p>
           </div>
           <Link href="/mentors">
-            <Button variant="primary" size="sm">
-              + Đặt Buổi Mới
+            <Button variant="primary" size="md">
+              <Plus className="h-4 w-4 mr-1.5" />
+              Đặt Buổi Cố Vấn Mới
             </Button>
           </Link>
         </div>
@@ -172,19 +181,19 @@ export function BookingPageView() {
         {/* ── Booking List ── */}
         <div className="space-y-4">
           {filtered.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 text-center rounded-2xl border border-white/[0.08] bg-[#14171D] p-8">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#0D0E10] border border-white/[0.08] text-[#5D6474] mb-4">
+            <div className="flex flex-col items-center justify-center py-16 text-center rounded-2xl border border-[#e5e2de] bg-white p-8 shadow-sm">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#f1edf8] border border-[#d4c3e7] text-[#6551a4] mb-4">
                 <Clock className="h-6 w-6" />
               </div>
-              <h3 className="text-base font-semibold text-[#F0F2F5] mb-1">
+              <h3 className="text-base font-semibold text-[#27252d] mb-1">
                 Không có buổi học nào trong mục này
               </h3>
-              <p className="text-sm text-[#9BA1B0] max-w-sm mb-4">
-                Bạn chưa có đơn đặt lịch nào thuộc trạng thái này. Khám phá các chuyên gia hàng đầu để bắt đầu buổi học.
+              <p className="text-sm text-[#5e5866] max-w-sm mb-5 leading-relaxed">
+                Bạn chưa có đơn đặt lịch nào thuộc trạng thái này. Khám phá các chuyên gia công nghệ để bắt đầu buổi cố vấn.
               </p>
               <Link href="/mentors">
                 <Button variant="primary" size="sm">
-                  Khám Phá Mentors Ngay
+                  Khám Phá Chuyên Gia Ngay
                 </Button>
               </Link>
             </div>
@@ -216,12 +225,12 @@ export function BookingPageView() {
           )}
         </div>
 
-        {/* Cancel Modal */}
+        {/* Cancel Modal (Chương 7.1 Ma Trận Hủy Lịch) */}
         {cancelModalBooking && (
           <Modal
             isOpen={true}
             onClose={() => setCancelModalBooking(null)}
-            title="Chính Sách Hủy Buổi Học &amp; Hoàn Tiền"
+            title="Chính Sách Hủy Buổi Học & Hoàn Tiền (Chương 7.1)"
           >
             {(() => {
               const quote = cancelQuote(
@@ -231,18 +240,18 @@ export function BookingPageView() {
               const refundVnd = Math.round((cancelModalBooking.priceVnd * quote.refundPercent) / 100);
               return (
                 <div className="space-y-4 py-2">
-                  <div className="rounded-xl bg-[#0D0E10] border border-white/[0.06] p-4 space-y-2">
+                  <div className="rounded-xl bg-[#faf9f6] border border-[#e5e2de] p-4 space-y-2">
                     <div className="flex justify-between text-xs">
-                      <span className="text-[#9BA1B0]">Học phí đã thanh toán:</span>
-                      <span className="font-mono text-white">{vnd(cancelModalBooking.priceVnd)}</span>
+                      <span className="text-[#5e5866]">Học phí đã ký quỹ:</span>
+                      <span className="font-mono text-[#27252d] font-semibold">{vnd(cancelModalBooking.priceVnd)}</span>
                     </div>
                     <div className="flex justify-between text-xs">
-                      <span className="text-[#9BA1B0]">Tỷ lệ hoàn tiền:</span>
-                      <span className="font-mono text-[#27C98F] font-bold">{quote.refundPercent}%</span>
+                      <span className="text-[#5e5866]">Tỷ lệ hoàn tiền:</span>
+                      <span className="font-mono text-[#1e7e45] font-bold">{quote.refundPercent}%</span>
                     </div>
-                    <div className="flex justify-between text-xs">
-                      <span className="text-[#9BA1B0]">Số tiền hoàn vào ví:</span>
-                      <span className="font-mono text-[#27C98F] font-bold">{vnd(refundVnd)}</span>
+                    <div className="flex justify-between text-xs pt-1.5 border-t border-[#e5e2de]">
+                      <span className="text-[#5e5866]">Số tiền hoàn vào ví SkillBridge:</span>
+                      <span className="font-mono text-[#1e7e45] font-bold text-sm">{vnd(refundVnd)}</span>
                     </div>
                   </div>
 
@@ -252,18 +261,18 @@ export function BookingPageView() {
 
                   {cancelError && <NoticeBanner variant="error" message={cancelError} />}
 
-                  <div className="flex items-center justify-end gap-3 pt-4">
+                  <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#f1efea]">
                     <Button
                       variant="ghost"
                       onClick={() => setCancelModalBooking(null)}
                     >
-                      Đóng
+                      Giữ Lại Lịch Học
                     </Button>
                     <Button
                       variant="destructive"
                       onClick={() => handleCancelBooking(cancelModalBooking.id)}
                     >
-                      Xác Nhận Hủy Lịch
+                      Xác Nhận Hủy Buổi Học
                     </Button>
                   </div>
                 </div>

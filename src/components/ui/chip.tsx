@@ -17,12 +17,12 @@ export function Chip({
     <button
       type="button"
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-all duration-150 cursor-pointer select-none",
+        "inline-flex items-center gap-1.5 rounded-full px-3.5 py-1 text-xs font-medium transition-all duration-150 cursor-pointer select-none",
         active
-          ? "bg-[#5E6AD2] text-[#FDFAFF] shadow-sm shadow-[#5E6AD2]/20"
+          ? "bg-[#ece5f5] text-[#6551a4] border border-[#d4c3e7] font-semibold"
           : variant === "tag"
-          ? "bg-[#1F2022] text-[#9BA1B0] hover:text-[#F0F2F5] hover:bg-[#292A2C] border border-white/[0.04]"
-          : "bg-[#14171D] text-[#9BA1B0] hover:text-[#F0F2F5] hover:bg-[#1F2022] border border-white/[0.08]",
+          ? "bg-[#f1efea] text-[#5e5866] hover:text-[#27252d] hover:bg-[#eae6df] border border-transparent"
+          : "bg-white text-[#5e5866] hover:text-[#27252d] hover:bg-[#faf9f6] border border-[#e5e2de]",
         className
       )}
       {...props}

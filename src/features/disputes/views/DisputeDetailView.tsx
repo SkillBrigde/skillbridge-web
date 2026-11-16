@@ -116,7 +116,7 @@ export function DisputeDetailView() {
         <button
           type="button"
           onClick={() => router.back()}
-          className="inline-flex items-center gap-1.5 text-xs text-[#9BA1B0] hover:text-[#F0F2F5] transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs text-[#5e5866] hover:text-[#27252d] transition-colors"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
           Quay lại
@@ -124,19 +124,22 @@ export function DisputeDetailView() {
       </div>
 
       {/* ── Header ── */}
-      <div className="flex items-center gap-3 mb-2 flex-wrap">
-        <Scale className="h-5 w-5 text-[#F5A623]" />
-        <h1 className="text-xl font-bold text-[#F0F2F5] tracking-tight">
-          Hồ Sơ Khiếu Nại #{dispute.id} — Đơn #{booking.code}
-        </h1>
+      <div className="mb-2">
+        <span className="sb-eyebrow">Case Details</span>
+        <div className="flex items-center gap-2 mt-1">
+          <Scale className="h-6 w-6 text-[#946200]" />
+          <h1 className="font-serif text-3xl font-semibold tracking-tight text-[#27252d]">
+            Hồ Sơ Khiếu Nại #{dispute.id}
+          </h1>
+        </div>
       </div>
-      <div className="flex items-center gap-2 mb-6 flex-wrap">
+      <div className="flex items-center gap-3 mb-6 flex-wrap">
         <Badge variant={dispute.status === "Resolved" ? "escrow" : "pending"} dot>
           <Clock className="h-3 w-3 mr-0.5" />
           Trạng thái: {dispute.status}
         </Badge>
-        <span className="text-xs text-[#5D6474]">
-          Escrow đóng băng: <span className="font-mono text-[#F5A623]">{vnd(booking.priceVnd)}</span>
+        <span className="text-xs text-[#5e5866]">
+          Escrow đóng băng: <span className="font-mono font-semibold text-[#946200]">{vnd(booking.priceVnd)}</span>
         </span>
       </div>
 
@@ -144,41 +147,41 @@ export function DisputeDetailView() {
       {successMsg && <div className="mb-4"><NoticeBanner variant="success" message={successMsg} /></div>}
 
       {/* ── Mentee Claim Card ── */}
-      <Card className="p-5 mb-8 border-[#FF5C5C]/20 bg-[#14171D]">
-        <div className="flex items-center gap-3 mb-3">
-          <Avatar alt={dispute.menteeName} size="sm" />
+      <Card className="p-6 mb-8 border-[#a64533]/25 bg-white shadow-xs">
+        <div className="flex items-center gap-3 mb-4">
+          <Avatar alt={dispute.menteeName} size="md" />
           <div>
-            <span className="text-sm font-medium text-[#F0F2F5]">
+            <span className="text-sm font-semibold text-[#27252d]">
               {dispute.menteeName}
             </span>
-            <span className="text-xs text-[#5D6474] ml-2">Học viên khiếu nại</span>
+            <span className="text-xs text-[#5e5866] ml-2 font-mono">Học viên khiếu nại</span>
           </div>
           <Badge variant="dispute" className="ml-auto">
             Lý do: {dispute.reason}
           </Badge>
         </div>
-        <p className="text-sm text-[#E3E2E5] leading-relaxed bg-[#FF5C5C]/5 rounded-lg p-3 border border-[#FF5C5C]/10 mb-3">
+        <p className="text-sm text-[#27252d] leading-relaxed bg-[#fceeea]/50 rounded-xl p-4 border border-[#a64533]/15 mb-3 italic">
           &ldquo;{dispute.menteeStatement}&rdquo;
         </p>
-        <p className="text-xs text-[#9BA1B0]">
-          Yêu cầu từ Mentee: <span className="font-semibold text-white">{dispute.menteeWish}</span>
+        <p className="text-xs text-[#5e5866]">
+          Yêu cầu từ Mentee: <span className="font-semibold text-[#27252d]">{dispute.menteeWish}</span>
         </p>
       </Card>
 
       {/* ── Ruling Card if already resolved ── */}
       {dispute.ruling && (
-        <Card className="p-5 mb-8 border-[#27C98F]/30 bg-[#27C98F]/5">
+        <Card className="p-6 mb-8 border-[#1e7e45]/30 bg-[#e8f5ed]/40 shadow-xs">
           <div className="flex items-center gap-2 mb-2">
-            <ShieldCheck className="h-5 w-5 text-[#27C98F]" />
-            <h3 className="text-base font-semibold text-[#27C98F]">
-              Phán Quyết Chính Thức Từ Admin SLA
+            <ShieldCheck className="h-5 w-5 text-[#1e7e45]" />
+            <h3 className="font-serif text-lg font-semibold text-[#1e7e45]">
+              Phán Quyết Chính Thức Từ Ban Quản Trị SLA
             </h3>
           </div>
-          <p className="text-sm text-white mb-2 font-mono">
-            Kết luận: <span className="font-bold">{dispute.ruling}</span>
+          <p className="text-sm text-[#27252d] mb-2 font-mono">
+            Kết luận: <span className="font-bold text-[#1e7e45]">{dispute.ruling}</span>
           </p>
           {dispute.rulingNote && (
-            <p className="text-xs text-[#9BA1B0] leading-relaxed">
+            <p className="text-xs text-[#5e5866] leading-relaxed">
               {dispute.rulingNote}
             </p>
           )}
@@ -187,11 +190,11 @@ export function DisputeDetailView() {
 
       {/* ── Mentor Defense Section ── */}
       {isMentor && !hasResponded && dispute.status !== "Resolved" ? (
-        <div className="space-y-8">
+        <div className="space-y-6 bg-white border border-[#e5e2de] rounded-2xl p-6 sm:p-8 shadow-xs">
           <div>
-            <label className="block text-sm font-medium text-[#E3E2E5] mb-2">
+            <label className="block text-xs font-medium text-[#5e5866] mb-2">
               Ý kiến giải trình của bạn đối với khiếu nại trên{" "}
-              <span className="text-[#FF5C5C]">*</span>
+              <span className="text-[#a64533]">*</span>
             </label>
             <Textarea
               value={defense}
@@ -202,10 +205,10 @@ export function DisputeDetailView() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[#E3E2E5] mb-2">
+            <label className="block text-xs font-medium text-[#5e5866] mb-1">
               Upload bổ sung bằng chứng
             </label>
-            <p className="text-xs text-[#5D6474] mb-3">
+            <p className="text-xs text-[#5e5866] mb-3">
               Nhật ký cuộc gọi, video ghi hình, email đã gửi tài liệu
             </p>
             <FileUpload
@@ -228,7 +231,7 @@ export function DisputeDetailView() {
             onChange={(val) => setResolution(val as "compensate" | "split" | "reject")}
           />
 
-          <div className="flex justify-end pt-8 mt-8 border-t border-white/[0.06]">
+          <div className="flex justify-end pt-6 border-t border-[#e5e2de]">
             <Button
               variant="primary"
               size="lg"
@@ -240,15 +243,15 @@ export function DisputeDetailView() {
           </div>
         </div>
       ) : hasResponded ? (
-        <Card className="p-5 border-white/[0.08]">
-          <h3 className="text-sm font-semibold text-[#F0F2F5] mb-2">
+        <Card className="p-6 border-[#e5e2de] bg-white shadow-xs">
+          <h3 className="font-serif text-base font-semibold text-[#27252d] mb-3">
             Giải Trình Từ Mentor {booking.mentorName}
           </h3>
-          <p className="text-sm text-[#E3E2E5] leading-relaxed bg-[#0D0E10] p-3 rounded-lg border border-white/[0.06] mb-3">
+          <p className="text-sm text-[#27252d] leading-relaxed bg-[#faf9f6] p-4 rounded-xl border border-[#e5e2de] mb-3">
             {dispute.mentorStatement}
           </p>
-          <p className="text-xs text-[#9BA1B0]">
-            Đề xuất giải quyết: <span className="font-semibold text-white">{dispute.mentorProposal}</span>
+          <p className="text-xs text-[#5e5866]">
+            Đề xuất giải quyết: <span className="font-semibold text-[#27252d]">{dispute.mentorProposal}</span>
           </p>
         </Card>
       ) : (
@@ -260,3 +263,5 @@ export function DisputeDetailView() {
     </div>
   );
 }
+
+export { DisputeDetailView as default };
